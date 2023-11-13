@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:memee_admin/blocs/login/login_cubit.dart';
-import 'package:memee_admin/core/initializer/app_di.dart';
+import 'package:memee_admin/core/initializer/app_di_registration.dart';
 import 'package:memee_admin/ui/__shared/template/app_layout.dart';
 
 import 'landing_page_mob.dart';

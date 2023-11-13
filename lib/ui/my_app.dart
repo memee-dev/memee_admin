@@ -5,7 +5,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../blocs/auth/auth_cubit.dart';
 import '../blocs/login/login_cubit.dart';
 import '../blocs/theme/theme_cubit.dart';
-import '../core/initializer/app_di.dart';
+import '../core/initializer/app_di_registration.dart';
 import '../core/initializer/app_router.dart';
 import '../core/shared/app_strings.dart';
 

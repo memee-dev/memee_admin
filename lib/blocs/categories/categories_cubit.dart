@@ -43,4 +43,10 @@ class CategoriesCubit extends Cubit<CategoriesState> {
     }
     emit(CategoriesSuccess(categories));
   }
+
+  //edit category
+
+  //deactive category
+
+  //delete category
 }

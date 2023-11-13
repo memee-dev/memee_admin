@@ -6,7 +6,7 @@ import 'package:memee_admin/ui/__shared/extensions/widget_extensions.dart';
 
 import '../../blocs/hide_and_seek/hide_and_seek_cubit.dart';
 import '../../blocs/login/login_cubit.dart';
-import '../../core/initializer/app_di.dart';
+import '../../core/initializer/app_di_registration.dart';
 import '../../core/shared/app_strings.dart';
 import '../__shared/widgets/app_button.dart';
 import '../__shared/widgets/app_textfield.dart';

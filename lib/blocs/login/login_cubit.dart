@@ -34,7 +34,7 @@ class LoginCubit extends Cubit<LoginStatus> {
 
         if (userDoc.exists) {
           final data = userDoc.data() as Map<String, dynamic>;
-          data['docId'] = user.uid;
+          data['id'] = user.uid;
           loginUser = AdminModel.fromMap(data);
           emit(LoginStatus.success);
         } else {

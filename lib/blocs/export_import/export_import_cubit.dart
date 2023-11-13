@@ -10,7 +10,7 @@ import 'package:memee_admin/core/shared/app_strings.dart';
 import 'package:memee_admin/models/category_model.dart';
 import 'package:path_provider/path_provider.dart';
 
-import '../../core/initializer/app_di.dart';
+import '../../core/initializer/app_di_registration.dart';
 
 enum ExportImportState {
   initial,

@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:memee_admin/ui/my_app.dart';
 
-import 'core/initializer/app_di.dart' as di;
+import 'core/initializer/app_di_registration.dart' as di;
 import 'firebase_options.dart';
 
 Future<void> main() async {

@@ -9,7 +9,7 @@ import 'package:memee_admin/ui/__shared/widgets/app_button.dart';
 import 'package:memee_admin/ui/__shared/widgets/app_textfield.dart';
 
 import '../../blocs/categories/categories_cubit.dart';
-import '../../core/initializer/app_di.dart';
+import '../../core/initializer/app_di_registration.dart';
 
 class CategoriesWidget extends StatelessWidget {
   final TextEditingController _searchController = TextEditingController();
@@ -104,11 +104,11 @@ class CategoriesWidget extends StatelessWidget {
                         label: Text('Name'),
                       ),
                     ],
-                    rows: state.categories.map((product) {
+                    rows: state.categories.map((category) {
                       return DataRow(
                         cells: [
-                          DataCell(Text(product.id)),
-                          DataCell(Text(product.name)),
+                          DataCell(Text(category.id)),
+                          DataCell(Text(category.name)),
                         ],
                         onSelectChanged: (selected) {
                           if (selected != null && selected) {

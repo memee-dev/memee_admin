@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:memee_admin/blocs/index/index_cubit.dart';
-import 'package:memee_admin/core/initializer/app_di.dart';
+import 'package:memee_admin/core/initializer/app_di_registration.dart';
 import 'package:memee_admin/core/shared/app_strings.dart';
 import 'package:memee_admin/ui/landing/model/landing_item_model.dart';
 
