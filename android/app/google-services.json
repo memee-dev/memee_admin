@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "999577280350",
+    "project_id": "memee-v2",
+    "storage_bucket": "memee-v2.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:999577280350:android:a13e7e739f616f9e3f39cf",
+        "android_client_info": {
+          "package_name": "com.example.memee"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA2YzEd4dWx01dOjIYK-RwshjreC52jgUE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:999577280350:android:7b922aba5e4b31933f39cf",
+        "android_client_info": {
+          "package_name": "com.memee.admin.memee_admin"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA2YzEd4dWx01dOjIYK-RwshjreC52jgUE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
