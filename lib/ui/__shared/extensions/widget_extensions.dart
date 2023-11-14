@@ -24,11 +24,16 @@ extension Template on Widget {
 
   Widget show(bool show) => show ? this : const SizedBox.shrink();
 
-  Widget gapBottom(double value) => Column(
-        children: [this, SizedBox(height: value)]
+  Widget gapTop(double value) => Column(
+        children: [SizedBox(height: value), this],
       );
-
+  Widget gapBottom(double value) => Column(
+        children: [this, SizedBox(height: value)],
+      );
   Widget gapRight(double value) => Row(
         children: [this, SizedBox(width: value)],
+      );
+  Widget gapLeft(double value) => Row(
+        children: [SizedBox(width: value), this],
       );
 }

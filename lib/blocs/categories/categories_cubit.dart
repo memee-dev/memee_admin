@@ -15,21 +15,18 @@ class CategoriesCubit extends Cubit<CategoriesState> {
   Future<void> fetchCategories() async {
     emit(CategoriesLoading());
     try {
-      final categoryDoc =
-          await db.collection(AppFireStoreCollection.categories).get();
+      final categoryDoc = await db.collection(AppFireStoreCollection.categories).get();
       List<CategoryModel> categories = [];
       final docs = categoryDoc.docs;
 
       for (var doc in docs) {
         final data = doc.data();
+        data['id'] = doc.id;
         categories.add(
-          CategoryModel(
-            id: doc.id,
-            name: data['name'],
-            active: data['active'],
-          ),
+          CategoryModel.fromMap(data),
         );
       }
+
       emit(CategoriesSuccess(categories));
     } catch (e) {
       emit(CategoriesFailure(e.toString()));

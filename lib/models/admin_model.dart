@@ -1,17 +1,14 @@
 class AdminModel {
-  String id;
+  final String id;
   String name;
   String email;
-  bool superAdmin;
   num adminLevel;
   bool active;
 
   AdminModel({
-  
     required this.id,
     required this.name,
     required this.email,
-    required this.superAdmin,
     required this.adminLevel,
     required this.active,
   });
@@ -21,10 +18,22 @@ class AdminModel {
       id: map['id'],
       name: map['name'],
       email: map['email'],
-      superAdmin: map['superAdmin'],
       adminLevel: map['adminLevel'],
       active: map['active'],
     );
+  }
+
+  String get adminLevell {
+    switch (adminLevel) {
+      case 0:
+        return 'Super Admin';
+      case 1:
+        return 'Admin';
+      case 2:
+        return 'Support';
+      default:
+        return 'Support';
+    }
   }
 
   Map<String, dynamic> toJson() {
@@ -32,7 +41,6 @@ class AdminModel {
     map['id'] = id;
     map['name'] = name;
     map['email'] = email;
-    map['superAdmin'] = superAdmin;
     map['adminLevel'] = adminLevel;
     map['active'] = active;
     return map;

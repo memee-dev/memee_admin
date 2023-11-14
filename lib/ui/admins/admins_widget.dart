@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:memee_admin/blocs/export_import/export_import_cubit.dart';
-import 'package:memee_admin/blocs/hide_and_seek/hide_and_seek_cubit.dart';
 import 'package:memee_admin/core/shared/app_strings.dart';
 import 'package:memee_admin/ui/__shared/extensions/widget_extensions.dart';
 import 'package:memee_admin/ui/__shared/widgets/app_button.dart';
 import 'package:memee_admin/ui/__shared/widgets/app_textfield.dart';
+import 'package:memee_admin/ui/admins/widgets/admin_data_row.dart';
 
 import '../../blocs/admins/admins_cubit.dart';
 import '../../core/initializer/app_di_registration.dart';
@@ -15,8 +15,6 @@ import '../../models/admin_model.dart';
 class AdminsWidget extends StatelessWidget {
   final TextEditingController _searchController = TextEditingController();
   final _adminsCubit = locator.get<AdminsCubit>();
-  final _superAdmin = locator.get<HideAndSeekCubit>();
-  final _admin = locator.get<HideAndSeekCubit>();
 
   AdminsWidget({super.key});
 
@@ -46,9 +44,7 @@ class AdminsWidget extends StatelessWidget {
                         isLoading: state == ExportImportState.loading,
                         label: AppStrings.import,
                         onTap: () {
-                          ctx
-                              .read<ExportImportCubit>()
-                              .importExcel<AdminModel>();
+                          ctx.read<ExportImportCubit>().importExcel<AdminModel>();
                         },
                       );
                     },
@@ -66,11 +62,8 @@ class AdminsWidget extends StatelessWidget {
                         label: AppStrings.export,
                         onTap: () {
                           if (_adminsCubit.state is AdminsSuccess) {
-                            ctx
-                                .read<ExportImportCubit>()
-                                .exportExcel<AdminModel>(
-                                  data: (_adminsCubit.state as AdminsSuccess)
-                                      .admins,
+                            ctx.read<ExportImportCubit>().exportExcel<AdminModel>(
+                                  data: (_adminsCubit.state as AdminsSuccess).admins,
                                   sheetName: AppStrings.admins,
                                   title: AppStrings.categoriesTitle,
                                 );
@@ -100,6 +93,7 @@ class AdminsWidget extends StatelessWidget {
                   );
                 } else if (state is AdminsSuccess) {
                   return DataTable(
+                    showCheckboxColumn: false,
                     columns: const [
                       DataColumn(
                         label: Text('ID'),
@@ -111,73 +105,14 @@ class AdminsWidget extends StatelessWidget {
                         label: Text('email'),
                       ),
                       DataColumn(
-                        label: Text('Admin Type'),
-                      ),
-                      DataColumn(
                         label: Text('Admin Level'),
                       ),
                       DataColumn(
-                        label: Text('Active'),
+                        label: Text('Status'),
                       ),
                     ],
                     rows: state.admins.map((admin) {
-                      return DataRow(
-                        cells: [
-                          DataCell(Text(admin.id)),
-                          DataCell(Text(admin.name)),
-                          DataCell(Text(admin.email)),
-                          DataCell(
-                            BlocBuilder<HideAndSeekCubit, bool>(
-                              builder: (context, state) {
-                                return Row(
-                                  children: [
-                                    Checkbox(
-                                      value: state,
-                                      onChanged: (value) {
-                                        admin.superAdmin = state;
-                                        admin.superAdmin = !admin.superAdmin;
-                                        _superAdmin.change();
-                                      },
-                                    ),
-                                    Text(admin.superAdmin.toString())
-                                  ],
-                                );
-                              },
-                              bloc: _superAdmin,
-                            ),
-                          ),
-                          DataCell(
-                            Text(
-                              admin.adminLevel.toString(),
-                            ),
-                          ),
-                          DataCell(
-                            BlocBuilder<HideAndSeekCubit, bool>(
-                              builder: (context, state) {
-                                return Row(
-                                  children: [
-                                    Checkbox(
-                                      value: state,
-                                      onChanged: (value) {
-                                        admin.active = state;
-                                        admin.active = !admin.active;
-                                        _admin.change();
-                                      },
-                                    ),
-                                    Text(admin.active.toString())
-                                  ],
-                                );
-                              },
-                              bloc: _admin,
-                            ),
-                          ),
-                        ],
-                        onSelectChanged: (selected) {
-                          if (selected != null && selected) {
-                            //_showProductDetails(product);
-                          }
-                        },
-                      );
+                      return dataRow(context, admin);
                     }).toList(), // Helper function to build rows
                   );
                 }

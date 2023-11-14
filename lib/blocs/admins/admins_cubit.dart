@@ -21,17 +21,12 @@ class AdminsCubit extends Cubit<AdminsState> {
 
       for (var doc in docs) {
         final data = doc.data();
+        data['id'] = doc.id;
         admins.add(
-          AdminModel(
-            id: doc.id,
-            name: data['name'],
-            email: data['email'],
-            superAdmin: data['superAdmin'],
-            adminLevel: data['adminLevel'],
-            active: data['active'],
-          ),
+          AdminModel.fromMap(data),
         );
       }
+
       emit(AdminsSuccess(admins));
     } catch (e) {
       emit(AdminsFailure(e.toString()));
@@ -48,7 +43,12 @@ class AdminsCubit extends Cubit<AdminsState> {
     emit(AdminsSuccess(admins));
   }
 
-//edit category
+  //edit category
+  Future<void> updateAdmin(
+    AdminModel admin,
+  ) async {
+    await db.collection(AppFireStoreCollection.admins).doc(admin.id).set(admin.toJson());
+  }
 
 //deactive category
 
