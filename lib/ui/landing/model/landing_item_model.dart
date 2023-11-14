@@ -21,5 +21,5 @@ final List<LandingItemModel> items = [
   LandingItemModel(AppStrings.categories, CategoriesWidget()),
   LandingItemModel(AppStrings.products, ProductsWidget()),
   const LandingItemModel(AppStrings.users, UsersWidget()),
-  const LandingItemModel(AppStrings.admins, AdminsWidget()),
+  LandingItemModel(AppStrings.admins, AdminsWidget()),
 ];

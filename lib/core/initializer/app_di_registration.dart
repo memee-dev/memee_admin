@@ -5,6 +5,7 @@ import 'package:memee_admin/blocs/categories/categories_cubit.dart';
 import 'package:memee_admin/blocs/export_import/export_import_cubit.dart';
 import 'package:memee_admin/blocs/products/products_cubit.dart';
 
+import '../../blocs/admins/admins_cubit.dart';
 import '../../blocs/auth/auth_cubit.dart';
 import '../../blocs/hide_and_seek/hide_and_seek_cubit.dart';
 import '../../blocs/index/index_cubit.dart';
@@ -49,6 +50,9 @@ void blocConfig(GetIt locator) {
   );
   locator.registerLazySingleton<CategoriesCubit>(
     () => CategoriesCubit(locator()),
+  );
+  locator.registerLazySingleton<AdminsCubit>(
+    () => AdminsCubit(locator()),
   );
   locator.registerLazySingleton<ProductsCubit>(
     () => ProductsCubit(locator()),

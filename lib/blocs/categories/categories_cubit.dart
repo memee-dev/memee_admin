@@ -26,6 +26,7 @@ class CategoriesCubit extends Cubit<CategoriesState> {
           CategoryModel(
             id: doc.id,
             name: data['name'],
+            active: data['active'],
           ),
         );
       }

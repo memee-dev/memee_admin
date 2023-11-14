@@ -22,7 +22,7 @@ class LandingPage extends StatelessWidget {
           )
         ],
       ),
-      mobView: LandingPageMob(),
+      mobView: const LandingPageMob(),
       webView: LandingPageWeb(),
     );
   }

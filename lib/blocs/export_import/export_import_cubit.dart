@@ -21,6 +21,8 @@ enum ExportImportState {
 class ExportImportCubit extends Cubit<ExportImportState> {
   ExportImportCubit() : super(ExportImportState.initial);
 
+
+
   Future<void> exportExcel<T>({
     required List<T> data,
     required String sheetName,
@@ -94,9 +96,11 @@ class ExportImportCubit extends Cubit<ExportImportState> {
 
                 var id = row[0]?.value.toString();
                 var name = row[1]?.value.toString();
+                var active = row[2]?.value.toString();
 
-                if (id != null && name != null) {
-                  data.add(CategoryModel(id: id, name: name) as T);
+                if (id != null && name != null && active != null) {
+                  data.add(CategoryModel(id: id, name: name,active: active== "true"  ) as T);
+
                 }
               }
             }
