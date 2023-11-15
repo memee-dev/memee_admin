@@ -47,28 +47,29 @@ class DefaultFirebaseOptions {
   }
 
   static const FirebaseOptions web = FirebaseOptions(
-    apiKey: 'AIzaSyC3tcjUVP82YKmxA9q7UpQy3uTog9wb-84',
-    appId: '1:999577280350:web:f4bb059ceeb151473f39cf',
-    messagingSenderId: '999577280350',
-    projectId: 'memee-v2',
-    authDomain: 'memee-v2.firebaseapp.com',
-    storageBucket: 'memee-v2.appspot.com',
+    apiKey: 'AIzaSyB2OofbM1L50yBUTqeEwWEUdyMqFPv7zN4',
+    appId: '1:163218598684:web:31b13552ceb6c44b2928d9',
+    messagingSenderId: '163218598684',
+    projectId: 'memee-dev-d104d',
+    authDomain: 'memee-dev-d104d.firebaseapp.com',
+    storageBucket: 'memee-dev-d104d.appspot.com',
+    measurementId: 'G-3JYE3FTBL0',
   );
 
   static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'AIzaSyA2YzEd4dWx01dOjIYK-RwshjreC52jgUE',
-    appId: '1:999577280350:android:7b922aba5e4b31933f39cf',
-    messagingSenderId: '999577280350',
-    projectId: 'memee-v2',
-    storageBucket: 'memee-v2.appspot.com',
+    apiKey: 'AIzaSyBbu3_Th8h6bZHx6fkxfki1Ajb3wPJZ7vs',
+    appId: '1:163218598684:android:fb83671b0ea8fa782928d9',
+    messagingSenderId: '163218598684',
+    projectId: 'memee-dev-d104d',
+    storageBucket: 'memee-dev-d104d.appspot.com',
   );
 
   static const FirebaseOptions ios = FirebaseOptions(
-    apiKey: 'AIzaSyBqDnV8_JX4y4BL5C9UKMh7ic-R3v84DYA',
-    appId: '1:999577280350:ios:4aefc5f0058310513f39cf',
-    messagingSenderId: '999577280350',
-    projectId: 'memee-v2',
-    storageBucket: 'memee-v2.appspot.com',
+    apiKey: 'AIzaSyDTwHaQ6jqnOOwC6TmbLNOsGpO5CCkehE4',
+    appId: '1:163218598684:ios:b90a1c61e80ba37a2928d9',
+    messagingSenderId: '163218598684',
+    projectId: 'memee-dev-d104d',
+    storageBucket: 'memee-dev-d104d.appspot.com',
     iosBundleId: 'com.memee.admin.memeeAdmin',
   );
 }
