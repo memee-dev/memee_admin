@@ -14,14 +14,26 @@ import '../../models/admin_model.dart';
 import '../__shared/dialog/detailed_dialog.dart';
 import 'widgets/admin_detailed.dart';
 
-class AdminsWidget extends StatelessWidget {
-  final TextEditingController _searchController = TextEditingController();
-  final _adminsCubit = locator.get<AdminsCubit>();
-
-  AdminsWidget({super.key});
+class AdminWidget extends StatelessWidget {
+  const AdminWidget({super.key});
 
   @override
   Widget build(BuildContext context) {
+    return BlocProvider.value(
+      value: locator.get<AdminCubit>(),
+      child: _AdminWidget(),
+    );
+  }
+}
+
+class _AdminWidget extends StatelessWidget {
+  final TextEditingController _searchController = TextEditingController();
+
+  _AdminWidget();
+
+  @override
+  Widget build(BuildContext context) {
+    final adminCubit = context.read<AdminCubit>();
     return Stack(
       children: [
         Positioned(
@@ -75,9 +87,9 @@ class AdminsWidget extends StatelessWidget {
                             isLoading: state == ExportImportState.loading,
                             label: AppStrings.export,
                             onTap: () {
-                              if (_adminsCubit.state is AdminsSuccess) {
+                              if (adminCubit.state is AdminsSuccess) {
                                 ctx.read<ExportImportCubit>().exportExcel<AdminModel>(
-                                      data: (_adminsCubit.state as AdminsSuccess).admins,
+                                      data: (adminCubit.state as AdminsSuccess).admins,
                                       sheetName: AppStrings.admins,
                                       title: AppStrings.categoriesTitle,
                                     );
@@ -94,8 +106,8 @@ class AdminsWidget extends StatelessWidget {
             Expanded(
               child: SingleChildScrollView(
                 scrollDirection: Axis.horizontal,
-                child: BlocBuilder<AdminsCubit, AdminsState>(
-                  bloc: _adminsCubit..fetchAdmins(),
+                child: BlocBuilder<AdminCubit, AdminsState>(
+                  bloc: adminCubit..fetchAdmins(),
                   builder: (context, state) {
                     if (state is AdminsLoading) {
                       return const Center(

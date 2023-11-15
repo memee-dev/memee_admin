@@ -51,8 +51,8 @@ void blocConfig(GetIt locator) {
   locator.registerLazySingleton<CategoriesCubit>(
     () => CategoriesCubit(locator()),
   );
-  locator.registerLazySingleton<AdminsCubit>(
-    () => AdminsCubit(locator()),
+  locator.registerLazySingleton<AdminCubit>(
+    () => AdminCubit(locator()),
   );
   locator.registerLazySingleton<ProductsCubit>(
     () => ProductsCubit(locator()),

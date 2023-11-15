@@ -18,7 +18,7 @@ class AdminDetailed extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider.value(
-      value: locator.get<AdminsCubit>(),
+      value: locator.get<AdminCubit>(),
       child: _AdminDetailed(admin: admin),
     );
   }
@@ -156,7 +156,7 @@ class _AdminDetailedState extends State<_AdminDetailed> {
                       admin.email = _emailController.text.toString().trim();
                       admin.adminLevel = selectedAdminLevel;
                       admin.active = selectedStatus;
-                      context.read<AdminsCubit>().updateAdmin(admin);
+                      context.read<AdminCubit>().updateAdmin(admin);
                     } else {}
                     Navigator.pop(context, admin);
                   },

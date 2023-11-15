@@ -43,6 +43,9 @@ class CategoriesCubit extends Cubit<CategoriesState> {
   }
 
   //edit category
+  Future<void> updateCategory(CategoryModel category) async {
+    await db.collection(AppFireStoreCollection.categories).doc(category.id).set(category.toJson());
+  }
 
   //deactive category
 

@@ -10,6 +10,7 @@ import 'package:memee_admin/ui/__shared/widgets/app_textfield.dart';
 
 import '../../blocs/categories/categories_cubit.dart';
 import '../../core/initializer/app_di_registration.dart';
+import '../__shared/widgets/app_switch.dart';
 
 class CategoriesWidget extends StatelessWidget {
   final TextEditingController _searchController = TextEditingController();
@@ -61,12 +62,8 @@ class CategoriesWidget extends StatelessWidget {
                         label: AppStrings.export,
                         onTap: () {
                           if (_categoriesCubit.state is CategoriesSuccess) {
-                            ctx
-                                .read<ExportImportCubit>()
-                                .exportExcel<CategoryModel>(
-                                  data: (_categoriesCubit.state
-                                          as CategoriesSuccess)
-                                      .categories,
+                            ctx.read<ExportImportCubit>().exportExcel<CategoryModel>(
+                                  data: (_categoriesCubit.state as CategoriesSuccess).categories,
                                   sheetName: AppStrings.categories,
                                   title: AppStrings.categoriesTitle,
                                 );
@@ -97,18 +94,24 @@ class CategoriesWidget extends StatelessWidget {
                 } else if (state is CategoriesSuccess) {
                   return DataTable(
                     columns: const [
-                      DataColumn(
-                        label: Text('ID'),
-                      ),
-                      DataColumn(
-                        label: Text('Name'),
-                      ),
+                      DataColumn(label: Text('ID')),
+                      DataColumn(label: Text('Name')),
+                      DataColumn(label: Text('Status')),
                     ],
                     rows: state.categories.map((category) {
                       return DataRow(
                         cells: [
                           DataCell(Text(category.id)),
                           DataCell(Text(category.name)),
+                          DataCell(
+                            AppSwitch(
+                              status: category.active,
+                              onTap: (bool val) {
+                                category.active = val;
+                                _categoriesCubit.updateCategory(category);
+                              },
+                            ),
+                          ),
                         ],
                         onSelectChanged: (selected) {
                           if (selected != null && selected) {

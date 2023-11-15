@@ -21,8 +21,6 @@ enum ExportImportState {
 class ExportImportCubit extends Cubit<ExportImportState> {
   ExportImportCubit() : super(ExportImportState.initial);
 
-
-
   Future<void> exportExcel<T>({
     required List<T> data,
     required String sheetName,
@@ -47,8 +45,7 @@ class ExportImportCubit extends Cubit<ExportImportState> {
     var excelData = excel.encode();
 
     if (kIsWeb) {
-      final blob = html.Blob([excelData],
-          'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+      final blob = html.Blob([excelData], 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
 
       final url = html.Url.createObjectUrlFromBlob(blob);
       html.AnchorElement(href: url)
@@ -96,17 +93,18 @@ class ExportImportCubit extends Cubit<ExportImportState> {
 
                 var id = row[0]?.value.toString();
                 var name = row[1]?.value.toString();
-                var active = row[2]?.value.toString();
+                var active = row[2]?.value;
 
                 if (id != null && name != null && active != null) {
-                  data.add(CategoryModel(id: id, name: name,active: active== "true"  ) as T);
-
+                  data.add(CategoryModel(
+                    id: id,
+                    name: name,
+                    active: active,
+                  ) as T);
                 }
               }
             }
-            locator
-                .get<CategoriesCubit>()
-                .addCategories(data as List<CategoryModel>);
+            locator.get<CategoriesCubit>().addCategories(data as List<CategoryModel>);
           }
         }
       });

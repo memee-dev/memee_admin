@@ -3,7 +3,7 @@ import 'package:memee_admin/core/shared/app_strings.dart';
 
 Future<dynamic> showConfirmationDialog(
   BuildContext context, {
-  required onTap(bool v),
+  required Function(bool v) onTap,
 }) async {
   return await showDialog(
     context: context,

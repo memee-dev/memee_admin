@@ -7,10 +7,10 @@ import '../../models/admin_model.dart';
 
 part 'admins_state.dart';
 
-class AdminsCubit extends Cubit<AdminsState> {
+class AdminCubit extends Cubit<AdminsState> {
   final FirebaseFirestore db;
 
-  AdminsCubit(this.db) : super(AdminsLoading());
+  AdminCubit(this.db) : super(AdminsLoading());
 
   Future<void> fetchAdmins() async {
     emit(AdminsLoading());
@@ -40,9 +40,7 @@ class AdminsCubit extends Cubit<AdminsState> {
   }
 
   //edit category
-  Future<void> updateAdmin(
-    AdminModel admin,
-  ) async {
+  Future<void> updateAdmin(AdminModel admin) async {
     await db.collection(AppFireStoreCollection.admins).doc(admin.id).set(admin.toJson());
   }
 

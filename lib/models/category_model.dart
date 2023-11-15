@@ -1,9 +1,9 @@
 class CategoryModel {
   final String id;
-  final String name;
-  final bool active;
+  String name;
+  bool active;
 
-  const CategoryModel({
+  CategoryModel({
     required this.id,
     required this.name,
     required this.active,
@@ -19,7 +19,9 @@ class CategoryModel {
 
   Map<String, dynamic> toJson() {
     final map = <String, dynamic>{};
+    map['id'] = id;
     map['name'] = name;
+    map['active'] = active;
     return map;
   }
 }

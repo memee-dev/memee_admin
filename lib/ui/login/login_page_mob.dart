@@ -16,7 +16,7 @@ class LoginPageMob extends StatelessWidget {
   final TextEditingController _emailController =
       TextEditingController(text: kDebugMode ? 'admin@memee.com' : '');
   final TextEditingController _passwordController =
-      TextEditingController(text: kDebugMode ? 'admin@01' : '');
+      TextEditingController(text: kDebugMode ? '123456' : '');
   final HideAndSeekCubit hideAndSeekCubit = locator.get<HideAndSeekCubit>();
 
   LoginPageMob({super.key});
