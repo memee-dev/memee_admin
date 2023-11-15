@@ -20,11 +20,7 @@ class AdminsCubit extends Cubit<AdminsState> {
       final docs = adminDoc.docs;
 
       for (var doc in docs) {
-        final data = doc.data();
-        data['id'] = doc.id;
-        admins.add(
-          AdminModel.fromMap(data),
-        );
+        admins.add(AdminModel.fromMap(doc.data()));
       }
 
       emit(AdminsSuccess(admins));

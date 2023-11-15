@@ -29,13 +29,10 @@ class LoginCubit extends Cubit<LoginStatus> {
       User? user = userCredential.user;
 
       if (user != null) {
-        DocumentSnapshot userDoc =
-            await db.collection('admins').doc(user.uid).get();
+        DocumentSnapshot userDoc = await db.collection('admins').doc(user.uid).get();
 
         if (userDoc.exists) {
-          final data = userDoc.data() as Map<String, dynamic>;
-          data['id'] = user.uid;
-          loginUser = AdminModel.fromMap(data);
+          loginUser = AdminModel.fromMap(userDoc.data() as Map<String, dynamic>);
           emit(LoginStatus.success);
         } else {
           auth.signOut();

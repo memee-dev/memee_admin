@@ -6,7 +6,6 @@ import 'package:memee_admin/ui/__shared/extensions/widget_extensions.dart';
 import 'package:memee_admin/ui/__shared/widgets/app_textfield.dart';
 
 import '../../core/initializer/app_di_registration.dart';
-import '../../models/product_model.dart';
 
 class ProductsWidget extends StatelessWidget {
   final TextEditingController _searchController = TextEditingController();
@@ -76,16 +75,5 @@ class ProductsWidget extends StatelessWidget {
         ),
       ],
     ).paddingS();
-  }
-
-  List<ProductModel> _filterProducts() {
-    String query = _searchController.text.toLowerCase();
-    if (query.isNotEmpty) {
-      return products.where((product) {
-        return product.name.toLowerCase().contains(query) ||
-            product.description.toLowerCase().contains(query);
-      }).toList();
-    }
-    return products;
   }
 }
