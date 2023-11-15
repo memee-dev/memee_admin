@@ -8,6 +8,9 @@ mixin AppStrings {
   static const String password = 'Password';
   static const String search = 'Search';
 
+  static const String add = 'Add';
+  static const String edit = 'Edit';
+
   static const String home = 'Home';
   static const String orders = 'Orders';
   static const String products = 'Products';

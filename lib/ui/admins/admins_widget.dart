@@ -11,6 +11,8 @@ import 'package:memee_admin/ui/admins/widgets/admin_data_row.dart';
 import '../../blocs/admins/admins_cubit.dart';
 import '../../core/initializer/app_di_registration.dart';
 import '../../models/admin_model.dart';
+import '../__shared/dialog/detailed_dialog.dart';
+import 'widgets/admin_detailed.dart';
 
 class AdminsWidget extends StatelessWidget {
   final TextEditingController _searchController = TextEditingController();
@@ -20,108 +22,122 @@ class AdminsWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
+    return Stack(
       children: [
-        Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Row(
-            children: [
-              SizedBox(
-                width: MediaQuery.of(context).size.width / 4,
-                child: AppTextField(
-                  controller: _searchController,
-                  label: '${AppStrings.search} ${AppStrings.admins}',
-                ),
-              ).gapRight(24.w),
-              Flexible(
-                child: BlocProvider(
-                  create: (_) => locator.get<ExportImportCubit>(),
-                  child: BlocBuilder<ExportImportCubit, ExportImportState>(
-                    bloc: locator.get<ExportImportCubit>(),
-                    builder: (ctx, state) {
-                      return AppButton(
-                        isLoading: state == ExportImportState.loading,
-                        label: AppStrings.import,
-                        onTap: () {
-                          ctx.read<ExportImportCubit>().importExcel<AdminModel>();
-                        },
-                      );
-                    },
-                  ),
-                ),
-              ),
-              SizedBox(width: 8.w),
-              Flexible(
-                child: BlocProvider(
-                  create: (_) => locator.get<ExportImportCubit>(),
-                  child: BlocBuilder<ExportImportCubit, ExportImportState>(
-                    builder: (ctx, state) {
-                      return AppButton(
-                        isLoading: state == ExportImportState.loading,
-                        label: AppStrings.export,
-                        onTap: () {
-                          if (_adminsCubit.state is AdminsSuccess) {
-                            ctx.read<ExportImportCubit>().exportExcel<AdminModel>(
-                                  data: (_adminsCubit.state as AdminsSuccess).admins,
-                                  sheetName: AppStrings.admins,
-                                  title: AppStrings.categoriesTitle,
-                                );
-                          }
-                        },
-                      );
-                    },
-                  ),
-                ),
-              ),
-            ],
+        Positioned(
+          right: 16.w,
+          bottom: 48.h,
+          child: FloatingActionButton(
+            onPressed: () {
+              showDetailedDialog(context, child: const AdminDetailed());
+            },
+            child: const Icon(Icons.add),
           ),
         ),
-        Expanded(
-          child: SingleChildScrollView(
-            scrollDirection: Axis.horizontal,
-            child: BlocBuilder<AdminsCubit, AdminsState>(
-              bloc: _adminsCubit..fetchAdmins(),
-              builder: (context, state) {
-                if (state is AdminsLoading) {
-                  return const Center(
-                    child: CircularProgressIndicator.adaptive(),
-                  );
-                } else if (state is AdminsFailure) {
-                  return Center(
-                    child: Text(state.message),
-                  );
-                } else if (state is AdminsSuccess) {
-                  return DataTable(
-                    showCheckboxColumn: false,
-                    columns: const [
-                      DataColumn(
-                        label: Text('ID'),
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Row(
+                children: [
+                  SizedBox(
+                    width: MediaQuery.of(context).size.width / 4,
+                    child: AppTextField(
+                      controller: _searchController,
+                      label: '${AppStrings.search} ${AppStrings.admins}',
+                    ),
+                  ).gapRight(24.w),
+                  Flexible(
+                    child: BlocProvider(
+                      create: (_) => locator.get<ExportImportCubit>(),
+                      child: BlocBuilder<ExportImportCubit, ExportImportState>(
+                        bloc: locator.get<ExportImportCubit>(),
+                        builder: (ctx, state) {
+                          return AppButton(
+                            isLoading: state == ExportImportState.loading,
+                            label: AppStrings.import,
+                            onTap: () {
+                              ctx.read<ExportImportCubit>().importExcel<AdminModel>();
+                            },
+                          );
+                        },
                       ),
-                      DataColumn(
-                        label: Text('Name'),
+                    ),
+                  ),
+                  SizedBox(width: 8.w),
+                  Flexible(
+                    child: BlocProvider(
+                      create: (_) => locator.get<ExportImportCubit>(),
+                      child: BlocBuilder<ExportImportCubit, ExportImportState>(
+                        builder: (ctx, state) {
+                          return AppButton(
+                            isLoading: state == ExportImportState.loading,
+                            label: AppStrings.export,
+                            onTap: () {
+                              if (_adminsCubit.state is AdminsSuccess) {
+                                ctx.read<ExportImportCubit>().exportExcel<AdminModel>(
+                                      data: (_adminsCubit.state as AdminsSuccess).admins,
+                                      sheetName: AppStrings.admins,
+                                      title: AppStrings.categoriesTitle,
+                                    );
+                              }
+                            },
+                          );
+                        },
                       ),
-                      DataColumn(
-                        label: Text('email'),
-                      ),
-                      DataColumn(
-                        label: Text('Admin Level'),
-                      ),
-                      DataColumn(
-                        label: Text('Status'),
-                      ),
-                    ],
-                    rows: state.admins.map((admin) {
-                      return dataRow(context, admin);
-                    }).toList(), // Helper function to build rows
-                  );
-                }
-                return const SizedBox.shrink();
-              },
+                    ),
+                  ),
+                ],
+              ),
             ),
-          ),
-        ),
+            Expanded(
+              child: SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: BlocBuilder<AdminsCubit, AdminsState>(
+                  bloc: _adminsCubit..fetchAdmins(),
+                  builder: (context, state) {
+                    if (state is AdminsLoading) {
+                      return const Center(
+                        child: CircularProgressIndicator.adaptive(),
+                      );
+                    } else if (state is AdminsFailure) {
+                      return Center(
+                        child: Text(state.message),
+                      );
+                    } else if (state is AdminsSuccess) {
+                      return DataTable(
+                        showCheckboxColumn: false,
+                        columns: const [
+                          DataColumn(
+                            label: Text('ID'),
+                          ),
+                          DataColumn(
+                            label: Text('Name'),
+                          ),
+                          DataColumn(
+                            label: Text('email'),
+                          ),
+                          DataColumn(
+                            label: Text('Admin Level'),
+                          ),
+                          DataColumn(
+                            label: Text('Status'),
+                          ),
+                        ],
+                        rows: state.admins.map((admin) {
+                          return dataRow(context, admin);
+                        }).toList(), // Helper function to build rows
+                      );
+                    }
+                    return const SizedBox.shrink();
+                  },
+                ),
+              ),
+            ),
+          ],
+        ).paddingS(),
       ],
-    ).paddingS();
+    );
   }
 }

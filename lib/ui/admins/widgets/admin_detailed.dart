@@ -9,10 +9,10 @@ import 'package:memee_admin/ui/__shared/extensions/widget_extensions.dart';
 import 'package:memee_admin/ui/__shared/widgets/app_textfield.dart';
 
 class AdminDetailed extends StatelessWidget {
-  final AdminModel admin;
+  final AdminModel? admin;
   const AdminDetailed({
     super.key,
-    required this.admin,
+    this.admin,
   });
 
   @override
@@ -25,7 +25,7 @@ class AdminDetailed extends StatelessWidget {
 }
 
 class _AdminDetailed extends StatefulWidget {
-  final AdminModel admin;
+  final AdminModel? admin;
 
   const _AdminDetailed({
     required this.admin,
@@ -45,13 +45,19 @@ class _AdminDetailedState extends State<_AdminDetailed> {
   bool enableEdit = false;
 
   late AdminModel admin;
-  late bool selectedStatus;
-  late num selectedAdminLevel;
+  late String selectedId = '';
+  late String selectedName = '';
+  late String selectedEmail = '';
+  late bool selectedStatus = false;
+  late num selectedAdminLevel = adminLevel[0];
+
   @override
   void initState() {
     super.initState();
-    admin = widget.admin;
-    resetForm();
+    if (widget.admin != null) {
+      admin = widget.admin!;
+      _resetForm(admin);
+    }
   }
 
   @override
@@ -66,7 +72,28 @@ class _AdminDetailedState extends State<_AdminDetailed> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text('ID: ${admin.id}').gapBottom(16),
+              Text(
+                AppStrings.admins,
+                style: Theme.of(context).textTheme.displaySmall,
+              ),
+              if (widget.admin != null)
+                IconButton(
+                  onPressed: () {
+                    setState(() {
+                      enableEdit = !enableEdit;
+                      if (!enableEdit) {
+                        _resetForm(admin);
+                      }
+                    });
+                  },
+                  icon: Icon(enableEdit ? Icons.clear : Icons.edit),
+                ).gapLeft(8.w)
+            ],
+          ).gapBottom(32),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(selectedId.isNotEmpty ? 'ID: ${admin.id}' : AppStrings.add).gapBottom(16),
               SizedBox(
                 width: size.width / 8,
                 child: SwitchListTile(
@@ -83,37 +110,28 @@ class _AdminDetailedState extends State<_AdminDetailed> {
                   ),
                 ),
               ),
-              IconButton(
-                onPressed: () {
-                  setState(() {
-                    enableEdit = !enableEdit;
-                    if (!enableEdit) {
-                      resetForm();
-                    }
-                  });
-                },
-                icon: Icon(enableEdit ? Icons.clear : Icons.edit),
-              ).gapLeft(8.w)
             ],
           ),
           AppTextField(
-            controller: _nameController..text = admin.name,
+            controller: _nameController..text = selectedName,
             label: AppStrings.name,
             readOnly: !enableEdit,
           ).gapBottom(16.h),
           AppTextField(
-            controller: _emailController..text = admin.email,
-            label: AppStrings.name,
+            controller: _emailController..text = selectedEmail,
+            label: AppStrings.email,
             readOnly: !enableEdit,
           ).gapBottom(16.h),
           DropdownButton<num>(
             value: selectedAdminLevel,
-            items: adminLevel.map((num level) {
-              return DropdownMenuItem<num>(
-                value: level,
-                child: Text('Admin Level $level'),
-              );
-            }).toList(),
+            items: adminLevel
+                .map(
+                  (num level) => DropdownMenuItem<num>(
+                    value: level,
+                    child: Text('Admin Level $level'),
+                  ),
+                )
+                .toList(),
             onChanged: (num? newValue) {
               if (enableEdit) {
                 selectedAdminLevel = newValue!;
@@ -129,15 +147,17 @@ class _AdminDetailedState extends State<_AdminDetailed> {
                 child: const Text(AppStrings.cancel),
                 onPressed: () => Navigator.pop(context),
               ),
-              if (enableEdit)
+              if (widget.admin == null || enableEdit)
                 ElevatedButton(
                   child: const Text(AppStrings.save),
                   onPressed: () {
-                    admin.name = _nameController.text.toString().trim();
-                    admin.email = _emailController.text.toString().trim();
-                    admin.adminLevel = selectedAdminLevel;
-                    admin.active = selectedStatus;
-                    context.read<AdminsCubit>().updateAdmin(admin);
+                    if (widget.admin != null) {
+                      admin.name = _nameController.text.toString().trim();
+                      admin.email = _emailController.text.toString().trim();
+                      admin.adminLevel = selectedAdminLevel;
+                      admin.active = selectedStatus;
+                      context.read<AdminsCubit>().updateAdmin(admin);
+                    } else {}
                     Navigator.pop(context, admin);
                   },
                 ).gapLeft(8.w),
@@ -148,8 +168,18 @@ class _AdminDetailedState extends State<_AdminDetailed> {
     );
   }
 
-  resetForm() {
+  _resetForm(AdminModel admin) {
+    selectedId = admin.id;
+    selectedName = admin.name;
+    selectedEmail = admin.email;
     selectedAdminLevel = admin.adminLevel;
     selectedStatus = admin.active;
+  }
+
+  @override
+  void dispose() {
+    _nameController.dispose();
+    _emailController.dispose();
+    super.dispose();
   }
 }
