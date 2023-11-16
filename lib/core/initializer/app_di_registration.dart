@@ -11,6 +11,7 @@ import '../../blocs/hide_and_seek/hide_and_seek_cubit.dart';
 import '../../blocs/index/index_cubit.dart';
 import '../../blocs/login/login_cubit.dart';
 import '../../blocs/theme/theme_cubit.dart';
+import '../../blocs/users/users_cubit.dart';
 
 final locator = GetIt.I;
 
@@ -53,6 +54,9 @@ void blocConfig(GetIt locator) {
   );
   locator.registerLazySingleton<AdminCubit>(
     () => AdminCubit(locator()),
+  );
+  locator.registerLazySingleton<UserCubit>(
+    () => UserCubit(locator()),
   );
   locator.registerLazySingleton<ProductsCubit>(
     () => ProductsCubit(locator()),

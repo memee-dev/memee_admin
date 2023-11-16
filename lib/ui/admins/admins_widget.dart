@@ -39,8 +39,9 @@ class _AdminWidget extends StatelessWidget {
         Positioned(
           right: 16.w,
           bottom: 48.h,
-          child: FloatingActionButton(
-            onPressed: () {
+          child: GestureDetector(
+            behavior: HitTestBehavior.translucent,
+            onTap: () {
               showDetailedDialog(context, child: const AdminDetailed());
             },
             child: const Icon(Icons.add),

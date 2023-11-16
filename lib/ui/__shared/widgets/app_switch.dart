@@ -22,7 +22,7 @@ class AppSwitch extends StatelessWidget {
     return BlocBuilder<HideAndSeekCubit, bool>(
       bloc: cubit..initialValue(status),
       builder: (context, state) {
-        return SwitchListTile(
+        return Switch(
           value: state,
           onChanged: (value) async {
             await showConfirmationDialog(
@@ -36,9 +36,7 @@ class AppSwitch extends StatelessWidget {
               },
             );
           },
-          title: Text(
-            status ? AppStrings.active : AppStrings.disabled,
-          ),
+
         );
       },
     );

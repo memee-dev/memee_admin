@@ -63,108 +63,105 @@ class _AdminDetailedState extends State<_AdminDetailed> {
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
-    return SizedBox(
-      width: size.width / 2,
-      height: size.height / 2,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(
-                AppStrings.admins,
-                style: Theme.of(context).textTheme.displaySmall,
-              ),
-              if (widget.admin != null)
-                IconButton(
-                  onPressed: () {
-                    setState(() {
-                      enableEdit = !enableEdit;
-                      if (!enableEdit) {
-                        _resetForm(admin);
-                      }
-                    });
-                  },
-                  icon: Icon(enableEdit ? Icons.clear : Icons.edit),
-                ).gapLeft(8.w)
-            ],
-          ).gapBottom(32),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(selectedId.isNotEmpty ? 'ID: ${admin.id}' : AppStrings.add).gapBottom(16),
-              SizedBox(
-                width: size.width / 8,
-                child: SwitchListTile(
-                  value: selectedStatus,
-                  onChanged: (value) {
-                    if (enableEdit) {
-                      setState(() {
-                        selectedStatus = value;
-                      });
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text(
+              AppStrings.admins,
+              style: Theme.of(context).textTheme.displaySmall,
+            ),
+            if (widget.admin != null)
+              IconButton(
+                onPressed: () {
+                  setState(() {
+                    enableEdit = !enableEdit;
+                    if (!enableEdit) {
+                      _resetForm(admin);
                     }
-                  },
-                  title: Text(
-                    selectedStatus ? AppStrings.active : AppStrings.disabled,
-                  ),
+                  });
+                },
+                icon: Icon(enableEdit ? Icons.clear : Icons.edit),
+              ).gapLeft(8.w)
+          ],
+        ).gapBottom(32),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text(selectedId.isNotEmpty ? 'ID: ${admin.id}' : AppStrings.add).gapBottom(16),
+            SizedBox(
+              width: size.width / 8,
+              child: SwitchListTile(
+                value: selectedStatus,
+                onChanged: (value) {
+                  if (enableEdit) {
+                    setState(() {
+                      selectedStatus = value;
+                    });
+                  }
+                },
+                title: Text(
+                  selectedStatus ? AppStrings.active : AppStrings.disabled,
                 ),
               ),
-            ],
-          ),
-          AppTextField(
-            controller: _nameController..text = selectedName,
-            label: AppStrings.name,
-            readOnly: !enableEdit,
-          ).gapBottom(16.h),
-          AppTextField(
-            controller: _emailController..text = selectedEmail,
-            label: AppStrings.email,
-            readOnly: !enableEdit,
-          ).gapBottom(16.h),
-          DropdownButton<num>(
-            value: selectedAdminLevel,
-            items: adminLevel
-                .map(
-                  (num level) => DropdownMenuItem<num>(
-                    value: level,
-                    child: Text('Admin Level $level'),
-                  ),
-                )
-                .toList(),
-            onChanged: (num? newValue) {
-              if (enableEdit) {
-                selectedAdminLevel = newValue!;
-                setState(() {});
-              }
-            },
-          ),
-          const Spacer(),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: [
+            ),
+          ],
+        ),
+        AppTextField(
+          controller: _nameController..text = selectedName,
+          label: AppStrings.name,
+          readOnly: !enableEdit,
+        ).gapBottom(16.h),
+        AppTextField(
+          controller: _emailController..text = selectedEmail,
+          label: AppStrings.email,
+          readOnly: !enableEdit,
+        ).gapBottom(16.h),
+        DropdownButton<num>(
+          value: selectedAdminLevel,
+          items: adminLevel
+              .map(
+                (num level) => DropdownMenuItem<num>(
+                  value: level,
+                  child: Text('Admin Level $level'),
+                ),
+              )
+              .toList(),
+          onChanged: (num? newValue) {
+            if (enableEdit) {
+              selectedAdminLevel = newValue!;
+              setState(() {});
+            }
+          },
+        ),
+        const Spacer(),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: [
+            ElevatedButton(
+              child: const Text(AppStrings.cancel),
+              onPressed: () => Navigator.pop(context),
+            ),
+            if (widget.admin == null || enableEdit)
               ElevatedButton(
-                child: const Text(AppStrings.cancel),
-                onPressed: () => Navigator.pop(context),
-              ),
-              if (widget.admin == null || enableEdit)
-                ElevatedButton(
-                  child: const Text(AppStrings.save),
-                  onPressed: () {
-                    if (widget.admin != null) {
-                      admin.name = _nameController.text.toString().trim();
-                      admin.email = _emailController.text.toString().trim();
-                      admin.adminLevel = selectedAdminLevel;
-                      admin.active = selectedStatus;
-                      context.read<AdminCubit>().updateAdmin(admin);
-                    } else {}
-                    Navigator.pop(context, admin);
-                  },
-                ).gapLeft(8.w),
-            ],
-          )
-        ],
-      ),
+                child: const Text(AppStrings.save),
+                onPressed: () {
+                  if (widget.admin != null) {
+                    admin.name = _nameController.text.toString().trim();
+                    admin.email = _emailController.text.toString().trim();
+                    admin.adminLevel = selectedAdminLevel;
+                    admin.active = selectedStatus;
+                    context.read<AdminCubit>().updateAdmin(admin);
+                  } else {}
+                  Navigator.pop(context, admin);
+                },
+              ).gapLeft(8.w),
+          ],
+        )
+      ],
     );
   }
 

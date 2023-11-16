@@ -20,6 +20,6 @@ final List<LandingItemModel> items = [
   const LandingItemModel(AppStrings.orders, OrdersWidget()),
   LandingItemModel(AppStrings.categories, CategoriesWidget()),
   LandingItemModel(AppStrings.products, ProductsWidget()),
-  const LandingItemModel(AppStrings.users, UsersWidget()),
+  const LandingItemModel(AppStrings.users, UserWidget()),
   const LandingItemModel(AppStrings.admins, AdminWidget()),
 ];
