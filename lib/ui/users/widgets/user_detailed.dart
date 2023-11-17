@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:memee_admin/blocs/admins/admins_cubit.dart';
 import 'package:memee_admin/core/initializer/app_di_registration.dart';
 import 'package:memee_admin/core/shared/app_strings.dart';
-import 'package:memee_admin/models/admin_model.dart';
 import 'package:memee_admin/ui/__shared/extensions/widget_extensions.dart';
 import 'package:memee_admin/ui/__shared/widgets/app_textfield.dart';
 
@@ -53,8 +51,6 @@ class _UserDetailedState extends State<_UserDetailed> {
   late String selectedEmail = '';
   late bool selectedStatus = false;
 
-
-
   @override
   void initState() {
     super.initState();
@@ -97,7 +93,10 @@ class _UserDetailedState extends State<_UserDetailed> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(selectedId.isNotEmpty ? 'ID: ${user.userName}' : AppStrings.add).gapBottom(16),
+              Text(selectedId.isNotEmpty
+                      ? 'ID: ${user.userName}'
+                      : AppStrings.add)
+                  .gapBottom(16),
               SizedBox(
                 width: size.width / 8,
                 child: SwitchListTile(
@@ -141,7 +140,7 @@ class _UserDetailedState extends State<_UserDetailed> {
                     if (widget.user != null) {
                       user.userName = _nameController.text.toString().trim();
                       user.email = _emailController.text.toString().trim();
-                     // user.phoneNumber = selectedPhoneNumber;
+                      // user.phoneNumber = selectedPhoneNumber;
                       user.active = selectedStatus;
                       context.read<UserCubit>().updateUser(user);
                     } else {}

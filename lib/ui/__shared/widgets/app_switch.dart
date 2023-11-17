@@ -3,7 +3,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../blocs/hide_and_seek/hide_and_seek_cubit.dart';
 import '../../../core/initializer/app_di_registration.dart';
-import '../../../core/shared/app_strings.dart';
 import '../dialog/confirmation_dialog.dart';
 
 class AppSwitch extends StatelessWidget {

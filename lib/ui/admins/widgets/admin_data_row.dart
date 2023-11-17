@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:memee_admin/blocs/admins/admins_cubit.dart';
 import 'package:memee_admin/core/initializer/app_di_registration.dart';
 import 'package:memee_admin/models/admin_model.dart';
-import 'package:memee_admin/models/user_model.dart';
 import 'package:memee_admin/ui/__shared/widgets/app_switch.dart';
 import 'package:memee_admin/ui/admins/widgets/admin_detailed.dart';
 
@@ -15,6 +14,7 @@ DataRow dataRow(
   return DataRow(
     cells: [
       DataCell(Text(admin.id)),
+      DataCell(Text(admin.name)),
       DataCell(Text(admin.name)),
       DataCell(Text(admin.email)),
       DataCell(Text(admin.adminLevell)),
