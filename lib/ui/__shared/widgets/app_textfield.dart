@@ -22,9 +22,11 @@ class AppTextField extends StatelessWidget {
       readOnly: readOnly,
       obscureText: obscureText,
       controller: controller,
+      style: Theme.of(context).textTheme.bodySmall,
       keyboardType: TextInputType.emailAddress,
       decoration: InputDecoration(
         labelText: label,
+        labelStyle: Theme.of(context).textTheme.bodySmall,
         border: const OutlineInputBorder(),
         suffixIcon: suffixIcon,
       ),

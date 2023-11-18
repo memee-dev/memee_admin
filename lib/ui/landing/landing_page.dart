@@ -5,6 +5,7 @@ import 'package:memee_admin/blocs/users/users_cubit.dart';
 import 'package:memee_admin/core/initializer/app_di_registration.dart';
 import 'package:memee_admin/ui/__shared/template/app_layout.dart';
 
+import '../../core/shared/app_strings.dart';
 import 'landing_page_mob.dart';
 import 'landing_page_web.dart';
 
@@ -16,6 +17,11 @@ class LandingPage extends StatelessWidget {
     context.read<UserCubit>().fetchUsers();
     return AppLayout(
       webAppBar: AppBar(
+        centerTitle: false,
+        title: Text(
+          AppStrings.appName,
+          style: Theme.of(context).textTheme.headlineSmall,
+        ),
         actions: [
           IconButton(
             onPressed: () {
