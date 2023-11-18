@@ -4,7 +4,18 @@ mixin AppStrings {
   static const String logout = 'Logout';
   static const String login = 'Login';
   static const String name = 'Name';
+  static const String userName = 'User Name';
   static const String email = 'Email';
+  static const String phoneNumber = 'Phone Number';
+  static const String address = 'Address';
+  static const String area = 'Area';
+  static const String pinCode = 'Pincode';
+  static const String city = 'City';
+  static const String landmark = 'Landmark';
+  static const String no = 'No';
+  static const String street = 'Street';
+  static const String type = 'Type';
+  static const String verified = 'Verified';
   static const String password = 'Password';
   static const String search = 'Search';
 
