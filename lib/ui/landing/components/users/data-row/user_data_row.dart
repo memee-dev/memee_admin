@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:memee_admin/blocs/users/users_cubit.dart';
 import 'package:memee_admin/core/initializer/app_di_registration.dart';
 import 'package:memee_admin/ui/__shared/widgets/app_switch.dart';
-import 'package:memee_admin/ui/users/dialog/user_detailed_dialog.dart';
+import 'package:memee_admin/ui/landing/components/users/widgets/user_detailed_widget.dart';
 
-import '../../../models/user_model.dart';
-import '../../__shared/dialog/detailed_dialog.dart';
+import '../../../../../models/user_model.dart';
+import '../../../../__shared/dialog/detailed_dialog.dart';
 
 DataRow userDataRow(
   BuildContext context,

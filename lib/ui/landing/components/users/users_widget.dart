@@ -6,13 +6,14 @@ import 'package:memee_admin/core/shared/app_strings.dart';
 import 'package:memee_admin/ui/__shared/extensions/widget_extensions.dart';
 import 'package:memee_admin/ui/__shared/widgets/app_button.dart';
 import 'package:memee_admin/ui/__shared/widgets/app_textfield.dart';
-import 'package:memee_admin/ui/users/others/user_data_row.dart';
-import 'package:memee_admin/ui/users/dialog/user_detailed_dialog.dart';
+import 'package:memee_admin/ui/landing/components/users/data-row/user_data_row.dart';
+import 'package:memee_admin/ui/landing/components/users/widgets/user_detailed_widget.dart';
 
-import '../../blocs/users/users_cubit.dart';
-import '../../core/initializer/app_di_registration.dart';
-import '../../models/user_model.dart';
-import '../__shared/dialog/detailed_dialog.dart';
+import '../../../../blocs/users/users_cubit.dart';
+import '../../../../core/initializer/app_di_registration.dart';
+import '../../../../models/user_model.dart';
+import '../../../__shared/dialog/detailed_dialog.dart';
+import '../../../__shared/widgets/data-table/app_data_table.dart';
 
 class UserWidget extends StatelessWidget {
   const UserWidget({super.key});
@@ -131,26 +132,11 @@ class _UserWidget extends StatelessWidget {
                         child: Text(state.message),
                       );
                     } else if (state is UsersSuccess) {
-                      return DataTable(
-                        showCheckboxColumn: false,
-                        columns: dataColumnHeaders
-                            .map(
-                              (dch) => DataColumn(
-                                label: Text(
-                                  dch,
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .bodyMedium
-                                      ?.copyWith(
-                                        fontWeight: FontWeight.w700,
-                                      ),
-                                ),
-                              ),
-                            )
+                      return AppDataTable(
+                        headers: dataColumnHeaders,
+                        items: state.users
+                            .map((user) => userDataRow(context, user))
                             .toList(),
-                        rows: state.users.map((user) {
-                          return userDataRow(context, user);
-                        }).toList(), // Helper function to build rows
                       );
                     }
                     return const SizedBox.shrink();

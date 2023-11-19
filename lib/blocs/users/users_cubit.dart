@@ -5,6 +5,8 @@ import 'package:memee_admin/core/shared/app_firestore.dart';
 import 'package:memee_admin/core/shared/app_logger.dart';
 import 'package:memee_admin/models/user_model.dart';
 
+import '../../ui/__shared/enums/crud_enum.dart';
+
 part 'users_state.dart';
 
 class UserCubit extends Cubit<UsersState> {
@@ -131,10 +133,4 @@ class UserCubit extends Cubit<UsersState> {
       log.e('updateUserLocally', error: e);
     }
   }
-}
-
-enum CRUD {
-  create,
-  delete,
-  update,
 }

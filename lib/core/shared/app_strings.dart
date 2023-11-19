@@ -16,6 +16,7 @@ mixin AppStrings {
   static const String landmark = 'Landmark';
   static const String no = 'Flat/Door No';
   static const String street = 'Street';
+  static const String aadhar = 'Aadhar';
   static const String type = 'Type';
   static const String verified = 'Verified';
   static const String notVerified = 'Not Verified';
@@ -35,6 +36,8 @@ mixin AppStrings {
   static const String user = 'User';
   static const String admins = 'Admins';
   static const String admin = 'Admin';
+  static const String de = 'Delivery Executives';
+  static const String dl = 'Driving Licence';
 
   static const String export = 'Export';
   static const String import = 'Import';

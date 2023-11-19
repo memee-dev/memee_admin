@@ -12,6 +12,7 @@ class AppSwitch extends StatelessWidget {
   final bool value;
   final Function(bool) onTap;
   final bool enableEdit;
+  final bool showConfirmationDailog;
 
   const AppSwitch({
     super.key,
@@ -19,6 +20,7 @@ class AppSwitch extends StatelessWidget {
     this.label,
     required this.onTap,
     this.enableEdit = true,
+    this.showConfirmationDailog = true,
   });
 
   @override
@@ -35,16 +37,21 @@ class AppSwitch extends StatelessWidget {
               value: state,
               onChanged: (value) async {
                 if (enableEdit) {
-                  await showConfirmationDialog(
-                    context,
-                    onTap: (bool val) {
-                      Navigator.pop(context);
-                      if (val) {
-                        cubit.change();
-                        onTap(!state);
-                      }
-                    },
-                  );
+                  if (showConfirmationDailog) {
+                    await showConfirmationDialog(
+                      context,
+                      onTap: (bool val) {
+                        Navigator.pop(context);
+                        if (val) {
+                          _setSwitch(cubit, state);
+                        }
+                      },
+                    );
+                  } else {
+                    cubit.change();
+                    onTap(!state);
+                    _setSwitch(cubit, state);
+                  }
                 }
               },
             ),
@@ -52,5 +59,10 @@ class AppSwitch extends StatelessWidget {
         );
       },
     );
+  }
+
+  void _setSwitch(HideAndSeekCubit cubit, bool state) {
+    cubit.change();
+    onTap(!state);
   }
 }

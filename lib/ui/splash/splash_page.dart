@@ -20,7 +20,7 @@ class SplashPage extends StatelessWidget {
         } else if (state == AuthStatus.authenticated) {
           return const LandingPage();
         }
-        return const Scaffold(
+        return Scaffold(
           body: Center(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
@@ -29,6 +29,7 @@ class SplashPage extends StatelessWidget {
                 Text(
                   AppStrings.appName,
                   overflow: TextOverflow.ellipsis,
+                  style: Theme.of(context).textTheme.bodyLarge,
                 ),
               ],
             ),

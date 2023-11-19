@@ -15,8 +15,8 @@ class LandingPageWeb extends StatelessWidget {
       children: [
         SizedBox(
           width: MediaQuery.of(context).size.width / 4,
-          child: Drawer(
-            backgroundColor: Colors.black,
+          child: Container(
+            decoration: const BoxDecoration(color: Colors.black),
             child: ListView(
               padding: EdgeInsets.zero,
               children: items.map(
@@ -26,17 +26,14 @@ class LandingPageWeb extends StatelessWidget {
                     bloc: indexCubit,
                     builder: (_, state) {
                       return ListTile(
-                        selectedTileColor: (state == index)
-                            ? Colors.amber
-                            : Colors.transparent,
                         selected: (state == index),
                         title: Text(
                           e.name,
                           style:
                               Theme.of(context).textTheme.bodyMedium?.copyWith(
                                     color: (state == index)
-                                        ? Colors.black
-                                        : Colors.amber,
+                                        ? Colors.amber
+                                        : Colors.white,
                                   ),
                         ),
                         onTap: () => indexCubit.onIndexChange(index),

@@ -8,13 +8,20 @@ import 'package:memee_admin/ui/__shared/extensions/widget_extensions.dart';
 import 'package:memee_admin/ui/__shared/widgets/app_button.dart';
 import 'package:memee_admin/ui/__shared/widgets/app_textfield.dart';
 
-import '../../blocs/categories/categories_cubit.dart';
-import '../../core/initializer/app_di_registration.dart';
-import '../__shared/widgets/app_switch.dart';
+import '../../../../blocs/categories/categories_cubit.dart';
+import '../../../../core/initializer/app_di_registration.dart';
+import '../../../__shared/widgets/data-table/app_data_table.dart';
+import 'data-row/categories_data_row.dart';
 
 class CategoriesWidget extends StatelessWidget {
   final TextEditingController _searchController = TextEditingController();
   final _categoriesCubit = locator.get<CategoriesCubit>();
+
+  final dataColumnHeaders = [
+    'ID',
+    'Name',
+    'Status',
+  ];
 
   CategoriesWidget({super.key});
 
@@ -44,7 +51,9 @@ class CategoriesWidget extends StatelessWidget {
                         isLoading: state == ExportImportState.loading,
                         label: AppStrings.import,
                         onTap: () {
-                          ctx.read<ExportImportCubit>().importExcel<CategoryModel>();
+                          ctx
+                              .read<ExportImportCubit>()
+                              .importExcel<CategoryModel>();
                         },
                       );
                     },
@@ -62,8 +71,12 @@ class CategoriesWidget extends StatelessWidget {
                         label: AppStrings.export,
                         onTap: () {
                           if (_categoriesCubit.state is CategoriesSuccess) {
-                            ctx.read<ExportImportCubit>().exportExcel<CategoryModel>(
-                                  data: (_categoriesCubit.state as CategoriesSuccess).categories,
+                            ctx
+                                .read<ExportImportCubit>()
+                                .exportExcel<CategoryModel>(
+                                  data: (_categoriesCubit.state
+                                          as CategoriesSuccess)
+                                      .categories,
                                   sheetName: AppStrings.categories,
                                   title: AppStrings.categoriesTitle,
                                 );
@@ -92,34 +105,11 @@ class CategoriesWidget extends StatelessWidget {
                     child: Text(state.message),
                   );
                 } else if (state is CategoriesSuccess) {
-                  return DataTable(
-                    columns: const [
-                      DataColumn(label: Text('ID')),
-                      DataColumn(label: Text('Name')),
-                      DataColumn(label: Text('Status')),
-                    ],
-                    rows: state.categories.map((category) {
-                      return DataRow(
-                        cells: [
-                          DataCell(Text(category.id)),
-                          DataCell(Text(category.name)),
-                          DataCell(
-                            AppSwitch(
-                              value: category.active,
-                              onTap: (bool val) {
-                                category.active = val;
-                                _categoriesCubit.updateCategory(category);
-                              },
-                            ),
-                          ),
-                        ],
-                        onSelectChanged: (selected) {
-                          if (selected != null && selected) {
-                            //_showProductDetails(product);
-                          }
-                        },
-                      );
-                    }).toList(), // Helper function to build rows
+                  return AppDataTable(
+                    headers: dataColumnHeaders,
+                    items: state.categories
+                        .map((category) => categoryDataRow(context, category))
+                        .toList(),
                   );
                 }
                 return const SizedBox.shrink();

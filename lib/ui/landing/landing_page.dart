@@ -20,14 +20,19 @@ class LandingPage extends StatelessWidget {
         centerTitle: false,
         title: Text(
           AppStrings.appName,
-          style: Theme.of(context).textTheme.headlineSmall,
+          style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                color: Colors.white,
+              ),
         ),
         actions: [
           IconButton(
             onPressed: () {
               locator<LoginCubit>().reset();
             },
-            icon: const Icon(Icons.logout),
+            icon: const Icon(
+              Icons.logout,
+              color: Colors.white,
+            ),
           )
         ],
       ),

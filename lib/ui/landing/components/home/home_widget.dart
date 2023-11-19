@@ -5,8 +5,8 @@ class HomeWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Center(
-      child: Text('HomeWidget'),
+    return const Column(
+      children: [],
     );
   }
 }

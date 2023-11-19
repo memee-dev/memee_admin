@@ -8,9 +8,9 @@ import 'package:memee_admin/models/admin_model.dart';
 import 'package:memee_admin/ui/__shared/extensions/widget_extensions.dart';
 import 'package:memee_admin/ui/__shared/widgets/app_textfield.dart';
 
-class AdminDetailed extends StatelessWidget {
+class AdminDetailedWidget extends StatelessWidget {
   final AdminModel? admin;
-  const AdminDetailed({
+  const AdminDetailedWidget({
     super.key,
     this.admin,
   });
@@ -91,7 +91,8 @@ class _AdminDetailedState extends State<_AdminDetailed> {
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text(selectedId.isNotEmpty ? 'ID: ${admin.id}' : AppStrings.add).gapBottom(16),
+            Text(selectedId.isNotEmpty ? 'ID: ${admin.id}' : AppStrings.add)
+                .gapBottom(16),
             SizedBox(
               width: size.width / 8,
               child: SwitchListTile(

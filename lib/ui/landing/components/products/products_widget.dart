@@ -5,7 +5,7 @@ import 'package:memee_admin/core/shared/app_strings.dart';
 import 'package:memee_admin/ui/__shared/extensions/widget_extensions.dart';
 import 'package:memee_admin/ui/__shared/widgets/app_textfield.dart';
 
-import '../../core/initializer/app_di_registration.dart';
+import '../../../../core/initializer/app_di_registration.dart';
 
 class ProductsWidget extends StatelessWidget {
   final TextEditingController _searchController = TextEditingController();

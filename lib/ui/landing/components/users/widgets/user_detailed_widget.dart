@@ -4,16 +4,15 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:memee_admin/blocs/index/index_cubit.dart';
 import 'package:memee_admin/core/initializer/app_di_registration.dart';
 import 'package:memee_admin/core/shared/app_strings.dart';
-import 'package:memee_admin/ui/__shared/dialog/detailed_dialog.dart';
 import 'package:memee_admin/ui/__shared/extensions/widget_extensions.dart';
 import 'package:memee_admin/ui/__shared/widgets/app_button.dart';
 import 'package:memee_admin/ui/__shared/widgets/app_switch.dart';
 import 'package:memee_admin/ui/__shared/widgets/app_textfield.dart';
 
-import '../../../blocs/users/users_cubit.dart';
-import '../../../models/user_model.dart';
-import '../../__shared/widgets/app_dropdown.dart';
-import '../widgets/show_address_widget.dart';
+import '../../../../../blocs/users/users_cubit.dart';
+import '../../../../../models/user_model.dart';
+import '../../../../__shared/widgets/app_dropdown.dart';
+import 'show_address_widget.dart';
 
 class UserDetailed extends StatelessWidget {
   final UserModel? user;
@@ -172,7 +171,7 @@ class _UserDetailedState extends State<_UserDetailed> {
                 )
               ],
             ).flexible(),
-            SizedBox(width: 16.w),
+            const VerticalDivider().paddingH(),
             Column(
               children: [
                 Row(

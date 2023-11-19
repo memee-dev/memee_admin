@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:get_it/get_it.dart';
 import 'package:memee_admin/blocs/categories/categories_cubit.dart';
+import 'package:memee_admin/blocs/dl_executives/dl_executive_cubit.dart';
 import 'package:memee_admin/blocs/export_import/export_import_cubit.dart';
 import 'package:memee_admin/blocs/products/products_cubit.dart';
 
@@ -57,6 +58,9 @@ void blocConfig(GetIt locator) {
   );
   locator.registerLazySingleton<UserCubit>(
     () => UserCubit(locator()),
+  );
+   locator.registerLazySingleton<DlExecutiveCubit>(
+    () => DlExecutiveCubit(locator()),
   );
   locator.registerLazySingleton<ProductsCubit>(
     () => ProductsCubit(locator()),

@@ -7,7 +7,7 @@ import 'package:memee_admin/ui/__shared/widgets/app_switch.dart';
 import 'package:memee_admin/ui/__shared/widgets/app_textfield.dart';
 import 'package:memee_admin/ui/__shared/widgets/row_flexible.dart';
 
-import '../../__shared/widgets/utils.dart';
+import '../../../../__shared/widgets/utils.dart';
 
 class ShowAddress extends StatelessWidget {
   final bool enableEdit;

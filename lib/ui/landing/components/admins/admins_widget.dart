@@ -6,13 +6,14 @@ import 'package:memee_admin/core/shared/app_strings.dart';
 import 'package:memee_admin/ui/__shared/extensions/widget_extensions.dart';
 import 'package:memee_admin/ui/__shared/widgets/app_button.dart';
 import 'package:memee_admin/ui/__shared/widgets/app_textfield.dart';
-import 'package:memee_admin/ui/admins/widgets/admin_data_row.dart';
+import 'package:memee_admin/ui/__shared/widgets/data-table/app_data_table.dart';
+import 'package:memee_admin/ui/landing/components/admins/data-row/admin_data_row.dart';
 
-import '../../blocs/admins/admins_cubit.dart';
-import '../../core/initializer/app_di_registration.dart';
-import '../../models/admin_model.dart';
-import '../__shared/dialog/detailed_dialog.dart';
-import 'dialog/admin_detailed.dart';
+import '../../../../blocs/admins/admins_cubit.dart';
+import '../../../../core/initializer/app_di_registration.dart';
+import '../../../../models/admin_model.dart';
+import '../../../__shared/dialog/detailed_dialog.dart';
+import 'widgets/admin_detailed_widget.dart';
 
 class AdminWidget extends StatelessWidget {
   const AdminWidget({super.key});
@@ -29,6 +30,14 @@ class AdminWidget extends StatelessWidget {
 class _AdminWidget extends StatelessWidget {
   final TextEditingController _searchController = TextEditingController();
 
+  final dataColumnHeaders = [
+    'ID',
+    'Name',
+    'Email',
+    'Admin Level',
+    'Status',
+  ];
+
   _AdminWidget();
 
   @override
@@ -42,7 +51,7 @@ class _AdminWidget extends StatelessWidget {
           child: GestureDetector(
             behavior: HitTestBehavior.translucent,
             onTap: () {
-              showDetailedDialog(context, child: const AdminDetailed());
+              showDetailedDialog(context, child: const AdminDetailedWidget());
             },
             child: const Icon(Icons.add),
           ),
@@ -71,7 +80,9 @@ class _AdminWidget extends StatelessWidget {
                             isLoading: state == ExportImportState.loading,
                             label: AppStrings.import,
                             onTap: () {
-                              ctx.read<ExportImportCubit>().importExcel<AdminModel>();
+                              ctx
+                                  .read<ExportImportCubit>()
+                                  .importExcel<AdminModel>();
                             },
                           );
                         },
@@ -89,8 +100,11 @@ class _AdminWidget extends StatelessWidget {
                             label: AppStrings.export,
                             onTap: () {
                               if (adminCubit.state is AdminsSuccess) {
-                                ctx.read<ExportImportCubit>().exportExcel<AdminModel>(
-                                      data: (adminCubit.state as AdminsSuccess).admins,
+                                ctx
+                                    .read<ExportImportCubit>()
+                                    .exportExcel<AdminModel>(
+                                      data: (adminCubit.state as AdminsSuccess)
+                                          .admins,
                                       sheetName: AppStrings.admins,
                                       title: AppStrings.categoriesTitle,
                                     );
@@ -119,28 +133,11 @@ class _AdminWidget extends StatelessWidget {
                         child: Text(state.message),
                       );
                     } else if (state is AdminsSuccess) {
-                      return DataTable(
-                        showCheckboxColumn: false,
-                        columns: const [
-                          DataColumn(
-                            label: Text('ID'),
-                          ),
-                          DataColumn(
-                            label: Text('Name'),
-                          ),
-                          DataColumn(
-                            label: Text('email'),
-                          ),
-                          DataColumn(
-                            label: Text('Admin Level'),
-                          ),
-                          DataColumn(
-                            label: Text('Status'),
-                          ),
-                        ],
-                        rows: state.admins.map((admin) {
+                      return AppDataTable(
+                        headers: dataColumnHeaders,
+                        items: state.admins.map((admin) {
                           return dataRow(context, admin);
-                        }).toList(), // Helper function to build rows
+                        }).toList(),
                       );
                     }
                     return const SizedBox.shrink();
