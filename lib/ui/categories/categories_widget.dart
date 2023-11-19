@@ -105,7 +105,7 @@ class CategoriesWidget extends StatelessWidget {
                           DataCell(Text(category.name)),
                           DataCell(
                             AppSwitch(
-                              status: category.active,
+                              value: category.active,
                               onTap: (bool val) {
                                 category.active = val;
                                 _categoriesCubit.updateCategory(category);

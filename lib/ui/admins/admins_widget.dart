@@ -12,7 +12,7 @@ import '../../blocs/admins/admins_cubit.dart';
 import '../../core/initializer/app_di_registration.dart';
 import '../../models/admin_model.dart';
 import '../__shared/dialog/detailed_dialog.dart';
-import 'widgets/admin_detailed.dart';
+import 'dialog/admin_detailed.dart';
 
 class AdminWidget extends StatelessWidget {
   const AdminWidget({super.key});

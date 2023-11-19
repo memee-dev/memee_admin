@@ -37,9 +37,9 @@ final lightTheme = ThemeData(
   appBarTheme: const AppBarTheme(
     backgroundColor: Colors.black,
   ),
-  navigationDrawerTheme: NavigationDrawerThemeData(
-    backgroundColor: 
-  )
+  navigationDrawerTheme: const NavigationDrawerThemeData(
+    backgroundColor: Colors.black,
+  ),
 );
 
 final darkTheme = ThemeData(
@@ -57,6 +57,9 @@ final darkTheme = ThemeData(
     textTheme: ButtonTextTheme.primary,
   ),
   appBarTheme: const AppBarTheme(
+    backgroundColor: Colors.black,
+  ),
+  navigationDrawerTheme: const NavigationDrawerThemeData(
     backgroundColor: Colors.black,
   ),
 );

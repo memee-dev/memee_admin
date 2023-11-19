@@ -6,8 +6,8 @@ import 'package:memee_admin/core/shared/app_strings.dart';
 import 'package:memee_admin/ui/__shared/extensions/widget_extensions.dart';
 import 'package:memee_admin/ui/__shared/widgets/app_button.dart';
 import 'package:memee_admin/ui/__shared/widgets/app_textfield.dart';
-import 'package:memee_admin/ui/users/widgets/user_data_row.dart';
-import 'package:memee_admin/ui/users/widgets/user_detailed.dart';
+import 'package:memee_admin/ui/users/others/user_data_row.dart';
+import 'package:memee_admin/ui/users/dialog/user_detailed_dialog.dart';
 
 import '../../blocs/users/users_cubit.dart';
 import '../../core/initializer/app_di_registration.dart';
@@ -29,7 +29,15 @@ class UserWidget extends StatelessWidget {
 class _UserWidget extends StatelessWidget {
   final TextEditingController _searchController = TextEditingController();
 
-  _UserWidget();
+  final dataColumnHeaders = [
+    'ID',
+    'UserName',
+    'Email',
+    'Address',
+    'PhoneNumber',
+    'Verifer',
+    'Status',
+  ];
 
   @override
   Widget build(BuildContext context) {
@@ -125,29 +133,21 @@ class _UserWidget extends StatelessWidget {
                     } else if (state is UsersSuccess) {
                       return DataTable(
                         showCheckboxColumn: false,
-                        columns: const [
-                          DataColumn(
-                            label: Text('ID'),
-                          ),
-                          DataColumn(
-                            label: Text('User Name'),
-                          ),
-                          DataColumn(
-                            label: Text('email'),
-                          ),
-                          DataColumn(
-                            label: Text('Address'),
-                          ),
-                          DataColumn(
-                            label: Text('Phone Number'),
-                          ),
-                          DataColumn(
-                            label: Text('Verified'),
-                          ),
-                          DataColumn(
-                            label: Text('Status'),
-                          ),
-                        ],
+                        columns: dataColumnHeaders
+                            .map(
+                              (dch) => DataColumn(
+                                label: Text(
+                                  dch,
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .bodyMedium
+                                      ?.copyWith(
+                                        fontWeight: FontWeight.w700,
+                                      ),
+                                ),
+                              ),
+                            )
+                            .toList(),
                         rows: state.users.map((user) {
                           return userDataRow(context, user);
                         }).toList(), // Helper function to build rows

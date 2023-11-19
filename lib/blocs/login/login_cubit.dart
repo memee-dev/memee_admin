@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:memee_admin/core/shared/app_firestore.dart';
 import 'package:memee_admin/models/admin_model.dart';
 
 // Define the states for the login process.
@@ -29,10 +30,15 @@ class LoginCubit extends Cubit<LoginStatus> {
       User? user = userCredential.user;
 
       if (user != null) {
-        DocumentSnapshot userDoc = await db.collection('admins').doc(user.uid).get();
+        DocumentSnapshot userDoc = await db
+            .collection(AppFireStoreCollection.admins)
+            .doc(user.uid)
+            .get();
 
         if (userDoc.exists) {
-          loginUser = AdminModel.fromMap(userDoc.data() as Map<String, dynamic>);
+          final data = userDoc.data() as Map<String, dynamic>;
+          data['id'] = user.uid;
+          loginUser = AdminModel.fromMap(data);
           emit(LoginStatus.success);
         } else {
           auth.signOut();

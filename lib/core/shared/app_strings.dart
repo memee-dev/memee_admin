@@ -8,14 +8,17 @@ mixin AppStrings {
   static const String email = 'Email';
   static const String phoneNumber = 'Phone Number';
   static const String address = 'Address';
+  static const String addresses = 'Addresses';
   static const String area = 'Area';
+  static const String defaultt = 'Default';
   static const String pinCode = 'Pincode';
   static const String city = 'City';
   static const String landmark = 'Landmark';
-  static const String no = 'No';
+  static const String no = 'Flat/Door No';
   static const String street = 'Street';
   static const String type = 'Type';
   static const String verified = 'Verified';
+  static const String notVerified = 'Not Verified';
   static const String password = 'Password';
   static const String search = 'Search';
 
@@ -25,9 +28,13 @@ mixin AppStrings {
   static const String home = 'Home';
   static const String orders = 'Orders';
   static const String products = 'Products';
+  static const String product = 'Product';
   static const String categories = 'Categories';
+  static const String category = 'Category';
   static const String users = 'Users';
+  static const String user = 'User';
   static const String admins = 'Admins';
+  static const String admin = 'Admin';
 
   static const String export = 'Export';
   static const String import = 'Import';

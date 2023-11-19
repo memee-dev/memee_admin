@@ -1,41 +1,54 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:memee_admin/ui/__shared/extensions/widget_extensions.dart';
 
 import '../../../blocs/hide_and_seek/hide_and_seek_cubit.dart';
 import '../../../core/initializer/app_di_registration.dart';
 import '../dialog/confirmation_dialog.dart';
 
 class AppSwitch extends StatelessWidget {
-  final bool status;
+  final String? label;
+  final bool value;
   final Function(bool) onTap;
+  final bool enableEdit;
 
   const AppSwitch({
     super.key,
-    required this.status,
+    required this.value,
+    this.label,
     required this.onTap,
+    this.enableEdit = true,
   });
 
   @override
   Widget build(BuildContext context) {
     final cubit = locator.get<HideAndSeekCubit>();
     return BlocBuilder<HideAndSeekCubit, bool>(
-      bloc: cubit..initialValue(status),
+      bloc: cubit..initialValue(value),
       builder: (context, state) {
-        return Switch(
-          value: state,
-          onChanged: (value) async {
-            await showConfirmationDialog(
-              context,
-              onTap: (bool val) {
-                Navigator.pop(context);
-                if (val) {
-                  cubit.change();
-                  onTap(!state);
+        return Row(
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: [
+            if (label != null) Text(label!).gapRight(4.w),
+            Switch(
+              value: state,
+              onChanged: (value) async {
+                if (enableEdit) {
+                  await showConfirmationDialog(
+                    context,
+                    onTap: (bool val) {
+                      Navigator.pop(context);
+                      if (val) {
+                        cubit.change();
+                        onTap(!state);
+                      }
+                    },
+                  );
                 }
               },
-            );
-          },
-
+            ),
+          ],
         );
       },
     );

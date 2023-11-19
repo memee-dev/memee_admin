@@ -24,16 +24,26 @@ extension Template on Widget {
 
   Widget show(bool show) => show ? this : const SizedBox.shrink();
 
-  Widget gapTop(double value) => Column(
-        children: [SizedBox(height: value), this],
+  Widget gapTop(double value) => Padding(
+        padding: EdgeInsets.only(top: value),
+        child: this,
       );
-  Widget gapBottom(double value) => Column(
-        children: [this, SizedBox(height: value)],
+  Widget gapBottom(double value) => Padding(
+        padding: EdgeInsets.only(bottom: value),
+        child: this,
       );
-  Widget gapRight(double value) => Row(
-        children: [this, SizedBox(width: value)],
+
+  Widget gapRight(double value) => Padding(
+        padding: EdgeInsets.only(right: value),
+        child: this,
       );
-  Widget gapLeft(double value) => Row(
-        children: [SizedBox(width: value), this],
+  Widget gapLeft(double value) => Padding(
+        padding: EdgeInsets.only(left: value),
+        child: this,
+      );
+
+  Widget flexible({int flex = 1}) => Flexible(
+        flex: flex,
+        child: this,
       );
 }
