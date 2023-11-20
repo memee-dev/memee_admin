@@ -16,10 +16,16 @@ DataRow userDataRow(
       DataCell(Text(user.id)),
       DataCell(Text(user.userName)),
       DataCell(Text(user.email)),
-      DataCell(
-          Text('${user.defaultAddress().no}, ${user.defaultAddress().area}')),
       DataCell(Text(user.phoneNumber)),
-      DataCell(Text(user.verified ? 'Verified' : 'Not verified')),
+      DataCell(
+        AppSwitch(
+          value: user.verified,
+          onTap: (bool val) {
+            user.verified = val;
+            locator.get<UserCubit>().updateUser(user);
+          },
+        ),
+      ),
       DataCell(
         AppSwitch(
           value: user.active,

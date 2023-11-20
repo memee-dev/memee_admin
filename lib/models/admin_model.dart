@@ -2,7 +2,7 @@ class AdminModel {
   final String id;
   String name;
   String email;
-  num adminLevel;
+  int adminLevel;
   bool active;
 
   AdminModel({

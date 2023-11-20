@@ -34,9 +34,8 @@ class _UserWidget extends StatelessWidget {
     'ID',
     'UserName',
     'Email',
-    'Address',
     'PhoneNumber',
-    'Verifer',
+    'Verifed',
     'Status',
   ];
 

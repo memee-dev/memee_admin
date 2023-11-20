@@ -22,6 +22,10 @@ mixin AppStrings {
   static const String notVerified = 'Not Verified';
   static const String password = 'Password';
   static const String search = 'Search';
+  static const String awaitingOrders = 'Awaiting Orders';
+  static const String onGoingOrders = 'Ongoing Orders';
+  static const String completedOrders = 'Completed Orders';
+  static const String cancelledOrders = 'Cancelled Orders';
 
   static const String add = 'Add';
   static const String edit = 'Edit';

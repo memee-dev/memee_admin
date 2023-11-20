@@ -78,8 +78,6 @@ class _UserDetailedState extends State<_UserDetailed> {
 
   @override
   Widget build(BuildContext context) {
-    //final size = MediaQuery.of(context).size;
-
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisSize: MainAxisSize.min,
@@ -115,9 +113,8 @@ class _UserDetailedState extends State<_UserDetailed> {
             Row(
               children: [
                 AppSwitch(
-                  label: selectedVerified
-                      ? AppStrings.verified
-                      : AppStrings.notVerified,
+                  postiveLabel: AppStrings.verified,
+                  negativeaLabel: AppStrings.notVerified,
                   value: selectedVerified,
                   enableEdit: enableEdit,
                   onTap: (value) {
@@ -130,8 +127,8 @@ class _UserDetailedState extends State<_UserDetailed> {
                 ),
                 SizedBox(width: 16.w),
                 AppSwitch(
-                  label:
-                      selectedStatus ? AppStrings.active : AppStrings.disabled,
+                  postiveLabel: AppStrings.active,
+                  negativeaLabel: AppStrings.disabled,
                   value: selectedStatus,
                   enableEdit: enableEdit,
                   onTap: (value) {
@@ -171,7 +168,7 @@ class _UserDetailedState extends State<_UserDetailed> {
                 )
               ],
             ).flexible(),
-            const VerticalDivider().paddingH(),
+            const VerticalDivider(color: Colors.black).paddingH(),
             Column(
               children: [
                 Row(
@@ -202,7 +199,6 @@ class _UserDetailedState extends State<_UserDetailed> {
                         FloatingActionButton(
                           onPressed: () {
                             //code here for add address
-                            
                           },
                           child: const Icon(Icons.add),
                         ),

@@ -101,7 +101,8 @@ class _DLExecutiveDetailedState extends State<_DLExecutiveDetailed> {
               style: Theme.of(context).textTheme.titleSmall,
             ),
             AppSwitch(
-              label: selectedStatus ? AppStrings.active : AppStrings.disabled,
+              postiveLabel: AppStrings.active,
+              negativeaLabel: AppStrings.disabled,
               value: selectedStatus,
               enableEdit: enableEdit,
               showConfirmationDailog: false,
@@ -165,9 +166,7 @@ class _DLExecutiveDetailedState extends State<_DLExecutiveDetailed> {
                     )
                   ],
                 ).gapBottom(16.h),
-                Image.network(
-                  dlExecutive.dlUrl,
-                ),
+                Image.network(dlExecutive.dlUrl),
               ],
             ).flexible(),
           ],

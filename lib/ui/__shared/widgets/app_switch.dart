@@ -8,7 +8,8 @@ import '../../../core/initializer/app_di_registration.dart';
 import '../dialog/confirmation_dialog.dart';
 
 class AppSwitch extends StatelessWidget {
-  final String? label;
+  final String? postiveLabel;
+  final String? negativeaLabel;
   final bool value;
   final Function(bool) onTap;
   final bool enableEdit;
@@ -17,7 +18,8 @@ class AppSwitch extends StatelessWidget {
   const AppSwitch({
     super.key,
     required this.value,
-    this.label,
+    this.postiveLabel,
+    this.negativeaLabel,
     required this.onTap,
     this.enableEdit = true,
     this.showConfirmationDailog = true,
@@ -32,7 +34,8 @@ class AppSwitch extends StatelessWidget {
         return Row(
           mainAxisAlignment: MainAxisAlignment.end,
           children: [
-            if (label != null) Text(label!).gapRight(4.w),
+            if (postiveLabel != null && negativeaLabel != null)
+              Text((value ? postiveLabel : negativeaLabel)!).gapRight(4.w),
             Switch(
               value: state,
               onChanged: (value) async {

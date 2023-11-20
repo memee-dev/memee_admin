@@ -15,7 +15,6 @@ DataRow dataRow(
     cells: [
       DataCell(Text(admin.id)),
       DataCell(Text(admin.name)),
-      DataCell(Text(admin.name)),
       DataCell(Text(admin.email)),
       DataCell(Text(admin.adminLevell)),
       DataCell(
