@@ -5,7 +5,7 @@ import 'package:memee_admin/ui/__shared/extensions/widget_extensions.dart';
 
 class OnGoingOrdersWidget extends StatelessWidget {
   final Color textColor;
- 
+
   const OnGoingOrdersWidget({
     super.key,
     this.textColor = Colors.black,
@@ -14,31 +14,18 @@ class OnGoingOrdersWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: EdgeInsets.symmetric(
-        horizontal: 4.w,
-        vertical: 12.h,
-      ),
+      color: Colors.blue.shade100,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisAlignment: MainAxisAlignment.start,
         children: [
           Text(
-            AppStrings.onGoingOrders,
-            style: Theme.of(context)
-                .textTheme
-                .headlineSmall
-                ?.copyWith(color: textColor),
+            AppStrings.recentOrders,
+            style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                  color: textColor,
+                ),
           ).gapBottom(12.h),
-          Container(
-            padding: EdgeInsets.symmetric(vertical: 182.h, horizontal: 52.w),
-            decoration: const BoxDecoration(color: Colors.amber),
-            child: Text(
-              'wdddww',
-              style: Theme.of(context)
-                  .textTheme
-                  .bodySmall
-                  ?.copyWith(color: textColor),
-            ),
-          ),
+          //TODO: create a recent orders list,
         ],
       ),
     );

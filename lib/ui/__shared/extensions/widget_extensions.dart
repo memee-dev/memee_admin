@@ -46,4 +46,9 @@ extension Template on Widget {
         flex: flex,
         child: this,
       );
+
+  Widget expanded({int flex = 1}) => Expanded(
+        flex: flex,
+        child: this,
+      );
 }

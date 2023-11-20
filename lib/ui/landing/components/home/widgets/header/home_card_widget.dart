@@ -19,34 +19,28 @@ class HomeCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       alignment: Alignment.center,
-      margin:EdgeInsets.symmetric(
-        horizontal: 4.w,
-        vertical: 38.h,
-      ),
-      padding: EdgeInsets.symmetric(
-        horizontal: 10.w,
-        vertical: 28.h,
-      ),
+      height: 100.h,
       decoration: BoxDecoration(
         color: bgColor,
-        borderRadius: BorderRadius.circular(8.sp),
+        borderRadius: BorderRadius.circular(4.r),
       ),
       child: Column(
+        mainAxisSize: MainAxisSize.min,
         children: [
           Text(
             label,
-            style: Theme.of(context)
-                .textTheme
-                .bodyMedium
-                ?.copyWith(color: textColor),
-          ).gapBottom(16),
+            style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                  color: textColor,
+                  fontWeight: FontWeight.w900,
+                ),
+          ).gapBottom(6.h),
           Text(
             count,
-            style: Theme.of(context)
-                .textTheme
-                .bodySmall
-                ?.copyWith(color: textColor),
-          ).gapBottom(16),
+            style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                  color: textColor,
+                  fontWeight: FontWeight.w500,
+                ),
+          )
         ],
       ),
     );

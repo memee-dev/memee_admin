@@ -24,6 +24,7 @@ mixin AppStrings {
   static const String search = 'Search';
   static const String awaitingOrders = 'Awaiting Orders';
   static const String onGoingOrders = 'Ongoing Orders';
+  static const String recentOrders = 'Recent Orders';
   static const String completedOrders = 'Completed Orders';
   static const String cancelledOrders = 'Cancelled Orders';
 
