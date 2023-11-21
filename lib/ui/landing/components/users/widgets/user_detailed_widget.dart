@@ -79,7 +79,7 @@ class _UserDetailedState extends State<_UserDetailed> {
   @override
   Widget build(BuildContext context) {
     //final size = MediaQuery.of(context).size;
-
+    final _userCubit = context.read<UserCubit>();
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisSize: MainAxisSize.min,
@@ -115,9 +115,7 @@ class _UserDetailedState extends State<_UserDetailed> {
             Row(
               children: [
                 AppSwitch(
-                  label: selectedVerified
-                      ? AppStrings.verified
-                      : AppStrings.notVerified,
+                  label: selectedVerified ? AppStrings.verified : AppStrings.notVerified,
                   value: selectedVerified,
                   enableEdit: enableEdit,
                   onTap: (value) {
@@ -130,8 +128,7 @@ class _UserDetailedState extends State<_UserDetailed> {
                 ),
                 SizedBox(width: 16.w),
                 AppSwitch(
-                  label:
-                      selectedStatus ? AppStrings.active : AppStrings.disabled,
+                  label: selectedStatus ? AppStrings.active : AppStrings.disabled,
                   value: selectedStatus,
                   enableEdit: enableEdit,
                   onTap: (value) {
@@ -159,8 +156,7 @@ class _UserDetailedState extends State<_UserDetailed> {
                   readOnly: !enableEdit,
                 ).gapBottom(8.w),
                 AppTextField(
-                  controller: _phoneNumberController
-                    ..text = selectedPhoneNumber,
+                  controller: _phoneNumberController..text = selectedPhoneNumber,
                   label: AppStrings.phoneNumber,
                   readOnly: !enableEdit,
                 ).gapBottom(8.w),
@@ -202,7 +198,6 @@ class _UserDetailedState extends State<_UserDetailed> {
                         FloatingActionButton(
                           onPressed: () {
                             //code here for add address
-                            
                           },
                           child: const Icon(Icons.add),
                         ),
@@ -233,15 +228,14 @@ class _UserDetailedState extends State<_UserDetailed> {
               AppButton.positive(
                 onTap: () {
                   user.userName = _userNameController.text.toString().trim();
-                  user.phoneNumber =
-                      _phoneNumberController.text.toString().trim();
+                  user.phoneNumber = _phoneNumberController.text.toString().trim();
                   user.email = _emailController.text.toString().trim();
                   user.active = selectedStatus;
                   user.verified = selectedVerified;
                   if (widget.user != null) {
-                    context.read<UserCubit>().updateUser(user);
+                    _userCubit.updateUser(user);
                   } else {
-                    context.read<UserCubit>().addUser(user);
+                    _userCubit.addUser(user);
                   }
                   Navigator.pop(context, user);
                 },

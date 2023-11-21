@@ -1,6 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:get_it/get_it.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:memee_admin/blocs/categories/categories_cubit.dart';
 import 'package:memee_admin/blocs/dl_executives/dl_executive_cubit.dart';
 import 'package:memee_admin/blocs/export_import/export_import_cubit.dart';
@@ -25,9 +27,14 @@ void apiConfig(GetIt locator) {
   locator.registerLazySingleton<FirebaseAuth>(
     () => FirebaseAuth.instance,
   );
-
   locator.registerLazySingleton<FirebaseFirestore>(
     () => FirebaseFirestore.instance,
+  );
+  locator.registerLazySingleton<FirebaseStorage>(
+    () => FirebaseStorage.instance,
+  );
+  locator.registerLazySingleton<ImagePicker>(
+    () => ImagePicker(),
   );
 }
 
@@ -59,8 +66,8 @@ void blocConfig(GetIt locator) {
   locator.registerLazySingleton<UserCubit>(
     () => UserCubit(locator()),
   );
-   locator.registerLazySingleton<DlExecutiveCubit>(
-    () => DlExecutiveCubit(locator()),
+  locator.registerLazySingleton<DlExecutiveCubit>(
+    () => DlExecutiveCubit(locator(), locator()),
   );
   locator.registerLazySingleton<ProductsCubit>(
     () => ProductsCubit(locator()),

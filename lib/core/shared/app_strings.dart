@@ -22,6 +22,7 @@ mixin AppStrings {
   static const String notVerified = 'Not Verified';
   static const String password = 'Password';
   static const String search = 'Search';
+  static const String changeDL = 'Change DL';
 
   static const String add = 'Add';
   static const String edit = 'Edit';
@@ -38,6 +39,7 @@ mixin AppStrings {
   static const String admin = 'Admin';
   static const String de = 'Delivery Executives';
   static const String dl = 'Driving Licence';
+  static const String dlNo = 'Licence Number';
 
   static const String export = 'Export';
   static const String import = 'Import';
