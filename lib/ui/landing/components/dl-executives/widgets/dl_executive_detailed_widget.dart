@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:memee_admin/blocs/dl_executives/dl_executive_cubit.dart';
+import 'package:memee_admin/blocs/export_import/export_import_cubit.dart';
 import 'package:memee_admin/core/initializer/app_di_registration.dart';
 import 'package:memee_admin/core/shared/app_strings.dart';
 import 'package:memee_admin/models/dl_executive_model.dart';
@@ -43,6 +45,7 @@ class _DLExecutiveDetailedState extends State<_DLExecutiveDetailed> {
   final TextEditingController _phoneNumberController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _aadharController = TextEditingController();
+  final TextEditingController _dlNumberController = TextEditingController();
 
   bool enableEdit = false;
 
@@ -52,6 +55,7 @@ class _DLExecutiveDetailedState extends State<_DLExecutiveDetailed> {
   late String selectedPhoneNumber = '';
   late String selectedEmail = '';
   late String selectedAadhar = '';
+  late String selectedDlNumber = '';
   late bool selectedStatus = false;
   late bool selectedAlloted = false;
 
@@ -67,7 +71,7 @@ class _DLExecutiveDetailedState extends State<_DLExecutiveDetailed> {
   @override
   Widget build(BuildContext context) {
     //final size = MediaQuery.of(context).size;
-
+    final _dlCubit = context.read<DlExecutiveCubit>();
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisSize: MainAxisSize.min,
@@ -128,8 +132,7 @@ class _DLExecutiveDetailedState extends State<_DLExecutiveDetailed> {
                   readOnly: !enableEdit,
                 ).gapBottom(8.w),
                 AppTextField(
-                  controller: _phoneNumberController
-                    ..text = selectedPhoneNumber,
+                  controller: _phoneNumberController..text = selectedPhoneNumber,
                   label: AppStrings.phoneNumber,
                   readOnly: !enableEdit,
                 ).gapBottom(8.w),
@@ -150,23 +153,26 @@ class _DLExecutiveDetailedState extends State<_DLExecutiveDetailed> {
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      '${AppStrings.dl}: ',
-                      style: Theme.of(context)
-                          .textTheme
-                          .bodyMedium
-                          ?.copyWith(fontWeight: FontWeight.w700),
-                    ),
-                    Text(
-                      dlExecutive.dlNumber,
-                      style: Theme.of(context).textTheme.bodyMedium,
-                    )
-                  ],
+                AppTextField(
+                  controller: _dlNumberController..text = selectedDlNumber,
+                  label: AppStrings.dlNo,
+                  readOnly: !enableEdit,
                 ).gapBottom(16.h),
-                Image.network(dlExecutive.dlUrl),
+                Image.network(
+                  dlExecutive.dlUrl,
+                ).gapBottom(16.h),
+                if (widget.dlExecutive == null || enableEdit)
+                  AppButton(
+                    label: AppStrings.changeDL,
+                    onTap: () async {
+                      final image = await locator.get<ImagePicker>().pickImage(
+                            source: ImageSource.gallery,
+                          );
+                      if (image != null) {
+                        _dlCubit.updateDLImage(image);
+                      }
+                    },
+                  )
               ],
             ).flexible(),
           ],
@@ -181,10 +187,10 @@ class _DLExecutiveDetailedState extends State<_DLExecutiveDetailed> {
               AppButton.positive(
                 onTap: () {
                   dlExecutive.name = _nameController.text.toString().trim();
-                  dlExecutive.phoneNumber =
-                      _phoneNumberController.text.toString().trim();
+                  dlExecutive.phoneNumber = _phoneNumberController.text.toString().trim();
                   dlExecutive.email = _emailController.text.toString().trim();
                   dlExecutive.aadhar = _aadharController.text.toString().trim();
+                  dlExecutive.dlNumber = _dlNumberController.text.toString().trim();
                 },
               ).gapLeft(8.w),
           ],
@@ -198,7 +204,8 @@ class _DLExecutiveDetailedState extends State<_DLExecutiveDetailed> {
     selectedName = dlExecutive.name;
     selectedEmail = dlExecutive.email;
     selectedPhoneNumber = dlExecutive.phoneNumber;
-    // selectedDlNumber = dlExecutive.dlNumber;
+    selectedAadhar = dlExecutive.aadhar;
+    selectedDlNumber = dlExecutive.dlNumber;
   }
 
   @override
@@ -206,6 +213,8 @@ class _DLExecutiveDetailedState extends State<_DLExecutiveDetailed> {
     _nameController.dispose();
     _emailController.dispose();
     _phoneNumberController.dispose();
+    _aadharController.dispose();
+    _dlNumberController.dispose();
     super.dispose();
   }
 }
