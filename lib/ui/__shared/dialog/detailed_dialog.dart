@@ -9,12 +9,17 @@ Future<dynamic> showDetailedDialog(
     context: context,
     builder: (_) {
       return Dialog(
-        child: Padding(
-          padding: EdgeInsets.symmetric(
-            horizontal: 16.w,
-            vertical: 12.h,
-          ),
-          child: child,
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Padding(
+              padding: EdgeInsets.symmetric(
+                horizontal: 16.w,
+                vertical: 12.h,
+              ),
+              child: child,
+            ),
+          ],
         ),
       );
     },

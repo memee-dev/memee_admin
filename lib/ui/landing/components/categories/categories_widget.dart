@@ -23,6 +23,7 @@ class CategoriesWidget extends StatelessWidget {
     'ID',
     'Name',
     'Status',
+    'Actions',
   ];
 
   CategoriesWidget({super.key});
@@ -31,15 +32,16 @@ class CategoriesWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Stack(children: [
       Positioned(
-          right: 16.w,
-          bottom: 48.h,
-          child: FloatingActionButton(
-            onPressed: () {
-              showDetailedDialog(context, child: const CategoriesDetailedWidget());
-            },
-            child: const Icon(Icons.add),
+        right: 16.w,
+        bottom: 48.h,
+        child: FloatingActionButton(
+          onPressed: () => showDetailedDialog(
+            context,
+            child: const CategoriesDetailedWidget(),
           ),
+          child: const Icon(Icons.add),
         ),
+      ),
       Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -64,9 +66,7 @@ class CategoriesWidget extends StatelessWidget {
                           isLoading: state == ExportImportState.loading,
                           label: AppStrings.import,
                           onTap: () {
-                            ctx
-                                .read<ExportImportCubit>()
-                                .importExcel<CategoryModel>();
+                            ctx.read<ExportImportCubit>().importExcel<CategoryModel>();
                           },
                         );
                       },
@@ -84,12 +84,8 @@ class CategoriesWidget extends StatelessWidget {
                           label: AppStrings.export,
                           onTap: () {
                             if (_categoriesCubit.state is CategoriesSuccess) {
-                              ctx
-                                  .read<ExportImportCubit>()
-                                  .exportExcel<CategoryModel>(
-                                    data: (_categoriesCubit.state
-                                            as CategoriesSuccess)
-                                        .categories,
+                              ctx.read<ExportImportCubit>().exportExcel<CategoryModel>(
+                                    data: (_categoriesCubit.state as CategoriesSuccess).categories,
                                     sheetName: AppStrings.categories,
                                     title: AppStrings.categoriesTitle,
                                   );
@@ -120,9 +116,7 @@ class CategoriesWidget extends StatelessWidget {
                   } else if (state is CategoriesSuccess) {
                     return AppDataTable(
                       headers: dataColumnHeaders,
-                      items: state.categories
-                          .map((category) => categoryDataRow(context, category))
-                          .toList(),
+                      items: state.categories.map((category) => categoryDataRow(context, category)).toList(),
                     );
                   }
                   return const SizedBox.shrink();

@@ -17,60 +17,84 @@ class CategoriesCubit extends Cubit<CategoriesState> {
   Future<void> fetchCategories() async {
     emit(CategoriesLoading());
     try {
-      final categoryDoc =
-          await db.collection(AppFireStoreCollection.categories).get();
+      final categoryDoc = await db.collection(AppFireStoreCollection.categories).get();
       List<CategoryModel> categories = [];
       final docs = categoryDoc.docs;
 
       for (var doc in docs) {
         final data = doc.data();
         data['id'] = doc.id;
-        categories.add(
-          CategoryModel.fromMap(data),
-        );
+        categories.add(CategoryModel.fromMap(data));
       }
 
       emit(CategoriesSuccess(categories));
     } catch (e) {
       emit(CategoriesFailure(e.toString()));
+      log.e('FETCH CATEGORY', error: e);
     }
   }
 
   void addCategory(String categoryName) {
+    List<CategoryModel> categories = [];
+    if (state is CategoriesSuccess) {
+      categories.addAll((state as CategoriesSuccess).categories);
+    }
     emit(CategoriesLoading());
     try {
-      CollectionReference categories =
-          db.collection(AppFireStoreCollection.categories);
-      String sequentialDocId =
-          'c${categories.doc().id.length > 1 ? categories.doc().id.substring(1) : '001'}';
-      categories.doc(sequentialDocId).set({
+      final ref = db.collection(AppFireStoreCollection.categories);
+      int lastCategoryNumber = 1;
+
+      late String sequentialDocId;
+      if (categories.isEmpty) {
+        sequentialDocId = lastCategoryNumber.toString().padLeft(3, '0');
+      } else {
+        lastCategoryNumber = int.parse(categories.last.id.substring(1));
+        sequentialDocId = (lastCategoryNumber + 1).toString().padLeft(3, '0');
+      }
+
+      sequentialDocId = 'c$sequentialDocId';
+
+      final category = CategoryModel.fromMap({
+        'id': sequentialDocId,
         'name': categoryName,
-        'status': true,
+        'active': true,
       });
-      emit(CategoriesSuccess());
+      ref.doc(sequentialDocId).set(category.toJson());
+      categories.add(category);
+      emit(CategoriesSuccess(categories));
+    } catch (e) {
+      emit(CategoriesFailure(e.toString()));
+      log.e('ADD CATEGORY', error: e);
+    }
+  }
+
+  Future<void> addCategories(List<CategoryModel> categories) async {
+    emit(CategoriesLoading());
+    try {
+      final categoryCollection = db.collection(AppFireStoreCollection.categories);
+      for (var category in categories) {
+        await categoryCollection.doc(category.id).set(category.toJson());
+      }
+      emit(CategoriesSuccess(categories));
     } catch (e) {
       emit(CategoriesFailure(e.toString()));
       log.e('ADD CATEGORIES', error: e);
     }
   }
 
-  Future<void> addCategories(List<CategoryModel> categories) async {
-    emit(CategoriesLoading());
-    final categoryCollection = db.collection(AppFireStoreCollection.categories);
-    for (var category in categories) {
-      await categoryCollection.doc(category.id).set(category.toJson());
+  Future<void> updateCategory(CategoryModel category) async {
+    try {
+      await db.collection(AppFireStoreCollection.categories).doc(category.id).set(category.toJson());
+    } catch (e) {
+      log.e('UPDATE CATEGORY', error: e);
     }
   }
 
-  //edit category
-  Future<void> updateCategory(CategoryModel category) async {
-    await db
-        .collection(AppFireStoreCollection.categories)
-        .doc(category.id)
-        .set(category.toJson());
+  Future<void> deleteCategory(String categoryId) async {
+    try {
+      await db.collection(AppFireStoreCollection.categories).doc(categoryId).delete();
+    } catch (e) {
+      log.e('DELETE CATEGORY', error: e);
+    }
   }
-
-  //deactive category
-
-  //delete category
 }

@@ -60,42 +60,30 @@ class _CategoryDetailedState extends State<_CategoryDetailed> {
 
   @override
   Widget build(BuildContext context) {
+    final size = MediaQuery.of(context).size;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisSize: MainAxisSize.min,
       children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Text(
-              AppStrings.category,
-              style: Theme.of(context).textTheme.displaySmall,
-            ).gapLeft(8.w)
-          ],
-        ).gapBottom(32),
+        Text(
+          AppStrings.category,
+          style: Theme.of(context).textTheme.displaySmall,
+        ).gapBottom(32.h),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Text(
               selectedId.isNotEmpty ? 'ID: ${category.id}' : AppStrings.add,
               style: Theme.of(context).textTheme.titleSmall,
-            ).gapBottom(16),
+            ).gapBottom(16.h),
           ],
         ),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                AppTextField(
-                  controller: _categorynameController
-                    ..text = selectedCategoryName,
-                  label: AppStrings.name,
-                ).gapBottom(16.h),
-              ],
-            ).flexible(),
-          ],
+        SizedBox(
+          width: size.width / 4,
+          child: AppTextField(
+            controller: _categorynameController..text = selectedCategoryName,
+            label: AppStrings.name,
+          ),
         ).gapBottom(32.h),
         Row(
           mainAxisAlignment: MainAxisAlignment.center,

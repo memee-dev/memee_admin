@@ -11,12 +11,10 @@ class AuthCubit extends Cubit<AuthStatus> {
   AuthCubit(this.auth, this.db) : super(AuthStatus.loading);
 
   Future<void> checkAuthenticationStatus() async {
-    await Future.delayed(const Duration(seconds: 2));
     auth.authStateChanges().listen((User? user) async {
       try {
         if (user != null) {
-          DocumentSnapshot userDoc =
-              await db.collection('admins').doc(user.uid).get();
+          DocumentSnapshot userDoc = await db.collection('admins').doc(user.uid).get();
           if (userDoc.exists) {
             emit(AuthStatus.authenticated);
           } else {
