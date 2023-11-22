@@ -39,12 +39,17 @@ class AdminCubit extends Cubit<AdminsState> {
     emit(AdminsSuccess(admins));
   }
 
-  //edit category
+  
+
+  //edit Admin
   Future<void> updateAdmin(AdminModel admin) async {
-    await db.collection(AppFireStoreCollection.admins).doc(admin.id).set(admin.toJson());
+    await db
+        .collection(AppFireStoreCollection.admins)
+        .doc(admin.id)
+        .set(admin.toJson());
   }
 
-//deactive category
+//deactive Admin
 
-//delete category
+//delete Admin
 }

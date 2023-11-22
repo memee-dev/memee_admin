@@ -24,3 +24,5 @@ class CategoriesFailure extends CategoriesState {
   @override
   List<Object?> get props => [message];
 }
+
+
