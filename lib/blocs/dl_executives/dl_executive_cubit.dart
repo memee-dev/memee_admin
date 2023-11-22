@@ -1,5 +1,9 @@
+import 'dart:io';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:equatable/equatable.dart';
+import 'package:firebase_storage/firebase_storage.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:memee_admin/core/shared/app_firestore.dart';
 import 'package:memee_admin/core/shared/app_logger.dart';
@@ -11,14 +15,17 @@ part 'dl_executive_state.dart';
 
 class DlExecutiveCubit extends Cubit<DlExecutivesState> {
   final FirebaseFirestore db;
+  final FirebaseStorage storage;
 
- DlExecutiveCubit(this.db) : super(DlExecutivesLoading());
+  DlExecutiveCubit(
+    this.db,
+    this.storage,
+  ) : super(DlExecutivesLoading());
 
   Future<void> fetchDlExecutives() async {
     emit(DlExecutivesLoading());
     try {
-      final dlExecutivesCollection =
-          await db.collection(AppFireStoreCollection.dlExecutives).get();
+      final dlExecutivesCollection = await db.collection(AppFireStoreCollection.dlExecutives).get();
       final dlExecutiveDocs = dlExecutivesCollection.docs;
 
       List<DlExecutiveModel> dlExecutives = [];
@@ -68,10 +75,7 @@ class DlExecutiveCubit extends Cubit<DlExecutivesState> {
 
   Future<void> updateDlExecutive(DlExecutiveModel dlExecutive) async {
     try {
-      await db
-          .collection(AppFireStoreCollection.dlExecutives)
-          .doc(dlExecutive.id)
-          .set(dlExecutive.toJson());
+      await db.collection(AppFireStoreCollection.dlExecutives).doc(dlExecutive.id).set(dlExecutive.toJson());
       crudLocally(dlExecutive, CRUD.update);
     } catch (e) {
       log.e('UPDATE a DlExecutive', error: e);
@@ -89,8 +93,7 @@ class DlExecutiveCubit extends Cubit<DlExecutivesState> {
 
   Future<void> deleteAllDlExecutive() async {
     try {
-      final dlExecutivesCollection =
-          await db.collection(AppFireStoreCollection.dlExecutives).get();
+      final dlExecutivesCollection = await db.collection(AppFireStoreCollection.dlExecutives).get();
       final dlExecutiveDocs = dlExecutivesCollection.docs;
 
       final batch = db.batch();
@@ -112,9 +115,7 @@ class DlExecutiveCubit extends Cubit<DlExecutivesState> {
           emit(DlExecutivesLoading());
           emit(DlExecutivesSuccess(dlExecutives));
         } else {
-          int index = (state as DlExecutivesSuccess)
-              .dlExecutives
-              .indexWhere((existingDlExecutive) => existingDlExecutive.id == dlExecutive.id);
+          int index = (state as DlExecutivesSuccess).dlExecutives.indexWhere((existingDlExecutive) => existingDlExecutive.id == dlExecutive.id);
 
           if (index != -1) {
             if (crud == CRUD.update) {
@@ -133,5 +134,24 @@ class DlExecutiveCubit extends Cubit<DlExecutivesState> {
       log.e('updateDlExecutiveLocally', error: e);
     }
   }
-}
 
+  Future<void> updateDLImage(file) async {
+    UploadTask uploadTask;
+
+    // Create a Reference to the file
+    Reference ref = storage.ref().child('flutter-tests').child('/some-image.jpg');
+
+    final metadata = SettableMetadata(
+      contentType: 'image/jpeg',
+      customMetadata: {'picked-file-path': file.path},
+    );
+
+    if (kIsWeb) {
+      uploadTask = ref.putData(await file.readAsBytes(), metadata);
+    } else {
+      uploadTask = ref.putFile(File(file.path), metadata);
+    }
+
+    return Future.value(uploadTask);
+  }
+}
