@@ -8,9 +8,11 @@ import '../../../../../core/initializer/app_di_registration.dart';
 import '../../../../__shared/widgets/app_switch.dart';
 
 DataRow categoryDataRow(
-  BuildContext context,
-  CategoryModel category,
-) {
+  BuildContext context, {
+  required CategoryModel category,
+  required Function() onDelete,
+  required Function() onEdit,
+}) {
   return DataRow(
     cells: [
       DataCell(Text(category.id)),
@@ -27,15 +29,11 @@ DataRow categoryDataRow(
       DataCell(Row(
         children: [
           IconButton(
-            onPressed: () {
-              locator.get<CategoriesCubit>().updateCategory(category);
-            },
+            onPressed: onEdit,
             icon: const Icon(Icons.edit_outlined),
           ).gapRight(4.w),
           IconButton(
-            onPressed: () {
-              locator.get<CategoriesCubit>().deleteCategory(category.id);
-            },
+            onPressed: onDelete,
             icon: const Icon(Icons.delete_forever_outlined),
           )
         ],

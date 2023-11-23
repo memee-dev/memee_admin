@@ -1,7 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:logger/logger.dart';
 import 'package:memee_admin/core/shared/app_firestore.dart';
 
 import '../../core/shared/app_logger.dart';
@@ -15,10 +14,11 @@ class CategoriesCubit extends Cubit<CategoriesState> {
   CategoriesCubit(this.db) : super(CategoriesLoading());
 
   Future<void> fetchCategories() async {
+    List<CategoryModel> categories = [];
     emit(CategoriesLoading());
     try {
       final categoryDoc = await db.collection(AppFireStoreCollection.categories).get();
-      List<CategoryModel> categories = [];
+
       final docs = categoryDoc.docs;
 
       for (var doc in docs) {
@@ -29,17 +29,17 @@ class CategoriesCubit extends Cubit<CategoriesState> {
 
       emit(CategoriesSuccess(categories));
     } catch (e) {
-      emit(CategoriesFailure(e.toString()));
+      emit(CategoriesFailure(
+        e.toString(),
+        categories,
+      ));
       log.e('FETCH CATEGORY', error: e);
     }
   }
 
   void addCategory(String categoryName) {
-    List<CategoryModel> categories = [];
-    if (state is CategoriesSuccess) {
-      categories.addAll((state as CategoriesSuccess).categories);
-    }
-    emit(CategoriesLoading());
+    List<CategoryModel> categories = getLocalCategories();
+
     try {
       final ref = db.collection(AppFireStoreCollection.categories);
       int lastCategoryNumber = 1;
@@ -63,7 +63,10 @@ class CategoriesCubit extends Cubit<CategoriesState> {
       categories.add(category);
       emit(CategoriesSuccess(categories));
     } catch (e) {
-      emit(CategoriesFailure(e.toString()));
+      emit(CategoriesFailure(
+        e.toString(),
+        categories,
+      ));
       log.e('ADD CATEGORY', error: e);
     }
   }
@@ -77,7 +80,10 @@ class CategoriesCubit extends Cubit<CategoriesState> {
       }
       emit(CategoriesSuccess(categories));
     } catch (e) {
-      emit(CategoriesFailure(e.toString()));
+      emit(CategoriesFailure(
+        e.toString(),
+        const [],
+      ));
       log.e('ADD CATEGORIES', error: e);
     }
   }
@@ -90,11 +96,28 @@ class CategoriesCubit extends Cubit<CategoriesState> {
     }
   }
 
-  Future<void> deleteCategory(String categoryId) async {
+  Future<void> deleteCategory(CategoryModel category) async {
+    List<CategoryModel> categories = getLocalCategories();
     try {
-      await db.collection(AppFireStoreCollection.categories).doc(categoryId).delete();
+      categories.remove(category);
+      await db.collection(AppFireStoreCollection.categories).doc(category.id).delete();
+      emit(CategoriesSuccess(categories));
     } catch (e) {
+      emit(CategoriesFailure(
+        e.toString(),
+        categories,
+      ));
       log.e('DELETE CATEGORY', error: e);
     }
+  }
+
+  List<CategoryModel> getLocalCategories() {
+    List<CategoryModel> categories = [];
+    if (state is CategoriesSuccess) {
+      categories.addAll((state as CategoriesSuccess).categories);
+    } else if (state is CategoriesFailure) {
+      categories.addAll((state as CategoriesFailure).categories);
+    }
+    return categories;
   }
 }

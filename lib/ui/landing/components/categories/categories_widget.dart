@@ -4,6 +4,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:memee_admin/blocs/export_import/export_import_cubit.dart';
 import 'package:memee_admin/core/shared/app_strings.dart';
 import 'package:memee_admin/models/category_model.dart';
+import 'package:memee_admin/ui/__shared/dialog/confirmation_dialog.dart';
 import 'package:memee_admin/ui/__shared/dialog/detailed_dialog.dart';
 import 'package:memee_admin/ui/__shared/extensions/widget_extensions.dart';
 import 'package:memee_admin/ui/__shared/widgets/app_button.dart';
@@ -109,14 +110,27 @@ class CategoriesWidget extends StatelessWidget {
                     return const Center(
                       child: CircularProgressIndicator.adaptive(),
                     );
-                  } else if (state is CategoriesFailure) {
-                    return Center(
-                      child: Text(state.message),
-                    );
-                  } else if (state is CategoriesSuccess) {
+                  } else if (state is CategoriesResponseState) {
                     return AppDataTable(
                       headers: dataColumnHeaders,
-                      items: state.categories.map((category) => categoryDataRow(context, category)).toList(),
+                      items: state.categories
+                          .map((category) => categoryDataRow(
+                                context,
+                                category: category,
+                                onEdit: () {},
+                                onDelete: () {
+                                  showConfirmationDialog(
+                                    context,
+                                    onTap: (bool val) {
+                                      if (val) {
+                                        _categoriesCubit.deleteCategory(category);
+                                      }
+                                      Navigator.of(context).pop();
+                                    },
+                                  );
+                                },
+                              ))
+                          .toList(),
                     );
                   }
                   return const SizedBox.shrink();
