@@ -44,13 +44,13 @@ mixin AppStrings {
   static const String user = 'User';
   static const String admins = 'Admins';
   static const String admin = 'Admin';
-  static const String de = 'Delivery Executives';
+  static const String dlExecutive = 'Delivery Executives';
   static const String dl = 'Driving Licence';
   static const String dlNo = 'Licence Number';
 
   static const String export = 'Export';
   static const String import = 'Import';
-  
+
   static const String no = 'No';
 
   static const String active = 'Active';

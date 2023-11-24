@@ -12,6 +12,7 @@ import 'package:memee_admin/ui/__shared/widgets/app_textfield.dart';
 import '../../../../../blocs/index/index_cubit.dart';
 import '../../../../__shared/widgets/app_button.dart';
 import '../../../../__shared/widgets/app_switch.dart';
+import '../../../../__shared/widgets/dialog_header.dart';
 
 class AdminDetailedWidget extends StatelessWidget {
   final AdminModel? admin;
@@ -72,27 +73,19 @@ class _AdminDetailedState extends State<_AdminDetailed> {
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisSize: MainAxisSize.min,
       children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Text(
-              AppStrings.admins,
-              style: Theme.of(context).textTheme.displaySmall,
-            ),
-            if (widget.admin != null)
-              IconButton(
-                onPressed: () {
-                  setState(() {
-                    enableEdit = !enableEdit;
-                    if (!enableEdit) {
-                      _resetForm(admin);
-                    }
-                  });
-                },
-                icon: Icon(enableEdit ? Icons.clear : Icons.edit),
-              ).gapLeft(8.w)
-          ],
-        ).gapBottom(32),
+        DialogHeader(
+          label: AppStrings.admins,
+          newItem: widget.admin == null,
+          enableEdit: enableEdit,
+          onTap: () {
+            setState(() {
+              enableEdit = !enableEdit;
+              if (!enableEdit) {
+                _resetForm(admin);
+              }
+            });
+          },
+        ),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [

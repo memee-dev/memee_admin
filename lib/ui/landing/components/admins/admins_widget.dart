@@ -48,11 +48,11 @@ class _AdminWidget extends StatelessWidget {
         Positioned(
           right: 16.w,
           bottom: 48.h,
-          child: GestureDetector(
-            behavior: HitTestBehavior.translucent,
-            onTap: () {
-              showDetailedDialog(context, child: const AdminDetailedWidget());
-            },
+          child: FloatingActionButton(
+            onPressed: () => showDetailedDialog(
+              context,
+              child: const AdminDetailedWidget(),
+            ),
             child: const Icon(Icons.add),
           ),
         ),
@@ -80,9 +80,7 @@ class _AdminWidget extends StatelessWidget {
                             isLoading: state == ExportImportState.loading,
                             label: AppStrings.import,
                             onTap: () {
-                              ctx
-                                  .read<ExportImportCubit>()
-                                  .importExcel<AdminModel>();
+                              ctx.read<ExportImportCubit>().importExcel<AdminModel>();
                             },
                           );
                         },
@@ -100,11 +98,8 @@ class _AdminWidget extends StatelessWidget {
                             label: AppStrings.export,
                             onTap: () {
                               if (adminCubit.state is AdminsSuccess) {
-                                ctx
-                                    .read<ExportImportCubit>()
-                                    .exportExcel<AdminModel>(
-                                      data: (adminCubit.state as AdminsSuccess)
-                                          .admins,
+                                ctx.read<ExportImportCubit>().exportExcel<AdminModel>(
+                                      data: (adminCubit.state as AdminsSuccess).admins,
                                       sheetName: AppStrings.admins,
                                       title: AppStrings.categoriesTitle,
                                     );

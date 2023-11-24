@@ -11,6 +11,8 @@ import 'package:memee_admin/ui/__shared/widgets/app_button.dart';
 import 'package:memee_admin/ui/__shared/widgets/app_switch.dart';
 import 'package:memee_admin/ui/__shared/widgets/app_textfield.dart';
 
+import '../../../../__shared/widgets/dialog_header.dart';
+
 class DLExecutiveDetailed extends StatelessWidget {
   final DlExecutiveModel? dlExecutive;
 
@@ -74,27 +76,19 @@ class _DLExecutiveDetailedState extends State<_DLExecutiveDetailed> {
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisSize: MainAxisSize.min,
       children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Text(
-              AppStrings.de,
-              style: Theme.of(context).textTheme.displaySmall,
-            ),
-            if (widget.dlExecutive != null)
-              IconButton(
-                onPressed: () {
-                  setState(() {
-                    enableEdit = !enableEdit;
-                    if (!enableEdit) {
-                      _resetForm(dlExecutive);
-                    }
-                  });
-                },
-                icon: Icon(enableEdit ? Icons.clear : Icons.edit),
-              ).gapLeft(8.w)
-          ],
-        ).gapBottom(32),
+        DialogHeader(
+          label: AppStrings.dlExecutive,
+          newItem: widget.dlExecutive == null,
+          enableEdit: enableEdit,
+          onTap: () {
+            setState(() {
+              enableEdit = !enableEdit;
+              if (!enableEdit) {
+                _resetForm(dlExecutive);
+              }
+            });
+          },
+        ),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [

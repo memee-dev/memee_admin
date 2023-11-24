@@ -12,6 +12,7 @@ import 'package:memee_admin/ui/__shared/widgets/app_textfield.dart';
 import '../../../../../blocs/users/users_cubit.dart';
 import '../../../../../models/user_model.dart';
 import '../../../../__shared/widgets/app_dropdown.dart';
+import '../../../../__shared/widgets/dialog_header.dart';
 import 'show_address_widget.dart';
 
 class UserDetailed extends StatelessWidget {
@@ -83,27 +84,19 @@ class _UserDetailedState extends State<_UserDetailed> {
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisSize: MainAxisSize.min,
       children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Text(
-              AppStrings.user,
-              style: Theme.of(context).textTheme.displaySmall,
-            ),
-            if (widget.user != null)
-              IconButton(
-                onPressed: () {
-                  setState(() {
-                    enableEdit = !enableEdit;
-                    if (!enableEdit) {
-                      _resetForm(user);
-                    }
-                  });
-                },
-                icon: Icon(enableEdit ? Icons.clear : Icons.edit),
-              ).gapLeft(8.w)
-          ],
-        ).gapBottom(32),
+        DialogHeader(
+          label: AppStrings.user,
+          newItem: widget.user == null,
+          enableEdit: enableEdit,
+          onTap: () {
+            setState(() {
+              enableEdit = !enableEdit;
+              if (!enableEdit) {
+                _resetForm(user);
+              }
+            });
+          },
+        ),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
