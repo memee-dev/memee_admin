@@ -191,14 +191,13 @@ class _DLExecutiveDetailedState extends State<_DLExecutiveDetailed> {
                   final dlNumber = _dlNumberController.text.toString().trim();
 
                   if (widget.dlExecutive == null) {
-                    dlExecutive = DlExecutiveModel(
+                    _dlCubit.addDlExecutive(
                       name: name,
                       email: email,
                       phoneNumber: phoneNumber,
                       dlNumber: dlNumber,
                       aadhar: aadhar,
                     );
-                    _dlCubit.addDlExecutive(dlExecutive);
                   } else {
                     dlExecutive.name = _nameController.text.toString().trim();
                     dlExecutive.phoneNumber = _phoneNumberController.text.toString().trim();
@@ -216,7 +215,7 @@ class _DLExecutiveDetailedState extends State<_DLExecutiveDetailed> {
   }
 
   _resetForm(DlExecutiveModel dlExecutive) {
-    selectedId = dlExecutive.id!;
+    selectedId = dlExecutive.id;
     selectedName = dlExecutive.name;
     selectedEmail = dlExecutive.email;
     selectedPhoneNumber = dlExecutive.phoneNumber;
