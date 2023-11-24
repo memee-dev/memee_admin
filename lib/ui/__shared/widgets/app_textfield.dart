@@ -7,6 +7,7 @@ class AppTextField extends StatelessWidget {
   final bool obscureText;
   final Widget? suffixIcon;
   final bool readOnly;
+  final double? width;
 
   const AppTextField({
     super.key,
@@ -15,6 +16,7 @@ class AppTextField extends StatelessWidget {
     this.obscureText = false,
     this.suffixIcon,
     this.readOnly = false,
+    this.width,
   });
 
   @override
@@ -31,6 +33,6 @@ class AppTextField extends StatelessWidget {
         border: const OutlineInputBorder(),
         suffixIcon: suffixIcon,
       ),
-    ).sizedBoxW();
+    ).sizedBoxW(width);
   }
 }

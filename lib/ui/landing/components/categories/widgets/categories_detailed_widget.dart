@@ -78,13 +78,10 @@ class _CategoryDetailedState extends State<_CategoryDetailed> {
             ).gapBottom(16.h),
           ],
         ),
-        SizedBox(
-          width: size.width / 4,
-          child: AppTextField(
-            controller: _categorynameController..text = selectedCategoryName,
-            label: AppStrings.name,
-          ),
-        ).gapBottom(32.h),
+        AppTextField(
+          controller: _categorynameController..text = selectedCategoryName,
+          label: AppStrings.name,
+        ).sizedBoxW(size.width / 4).gapBottom(32.h),
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [

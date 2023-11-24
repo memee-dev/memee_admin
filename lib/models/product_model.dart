@@ -1,23 +1,31 @@
 class ProductModel {
   final String id;
   final String name;
+  final String categoryId;
+  final String categoryName;
   final String description;
-  // final double amount;
-  // final String image;
-  // final String category;
-  // final String kg;
+  final List<String>? images;
+  final List<ProductDetailsModel> productDetails;
 
-  const ProductModel( {
+  ProductModel({
     required this.id,
     required this.name,
+    required this.categoryId,
+    required this.categoryName,
     required this.description,
+    this.images,
+    required this.productDetails,
   });
 
   factory ProductModel.fromMap(Map<String, dynamic> map) {
     return ProductModel(
       id: map['id'],
       name: map['name'],
+      categoryId: map['categoryId'],
+      categoryName: map['categoryName'],
       description: map['description'],
+      images: map['images'],
+      productDetails: map['productDetails'],
     );
   }
 
@@ -25,12 +33,43 @@ class ProductModel {
     final map = <String, dynamic>{};
     map['id'] = id;
     map['name'] = name;
-    map['description'] = description;
+    map['categoryId'] = name;
+    map['categoryName'] = name;
+    map['description'] = name;
+    if (images != null && images!.isNotEmpty) {
+      map['images'] = List<String>.from(images!.map((x) => x));
+    }
+    if (productDetails.isNotEmpty) {
+      map['productDetails'] = List<Map<String, dynamic>>.from(productDetails.map((x) => x.toJson()));
+    }
     return map;
   }
 }
 
-const List<ProductModel> products = [
-  ProductModel(id: '1', name: 'Product 1', description: 'Description 1'),
-  ProductModel(id: '2', name: 'Product 2', description: 'Description 2'),
-];
+class ProductDetailsModel {
+  final double price;
+  final double discountedPrice;
+  final int qty;
+
+  ProductDetailsModel({
+    required this.price,
+    required this.discountedPrice,
+    required this.qty,
+  });
+
+  factory ProductDetailsModel.fromMap(Map<String, dynamic> map) {
+    return ProductDetailsModel(
+      price: map['price'],
+      discountedPrice: map['discountedPrice'],
+      qty: map['qty'],
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    final map = <String, dynamic>{};
+    map['price'] = price;
+    map['discountedPrice'] = discountedPrice;
+    map['qty'] = qty;
+    return map;
+  }
+}

@@ -23,4 +23,7 @@ class CategoryModel {
     map['active'] = active;
     return map;
   }
+
+  @override
+  String toString() => name;
 }

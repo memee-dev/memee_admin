@@ -52,18 +52,12 @@ extension Template on Widget {
         child: this,
       );
 
-  Widget sizedBoxW({
-    double? width,
-  }) =>
-      SizedBox(
+  Widget sizedBoxW(double? width) => SizedBox(
         width: width ?? 75.w,
         child: this,
       );
 
-  Widget sizedBoxH({
-    double? height,
-  }) =>
-      SizedBox(
+  Widget sizedBoxH(double? height) => SizedBox(
         height: height ?? 24.h,
         child: this,
       );
