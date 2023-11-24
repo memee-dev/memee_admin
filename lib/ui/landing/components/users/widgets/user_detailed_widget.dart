@@ -4,6 +4,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:memee_admin/blocs/index/index_cubit.dart';
 import 'package:memee_admin/core/initializer/app_di_registration.dart';
 import 'package:memee_admin/core/shared/app_strings.dart';
+import 'package:memee_admin/ui/__shared/enum/doc_type.dart';
 import 'package:memee_admin/ui/__shared/extensions/widget_extensions.dart';
 import 'package:memee_admin/ui/__shared/widgets/app_button.dart';
 import 'package:memee_admin/ui/__shared/widgets/app_switch.dart';
@@ -86,8 +87,7 @@ class _UserDetailedState extends State<_UserDetailed> {
       children: [
         DialogHeader(
           label: AppStrings.user,
-          newItem: widget.user == null,
-          enableEdit: enableEdit,
+          docType: DocType.add,
           onTap: () {
             setState(() {
               enableEdit = !enableEdit;

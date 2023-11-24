@@ -3,7 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:memee_admin/ui/__shared/extensions/widget_extensions.dart';
 
-import '../../../blocs/hide_and_seek/hide_and_seek_cubit.dart';
+import '../../../blocs/toggle/toggle_cubit.dart';
 import '../../../core/initializer/app_di_registration.dart';
 import '../dialog/confirmation_dialog.dart';
 
@@ -27,8 +27,8 @@ class AppSwitch extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final cubit = locator.get<HideAndSeekCubit>();
-    return BlocBuilder<HideAndSeekCubit, bool>(
+    final cubit = locator.get<ToggleCubit>();
+    return BlocBuilder<ToggleCubit, bool>(
       bloc: cubit..initialValue(value),
       builder: (context, state) {
         return Row(
@@ -64,7 +64,7 @@ class AppSwitch extends StatelessWidget {
     );
   }
 
-  void _setSwitch(HideAndSeekCubit cubit, bool state) {
+  void _setSwitch(ToggleCubit cubit, bool state) {
     cubit.change();
     onTap(!state);
   }

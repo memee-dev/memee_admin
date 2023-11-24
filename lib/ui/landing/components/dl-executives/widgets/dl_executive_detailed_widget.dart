@@ -6,6 +6,7 @@ import 'package:memee_admin/blocs/dl_executives/dl_executive_cubit.dart';
 import 'package:memee_admin/core/initializer/app_di_registration.dart';
 import 'package:memee_admin/core/shared/app_strings.dart';
 import 'package:memee_admin/models/dl_executive_model.dart';
+import 'package:memee_admin/ui/__shared/enum/doc_type.dart';
 import 'package:memee_admin/ui/__shared/extensions/widget_extensions.dart';
 import 'package:memee_admin/ui/__shared/widgets/app_button.dart';
 import 'package:memee_admin/ui/__shared/widgets/app_switch.dart';
@@ -78,8 +79,7 @@ class _DLExecutiveDetailedState extends State<_DLExecutiveDetailed> {
       children: [
         DialogHeader(
           label: AppStrings.dlExecutive,
-          newItem: widget.dlExecutive == null,
-          enableEdit: enableEdit,
+          docType: DocType.add,
           onTap: () {
             setState(() {
               enableEdit = !enableEdit;
@@ -124,7 +124,8 @@ class _DLExecutiveDetailedState extends State<_DLExecutiveDetailed> {
                   readOnly: !enableEdit,
                 ).gapBottom(8.w),
                 AppTextField(
-                  controller: _phoneNumberController..text = selectedPhoneNumber,
+                  controller: _phoneNumberController
+                    ..text = selectedPhoneNumber,
                   label: AppStrings.phoneNumber,
                   readOnly: !enableEdit,
                 ).gapBottom(8.w),
@@ -179,7 +180,8 @@ class _DLExecutiveDetailedState extends State<_DLExecutiveDetailed> {
               AppButton.positive(
                 onTap: () {
                   final name = _nameController.text.toString().trim();
-                  final phoneNumber = _phoneNumberController.text.toString().trim();
+                  final phoneNumber =
+                      _phoneNumberController.text.toString().trim();
                   final email = _emailController.text.toString().trim();
                   final aadhar = _aadharController.text.toString().trim();
                   final dlNumber = _dlNumberController.text.toString().trim();
@@ -194,10 +196,13 @@ class _DLExecutiveDetailedState extends State<_DLExecutiveDetailed> {
                     );
                   } else {
                     dlExecutive.name = _nameController.text.toString().trim();
-                    dlExecutive.phoneNumber = _phoneNumberController.text.toString().trim();
+                    dlExecutive.phoneNumber =
+                        _phoneNumberController.text.toString().trim();
                     dlExecutive.email = _emailController.text.toString().trim();
-                    dlExecutive.aadhar = _aadharController.text.toString().trim();
-                    dlExecutive.dlNumber = _dlNumberController.text.toString().trim();
+                    dlExecutive.aadhar =
+                        _aadharController.text.toString().trim();
+                    dlExecutive.dlNumber =
+                        _dlNumberController.text.toString().trim();
                     _dlCubit.updateDlExecutive(dlExecutive);
                   }
                 },

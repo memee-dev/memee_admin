@@ -1,55 +1,52 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:memee_admin/blocs/toggle/toggle_cubit.dart';
-import 'package:memee_admin/blocs/products/products_cubit.dart';
-import 'package:memee_admin/models/category_model.dart';
-import 'package:memee_admin/ui/__shared/dialog/detailed_dialog.dart';
+import 'package:memee_admin/models/product_model.dart';
 import 'package:memee_admin/ui/__shared/extensions/widget_extensions.dart';
-import 'package:memee_admin/ui/__shared/widgets/app_dropdown.dart';
+import 'package:memee_admin/ui/__shared/widgets/app_button.dart';
 
 import '../../../../../blocs/categories/categories_cubit.dart';
 import '../../../../../blocs/index/index_cubit.dart';
+import '../../../../../blocs/products/products_cubit.dart';
+import '../../../../../blocs/toggle/toggle_cubit.dart';
 import '../../../../../core/initializer/app_di_registration.dart';
 import '../../../../../core/shared/app_strings.dart';
-import '../../../../../models/product_model.dart';
-import '../../../../__shared/enum/doc_type.dart';
-import '../../../../__shared/widgets/app_button.dart';
+import '../../../../../models/category_model.dart';
+import '../../../../__shared/dialog/detailed_dialog.dart';
+import '../../../../__shared/widgets/app_dropdown.dart';
 import '../../../../__shared/widgets/app_textfield.dart';
-import '../../../../__shared/widgets/dialog_header.dart';
 import 'product_details_widget.dart';
 
-class AddProductWidget extends StatelessWidget {
-  final ProductModel? product;
-  const AddProductWidget({super.key, this.product});
+class ViewEditProductWidget extends StatelessWidget {
+  final ProductModel product;
+  const ViewEditProductWidget({super.key, required this.product});
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider.value(
       value: locator.get<ProductsCubit>(),
-      child: _AddProductWidget(product),
+      child: _ViewEditProductWidget(product),
     );
   }
 }
 
-class _AddProductWidget extends StatelessWidget {
-  final ProductModel? product;
+class _ViewEditProductWidget extends StatelessWidget {
+  final ProductModel product;
+  _ViewEditProductWidget(this.product);
+
   bool enableEdit = false;
-  _AddProductWidget(this.product);
 
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
     final TextEditingController _productnameController =
-        TextEditingController();
+        TextEditingController(text: product.name);
     final TextEditingController _descriptionController =
-        TextEditingController();
-    late CategoryModel _selectedCategory;
+        TextEditingController(text: product.description);
+    CategoryModel _selectedCategory = product.category;
     List<String> images = [];
-    List<ProductDetailsModel> productDetails = [];
+    List<ProductDetailsModel> productDetails = product.productDetails;
     final toggleCubit = locator.get<ToggleCubit>();
-
-    DocType docType = getDocType<ProductModel>(product, enableEdit);
 
     final fieldWidth = size.width / 4;
     return BlocBuilder<CategoriesCubit, CategoriesState>(
@@ -59,30 +56,13 @@ class _AddProductWidget extends StatelessWidget {
           final indexCubit = locator.get<IndexCubit>();
           final categories = state.categories;
           if (categories.isNotEmpty) {
-            _selectedCategory = categories.first;
             return Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisSize: MainAxisSize.min,
               children: [
-                DialogHeader(
-                  label: AppStrings.product,
-                  docType: docType,
-                  onTap: () {
-                    // setState(() {
-                    //   enableEdit = !enableEdit;
-                    //   if (!enableEdit) {
-                    //     _resetForm(user);
-                    //   }
-                    // });
-                  },
-                ),
-                Row(
-                  children: [
-                    Text(
-                      '${AppStrings.add} ${AppStrings.product}',
-                      style: Theme.of(context).textTheme.displaySmall,
-                    ).gapRight(24.w),
-                  ],
+                Text(
+                  AppStrings.product,
+                  style: Theme.of(context).textTheme.displaySmall,
                 ).gapBottom(32.h),
                 Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -90,19 +70,22 @@ class _AddProductWidget extends StatelessWidget {
                     Column(
                       children: [
                         AppTextField(
+                          readOnly: !enableEdit,
                           width: fieldWidth,
                           controller: _productnameController,
                           label: AppStrings.name,
                         ).gapBottom(8.h),
                         AppTextField(
+                          readOnly: !enableEdit,
                           width: fieldWidth,
                           controller: _descriptionController,
                           label: AppStrings.description,
                         ).gapBottom(8.h),
-                        AppButton(
-                          onTap: () {},
-                          label: '${AppStrings.add} ${AppStrings.image}',
-                        ).gapBottom(8.h),
+                        if (enableEdit)
+                          AppButton(
+                            onTap: () {},
+                            label: '${AppStrings.add} ${AppStrings.image}',
+                          ).gapBottom(8.h),
                         if (images.isNotEmpty)
                           ...images
                               .map((e) => Stack(
@@ -141,20 +124,21 @@ class _AddProductWidget extends StatelessWidget {
                             );
                           },
                         ).sizedBoxW(fieldWidth).gapBottom(8.h),
-                        AppButton(
-                          label: '${AppStrings.add} ${AppStrings.product}',
-                          onTap: () async {
-                            final result = await showDetailedDialog(
-                              context,
-                              child: const ProductDetailWidget(),
-                            );
-                            if (result != null &&
-                                result is ProductDetailsModel) {
-                              productDetails.add(result);
-                              toggleCubit.change();
-                            }
-                          },
-                        ).gapBottom(8.h),
+                        if (enableEdit)
+                          AppButton(
+                            label: '${AppStrings.add} ${AppStrings.product}',
+                            onTap: () async {
+                              final result = await showDetailedDialog(
+                                context,
+                                child: const ProductDetailWidget(),
+                              );
+                              if (result != null &&
+                                  result is ProductDetailsModel) {
+                                productDetails.add(result);
+                                toggleCubit.change();
+                              }
+                            },
+                          ).gapBottom(8.h),
                         BlocBuilder<ToggleCubit, bool>(
                           bloc: toggleCubit..initialValue(true),
                           builder: (_, state) {
@@ -172,14 +156,15 @@ class _AddProductWidget extends StatelessWidget {
                                               .gapRight(4.w),
                                           Text('Type: ${details.type.name}')
                                               .gapRight(4.w),
-                                          GestureDetector(
-                                            onTap: () {
-                                              productDetails.remove(details);
-                                              toggleCubit.change();
-                                            },
-                                            child:
-                                                const Icon(Icons.remove_circle),
-                                          )
+                                          if (enableEdit)
+                                            GestureDetector(
+                                              onTap: () {
+                                                productDetails.remove(details);
+                                                toggleCubit.change();
+                                              },
+                                              child: const Icon(
+                                                  Icons.remove_circle),
+                                            )
                                         ],
                                       ),
                                     )
@@ -196,26 +181,26 @@ class _AddProductWidget extends StatelessWidget {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    AppButton.negative(
-                      onTap: () => Navigator.pop(context),
-                    ),
-                    AppButton.positive(
-                      onTap: () {
-                        final name = _productnameController.text.trim();
-                        final description = _descriptionController.text.trim();
+                    AppButton.negative(onTap: () => Navigator.pop(context)),
+                    if (enableEdit)
+                      AppButton.positive(
+                        onTap: () {
+                          final name = _productnameController.text.trim();
+                          final description =
+                              _descriptionController.text.trim();
 
-                        if (name.isNotEmpty) {
-                          context.read<ProductsCubit>().addProduct(
-                                name: name,
-                                category: _selectedCategory,
-                                description: description,
-                                images: images,
-                                productDetails: productDetails,
-                              );
-                          Navigator.pop(context);
-                        }
-                      },
-                    ).gapLeft(8.w),
+                          if (name.isNotEmpty) {
+                            context.read<ProductsCubit>().addProduct(
+                                  name: name,
+                                  category: _selectedCategory,
+                                  description: description,
+                                  images: images,
+                                  productDetails: productDetails,
+                                );
+                            Navigator.pop(context);
+                          }
+                        },
+                      ).gapLeft(8.w),
                   ],
                 )
               ],

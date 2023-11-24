@@ -5,14 +5,22 @@ import 'package:memee_admin/blocs/products/products_cubit.dart';
 import 'package:memee_admin/core/shared/app_strings.dart';
 import 'package:memee_admin/ui/__shared/extensions/widget_extensions.dart';
 import 'package:memee_admin/ui/__shared/widgets/app_textfield.dart';
+import 'package:memee_admin/ui/__shared/widgets/data-table/app_data_table.dart';
 
 import '../../../../core/initializer/app_di_registration.dart';
 import '../../../__shared/dialog/detailed_dialog.dart';
+import 'data-row/product_data_row.dart';
 import 'widgets/add_product_widget.dart';
 
 class ProductsWidget extends StatelessWidget {
   final TextEditingController _searchController = TextEditingController();
   final productsCubit = locator.get<ProductsCubit>();
+
+  final dataColumnHeaders = [
+    'ID',
+    'Name',
+    'Status',
+  ];
 
   ProductsWidget({super.key});
 
@@ -56,32 +64,11 @@ class ProductsWidget extends StatelessWidget {
                         child: Text(state.message),
                       );
                     } else if (state is ProductsSuccess) {
-                      return DataTable(
-                        columns: const [
-                          DataColumn(
-                            label: Text('ID'),
-                          ),
-                          DataColumn(
-                            label: Text('Name'),
-                          ),
-                          DataColumn(
-                            label: Text('Description'),
-                          ),
-                        ],
-                        rows: state.products.map((product) {
-                          return DataRow(
-                            cells: [
-                              DataCell(Text(product.id)),
-                              DataCell(Text(product.name)),
-                              DataCell(Text(product.description)),
-                            ],
-                            onSelectChanged: (selected) {
-                              if (selected != null && selected) {
-                                //_showProductDetails(product);
-                              }
-                            },
-                          );
-                        }).toList(), // Helper function to build rows
+                      return AppDataTable(
+                        headers: dataColumnHeaders,
+                        items: state.products
+                            .map((product) => productDataRow(context, product))
+                            .toList(),
                       );
                     }
                     return const SizedBox.shrink();

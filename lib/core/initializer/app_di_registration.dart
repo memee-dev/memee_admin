@@ -10,7 +10,7 @@ import 'package:memee_admin/blocs/products/products_cubit.dart';
 
 import '../../blocs/admins/admins_cubit.dart';
 import '../../blocs/auth/auth_cubit.dart';
-import '../../blocs/hide_and_seek/hide_and_seek_cubit.dart';
+import '../../blocs/toggle/toggle_cubit.dart';
 import '../../blocs/index/index_cubit.dart';
 import '../../blocs/login/login_cubit.dart';
 import '../../blocs/theme/theme_cubit.dart';
@@ -48,8 +48,8 @@ void blocConfig(GetIt locator) {
   locator.registerLazySingleton<LoginCubit>(
     () => LoginCubit(locator(), locator()),
   );
-  locator.registerFactory<HideAndSeekCubit>(
-    () => HideAndSeekCubit(),
+  locator.registerFactory<ToggleCubit>(
+    () => ToggleCubit(),
   );
   locator.registerFactory<IndexCubit>(
     () => IndexCubit(),

@@ -17,21 +17,23 @@ class UserModel {
   String userName;
   String email;
 
-  factory UserModel.fromJson(Map<dynamic, dynamic> json) => UserModel(
-        address: List<AddressModel>.from(json['address'].map((x) => AddressModel.fromJson(x))),
-        phoneNumber: json['phoneNumber'],
-        verified: json['verified'],
-        id: json['id'],
-        active: json['active'],
-        userName: json['userName'],
-        email: json['email'],
+  factory UserModel.fromMap(Map<dynamic, dynamic> map) => UserModel(
+        address: List<AddressModel>.from(
+            map['address'].map((x) => AddressModel.fromMap(x))),
+        phoneNumber: map['phoneNumber'],
+        verified: map['verified'],
+        id: map['id'],
+        active: map['active'],
+        userName: map['userName'],
+        email: map['email'],
       );
   AddressModel defaultAddress() {
     return address.where((element) => element.defaultt).toList()[0];
   }
 
   Map<String, dynamic> toJson() => {
-        'address': List<Map<String, dynamic>>.from(address.map((x) => x.toJson())),
+        'address':
+            List<Map<String, dynamic>>.from(address.map((x) => x.toJson())),
         'phoneNumber': phoneNumber,
         'verified': verified,
         'id': id,
@@ -62,15 +64,15 @@ class AddressModel {
   String landmark;
   String type;
 
-  factory AddressModel.fromJson(Map<dynamic, dynamic> json) => AddressModel(
-        area: json['area'],
-        pincode: json['pincode'],
-        no: json['no'],
-        defaultt: json['default'],
-        city: json['city'],
-        street: json['street'],
-        landmark: json['landmark'],
-        type: json['type'],
+  factory AddressModel.fromMap(Map<dynamic, dynamic> map) => AddressModel(
+        area: map['area'],
+        pincode: map['pincode'],
+        no: map['no'],
+        defaultt: map['default'],
+        city: map['city'],
+        street: map['street'],
+        landmark: map['landmark'],
+        type: map['type'],
       );
 
   Map<String, dynamic> toJson() => {

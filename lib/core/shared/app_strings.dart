@@ -35,6 +35,8 @@ mixin AppStrings {
   static const String add = 'Add';
   static const String edit = 'Edit';
 
+  static const String image = 'image';
+
   static const String home = 'Home';
   static const String orders = 'Orders';
   static const String products = 'Products';
@@ -62,6 +64,10 @@ mixin AppStrings {
   static const String cancel = 'Cancel';
   static const String save = 'Save';
   static const String continuee = 'Continue';
+
+  static const String price = 'Price';
+  static const String discountedPrice = 'Discounted Price';
+  static const String qty = 'Quantity';
 
   //excel
   static const List<String> categoriesTitle = ['ID', 'Name'];

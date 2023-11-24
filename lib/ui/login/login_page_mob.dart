@@ -4,7 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:memee_admin/ui/__shared/extensions/widget_extensions.dart';
 
-import '../../blocs/hide_and_seek/hide_and_seek_cubit.dart';
+import '../../blocs/toggle/toggle_cubit.dart';
 import '../../blocs/login/login_cubit.dart';
 import '../../core/initializer/app_di_registration.dart';
 import '../../core/shared/app_strings.dart';
@@ -17,7 +17,7 @@ class LoginPageMob extends StatelessWidget {
       TextEditingController(text: kDebugMode ? 'admin@memee.com' : '');
   final TextEditingController _passwordController =
       TextEditingController(text: kDebugMode ? '123456' : '');
-  final HideAndSeekCubit hideAndSeekCubit = locator.get<HideAndSeekCubit>();
+  final ToggleCubit hideAndSeekCubit = locator.get<ToggleCubit>();
 
   LoginPageMob({super.key});
 
@@ -30,7 +30,7 @@ class LoginPageMob extends StatelessWidget {
           controller: _emailController,
           label: AppStrings.email,
         ).gapBottom(8.h),
-        BlocBuilder<HideAndSeekCubit, bool>(
+        BlocBuilder<ToggleCubit, bool>(
           bloc: hideAndSeekCubit,
           builder: (_, state) {
             return AppTextField(

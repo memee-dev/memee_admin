@@ -24,7 +24,7 @@ class UserCubit extends Cubit<UsersState> {
       for (var doc in docs) {
         final data = doc.data();
         data['id'] = doc.id;
-        users.add(UserModel.fromJson(data));
+        users.add(UserModel.fromMap(data));
       }
       emit(UsersSuccess(users));
     } catch (e) {

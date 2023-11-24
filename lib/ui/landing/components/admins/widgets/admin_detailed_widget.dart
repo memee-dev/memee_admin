@@ -5,6 +5,7 @@ import 'package:memee_admin/blocs/admins/admins_cubit.dart';
 import 'package:memee_admin/core/initializer/app_di_registration.dart';
 import 'package:memee_admin/core/shared/app_strings.dart';
 import 'package:memee_admin/models/admin_model.dart';
+import 'package:memee_admin/ui/__shared/enum/doc_type.dart';
 import 'package:memee_admin/ui/__shared/extensions/widget_extensions.dart';
 import 'package:memee_admin/ui/__shared/widgets/app_dropdown.dart';
 import 'package:memee_admin/ui/__shared/widgets/app_textfield.dart';
@@ -75,8 +76,7 @@ class _AdminDetailedState extends State<_AdminDetailed> {
       children: [
         DialogHeader(
           label: AppStrings.admins,
-          newItem: widget.admin == null,
-          enableEdit: enableEdit,
+          docType: DocType.add,
           onTap: () {
             setState(() {
               enableEdit = !enableEdit;

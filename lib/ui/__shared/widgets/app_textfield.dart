@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:memee_admin/ui/__shared/extensions/widget_extensions.dart';
 
 class AppTextField extends StatelessWidget {
@@ -8,8 +9,9 @@ class AppTextField extends StatelessWidget {
   final Widget? suffixIcon;
   final bool readOnly;
   final double? width;
+  List<TextInputFormatter>? inputFormatters;
 
-  const AppTextField({
+  AppTextField({
     super.key,
     required this.controller,
     required this.label,
@@ -17,12 +19,42 @@ class AppTextField extends StatelessWidget {
     this.suffixIcon,
     this.readOnly = false,
     this.width,
+    this.inputFormatters,
   });
+
+  AppTextField.digits({
+    super.key,
+    required this.controller,
+    required this.label,
+    this.obscureText = false,
+    this.suffixIcon,
+    this.readOnly = false,
+    this.width,
+  }) {
+    inputFormatters = [
+      FilteringTextInputFormatter.digitsOnly,
+    ];
+  }
+
+  AppTextField.decimals({
+    super.key,
+    required this.controller,
+    required this.label,
+    this.obscureText = false,
+    this.suffixIcon,
+    this.readOnly = false,
+    this.width,
+  }) {
+    inputFormatters = [
+      FilteringTextInputFormatter.allow(RegExp(r'^\d+\.?\d{0,2}')),
+    ];
+  }
 
   @override
   Widget build(BuildContext context) {
     return TextField(
       readOnly: readOnly,
+      inputFormatters: inputFormatters,
       obscureText: obscureText,
       controller: controller,
       style: Theme.of(context).textTheme.bodySmall,
