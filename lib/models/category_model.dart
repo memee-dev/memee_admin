@@ -6,7 +6,7 @@ class CategoryModel {
   CategoryModel({
     required this.id,
     required this.name,
-    required this.active,
+    this.active = true,
   });
 
   factory CategoryModel.fromMap(Map<String, dynamic> map) {

@@ -47,7 +47,7 @@ class ShowAddress extends StatelessWidget {
           RowFlexibleWidget(
             lChild: AppTextField(
               controller: TextEditingController()..text = address.no,
-              label: AppStrings.no,
+              label: AppStrings.number,
               readOnly: !enableEdit,
             ),
             rChild: AppTextField(

@@ -14,7 +14,7 @@ mixin AppStrings {
   static const String pinCode = 'Pincode';
   static const String city = 'City';
   static const String landmark = 'Landmark';
-  static const String no = 'Flat/Door No';
+  static const String number = 'Flat/Door No';
   static const String street = 'Street';
   static const String aadhar = 'Aadhar';
   static const String type = 'Type';
@@ -50,6 +50,8 @@ mixin AppStrings {
 
   static const String export = 'Export';
   static const String import = 'Import';
+  
+  static const String no = 'No';
 
   static const String active = 'Active';
   static const String disabled = 'Disabled';

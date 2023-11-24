@@ -5,32 +5,61 @@ import 'package:memee_admin/core/shared/app_firestore.dart';
 import 'package:memee_admin/core/shared/app_logger.dart';
 import 'package:memee_admin/models/user_model.dart';
 
-import '../../ui/__shared/enums/crud_enum.dart';
-
 part 'users_state.dart';
 
 class UserCubit extends Cubit<UsersState> {
   final FirebaseFirestore db;
 
+  final collectionName = AppFireStoreCollection.users;
+
   UserCubit(this.db) : super(UsersLoading());
 
   Future<void> fetchUsers() async {
+    List<UserModel> users = [];
     emit(UsersLoading());
     try {
-      final usersCollection =
-          await db.collection(AppFireStoreCollection.users).get();
-      final userDocs = usersCollection.docs;
+      final usersDoc = await db.collection(collectionName).get();
+      final docs = usersDoc.docs;
 
-      List<UserModel> users = [];
-      for (var doc in userDocs) {
+      for (var doc in docs) {
         final data = doc.data();
         data['id'] = doc.id;
         users.add(UserModel.fromJson(data));
       }
       emit(UsersSuccess(users));
     } catch (e) {
+      emit(UsersFailure(
+        e.toString(),
+        users,
+      ));
       log.e('FETCH Users', error: e);
-      emit(UsersFailure(e.toString()));
+    }
+  }
+
+  Future<void> addUser(UserModel user) async {
+    List<UserModel> users = getLocalUsers();
+    try {
+      final ref = db.collection(collectionName);
+      int lastNumber = 1;
+
+      late String sequentialDocId;
+      if (users.isEmpty) {
+        sequentialDocId = lastNumber.toString().padLeft(3, '0');
+      } else {
+        lastNumber = int.parse(users.last.id.substring(1));
+        sequentialDocId = (lastNumber + 1).toString().padLeft(3, '0');
+      }
+
+      sequentialDocId = 'u$sequentialDocId';
+      ref.doc(sequentialDocId).set(user.toJson());
+      users.add(user);
+      emit(UsersSuccess(users));
+    } catch (e) {
+      emit(UsersFailure(
+        e.toString(),
+        users,
+      ));
+      log.e('ADD a User', error: e);
     }
   }
 
@@ -40,7 +69,7 @@ class UserCubit extends Cubit<UsersState> {
   }) async {
     emit(UsersLoading());
     try {
-      final userCollection = db.collection(AppFireStoreCollection.users);
+      final userCollection = db.collection(collectionName);
       if (clearAll) {
         deleteAllUser();
       }
@@ -52,45 +81,40 @@ class UserCubit extends Cubit<UsersState> {
 
       emit(UsersSuccess(users));
     } catch (e) {
+      emit(UsersFailure(
+        e.toString(),
+        const [],
+      ));
       log.e('ADD All Users', error: e);
-      emit(UsersFailure(e.toString()));
-    }
-  }
-
-  Future<void> addUser(UserModel user) async {
-    try {
-      await db.collection(AppFireStoreCollection.users).add(user.toJson());
-      crudLocally(user, CRUD.create);
-    } catch (e) {
-      log.e('ADD a User', error: e);
     }
   }
 
   Future<void> updateUser(UserModel user) async {
     try {
-      await db
-          .collection(AppFireStoreCollection.users)
-          .doc(user.id)
-          .set(user.toJson());
-      crudLocally(user, CRUD.update);
+      await db.collection(collectionName).doc(user.id).set(user.toJson());
     } catch (e) {
       log.e('UPDATE a User', error: e);
     }
   }
 
   Future<void> deleteUser(UserModel user) async {
+    List<UserModel> users = getLocalUsers();
     try {
-      await db.collection(AppFireStoreCollection.users).doc(user.id).delete();
-      crudLocally(user, CRUD.delete);
+      users.remove(user);
+      await db.collection(collectionName).doc(user.id).delete();
+      emit(UsersSuccess(users));
     } catch (e) {
-      log.e('DELETE a User', error: e);
+      emit(UsersFailure(
+        e.toString(),
+        users,
+      ));
+      log.e('DELETE User', error: e);
     }
   }
 
   Future<void> deleteAllUser() async {
     try {
-      final usersCollection =
-          await db.collection(AppFireStoreCollection.users).get();
+      final usersCollection = await db.collection(collectionName).get();
       final userDocs = usersCollection.docs;
 
       final batch = db.batch();
@@ -103,34 +127,13 @@ class UserCubit extends Cubit<UsersState> {
     }
   }
 
-  void crudLocally(UserModel user, CRUD crud) {
-    try {
-      if (state is UsersSuccess) {
-        final users = (state as UsersSuccess).users;
-        if (crud == CRUD.create) {
-          users.add(user);
-          emit(UsersLoading());
-          emit(UsersSuccess(users));
-        } else {
-          int index = (state as UsersSuccess)
-              .users
-              .indexWhere((existingUser) => existingUser.id == user.id);
-
-          if (index != -1) {
-            if (crud == CRUD.update) {
-              users[index] = user;
-            } else if (crud == CRUD.delete) {
-              users.removeAt(index);
-            }
-            emit(UsersLoading());
-            emit(UsersSuccess(users));
-          } else {
-            log.e('updateUserLocally', error: 'Not found');
-          }
-        }
-      }
-    } catch (e) {
-      log.e('updateUserLocally', error: e);
+  List<UserModel> getLocalUsers() {
+    List<UserModel> dlExecutives = [];
+    if (state is UsersSuccess) {
+      dlExecutives.addAll((state as UsersSuccess).users);
+    } else if (state is UsersFailure) {
+      dlExecutives.addAll((state as UsersFailure).users);
     }
+    return dlExecutives;
   }
 }

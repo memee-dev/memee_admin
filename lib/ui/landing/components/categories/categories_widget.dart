@@ -14,6 +14,7 @@ import 'package:memee_admin/ui/landing/components/categories/widgets/categories_
 import '../../../../blocs/categories/categories_cubit.dart';
 import '../../../../core/initializer/app_di_registration.dart';
 import '../../../__shared/widgets/data-table/app_data_table.dart';
+import '../../../__shared/widgets/empty_widget.dart';
 import 'data-row/categories_data_row.dart';
 
 class CategoriesWidget extends StatelessWidget {
@@ -46,59 +47,56 @@ class CategoriesWidget extends StatelessWidget {
       Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Row(
-              children: [
-                SizedBox(
-                  width: MediaQuery.of(context).size.width / 4,
-                  child: AppTextField(
-                    controller: _searchController,
-                    label: '${AppStrings.search} ${AppStrings.categories}',
-                  ),
-                ).gapRight(24.w),
-                Flexible(
-                  child: BlocProvider(
-                    create: (_) => locator.get<ExportImportCubit>(),
-                    child: BlocBuilder<ExportImportCubit, ExportImportState>(
-                      bloc: locator.get<ExportImportCubit>(),
-                      builder: (ctx, state) {
-                        return AppButton(
-                          isLoading: state == ExportImportState.loading,
-                          label: AppStrings.import,
-                          onTap: () {
-                            ctx.read<ExportImportCubit>().importExcel<CategoryModel>();
-                          },
-                        );
-                      },
-                    ),
+          Row(
+            children: [
+              SizedBox(
+                width: MediaQuery.of(context).size.width / 4,
+                child: AppTextField(
+                  controller: _searchController,
+                  label: '${AppStrings.search} ${AppStrings.categories}',
+                ),
+              ).gapRight(24.w),
+              Flexible(
+                child: BlocProvider(
+                  create: (_) => locator.get<ExportImportCubit>(),
+                  child: BlocBuilder<ExportImportCubit, ExportImportState>(
+                    bloc: locator.get<ExportImportCubit>(),
+                    builder: (ctx, state) {
+                      return AppButton(
+                        isLoading: state == ExportImportState.loading,
+                        label: AppStrings.import,
+                        onTap: () {
+                          ctx.read<ExportImportCubit>().importExcel<CategoryModel>();
+                        },
+                      );
+                    },
                   ),
                 ),
-                SizedBox(width: 8.w),
-                Flexible(
-                  child: BlocProvider(
-                    create: (_) => locator.get<ExportImportCubit>(),
-                    child: BlocBuilder<ExportImportCubit, ExportImportState>(
-                      builder: (ctx, state) {
-                        return AppButton(
-                          isLoading: state == ExportImportState.loading,
-                          label: AppStrings.export,
-                          onTap: () {
-                            if (_categoriesCubit.state is CategoriesSuccess) {
-                              ctx.read<ExportImportCubit>().exportExcel<CategoryModel>(
-                                    data: (_categoriesCubit.state as CategoriesSuccess).categories,
-                                    sheetName: AppStrings.categories,
-                                    title: AppStrings.categoriesTitle,
-                                  );
-                            }
-                          },
-                        );
-                      },
-                    ),
+              ),
+              SizedBox(width: 8.w),
+              Flexible(
+                child: BlocProvider(
+                  create: (_) => locator.get<ExportImportCubit>(),
+                  child: BlocBuilder<ExportImportCubit, ExportImportState>(
+                    builder: (ctx, state) {
+                      return AppButton(
+                        isLoading: state == ExportImportState.loading,
+                        label: AppStrings.export,
+                        onTap: () {
+                          if (_categoriesCubit.state is CategoriesSuccess) {
+                            ctx.read<ExportImportCubit>().exportExcel<CategoryModel>(
+                                  data: (_categoriesCubit.state as CategoriesSuccess).categories,
+                                  sheetName: AppStrings.categories,
+                                  title: AppStrings.categoriesTitle,
+                                );
+                          }
+                        },
+                      );
+                    },
                   ),
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
           Expanded(
             child: SingleChildScrollView(
@@ -111,6 +109,9 @@ class CategoriesWidget extends StatelessWidget {
                       child: CircularProgressIndicator.adaptive(),
                     );
                   } else if (state is CategoriesResponseState) {
+                    if (state.categories.isEmpty) {
+                      return const EmptyWidget(label: '${AppStrings.no} ${AppStrings.categories}');
+                    }
                     return AppDataTable(
                       headers: dataColumnHeaders,
                       items: state.categories

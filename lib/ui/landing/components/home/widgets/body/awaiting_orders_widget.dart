@@ -25,7 +25,7 @@ class AwaitingOrdersWidget extends StatelessWidget {
                   color: textColor,
                 ),
           ).gapBottom(12.h),
-          //TODO: create a recent orders list,
+          //! TODO: create a recent orders list,
           Text(
             'wdddww',
             style: Theme.of(context).textTheme.bodySmall?.copyWith(

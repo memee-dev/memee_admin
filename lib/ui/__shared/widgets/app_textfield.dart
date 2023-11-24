@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:memee_admin/ui/__shared/extensions/widget_extensions.dart';
 
 class AppTextField extends StatelessWidget {
   final TextEditingController controller;
@@ -30,6 +31,6 @@ class AppTextField extends StatelessWidget {
         border: const OutlineInputBorder(),
         suffixIcon: suffixIcon,
       ),
-    );
+    ).sizedBoxW();
   }
 }

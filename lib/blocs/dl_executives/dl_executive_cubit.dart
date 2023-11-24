@@ -9,13 +9,13 @@ import 'package:memee_admin/core/shared/app_firestore.dart';
 import 'package:memee_admin/core/shared/app_logger.dart';
 import 'package:memee_admin/models/dl_executive_model.dart';
 
-import '../../ui/__shared/enums/crud_enum.dart';
-
 part 'dl_executive_state.dart';
 
 class DlExecutiveCubit extends Cubit<DlExecutivesState> {
   final FirebaseFirestore db;
   final FirebaseStorage storage;
+
+  final collectionName = AppFireStoreCollection.dlExecutives;
 
   DlExecutiveCubit(
     this.db,
@@ -23,21 +23,70 @@ class DlExecutiveCubit extends Cubit<DlExecutivesState> {
   ) : super(DlExecutivesLoading());
 
   Future<void> fetchDlExecutives() async {
+    List<DlExecutiveModel> dlExecutives = [];
     emit(DlExecutivesLoading());
     try {
-      final dlExecutivesCollection = await db.collection(AppFireStoreCollection.dlExecutives).get();
-      final dlExecutiveDocs = dlExecutivesCollection.docs;
+      final dlExecutivesDoc = await db.collection(collectionName).get();
+      final docs = dlExecutivesDoc.docs;
 
-      List<DlExecutiveModel> dlExecutives = [];
-      for (var doc in dlExecutiveDocs) {
+      for (var doc in docs) {
         final data = doc.data();
         data['id'] = doc.id;
         dlExecutives.add(DlExecutiveModel.fromMap(data));
       }
       emit(DlExecutivesSuccess(dlExecutives));
     } catch (e) {
+      emit(DlExecutivesFailure(
+        e.toString(),
+        dlExecutives,
+      ));
       log.e('FETCH DlExecutives', error: e);
-      emit(DlExecutivesFailure(e.toString()));
+    }
+  }
+
+  Future<void> addDlExecutive({
+    required String name,
+    required String email,
+    required String phoneNumber,
+    required String aadhar,
+    String? dlUrl,
+    required String dlNumber,
+    bool active = true,
+    bool alloted = false,
+  }) async {
+    List<DlExecutiveModel> dlExecutives = getLocalDLExecutives();
+
+    try {
+      final ref = db.collection(collectionName);
+      int lastNumber = 1;
+
+      late String sequentialDocId;
+      if (dlExecutives.isEmpty) {
+        sequentialDocId = lastNumber.toString().padLeft(3, '0');
+      } else {
+        lastNumber = int.parse(dlExecutives.last.id.substring(1));
+        sequentialDocId = (lastNumber + 1).toString().padLeft(3, '0');
+      }
+
+      sequentialDocId = 'dl$sequentialDocId';
+
+      final dl = DlExecutiveModel(
+        id: sequentialDocId,
+        name: name,
+        email: email,
+        phoneNumber: phoneNumber,
+        dlNumber: dlNumber,
+        aadhar: aadhar,
+      );
+      ref.doc(sequentialDocId).set(dl.toJson());
+      dlExecutives.add(dl);
+      emit(DlExecutivesSuccess(dlExecutives));
+    } catch (e) {
+      emit(DlExecutivesFailure(
+        e.toString(),
+        dlExecutives,
+      ));
+      log.e('ADD a DlExecutive', error: e);
     }
   }
 
@@ -47,7 +96,7 @@ class DlExecutiveCubit extends Cubit<DlExecutivesState> {
   }) async {
     emit(DlExecutivesLoading());
     try {
-      final dlExecutiveCollection = db.collection(AppFireStoreCollection.dlExecutives);
+      final dlExecutiveCollection = db.collection(collectionName);
       if (clearAll) {
         deleteAllDlExecutive();
       }
@@ -59,41 +108,40 @@ class DlExecutiveCubit extends Cubit<DlExecutivesState> {
 
       emit(DlExecutivesSuccess(dlExecutives));
     } catch (e) {
+      emit(DlExecutivesFailure(
+        e.toString(),
+        const [],
+      ));
       log.e('ADD All DlExecutives', error: e);
-      emit(DlExecutivesFailure(e.toString()));
-    }
-  }
-
-  Future<void> addDlExecutive(DlExecutiveModel dlExecutive) async {
-    try {
-      await db.collection(AppFireStoreCollection.dlExecutives).add(dlExecutive.toJson());
-      crudLocally(dlExecutive, CRUD.create);
-    } catch (e) {
-      log.e('ADD a DlExecutive', error: e);
     }
   }
 
   Future<void> updateDlExecutive(DlExecutiveModel dlExecutive) async {
     try {
-      await db.collection(AppFireStoreCollection.dlExecutives).doc(dlExecutive.id).set(dlExecutive.toJson());
-      crudLocally(dlExecutive, CRUD.update);
+      await db.collection(collectionName).doc(dlExecutive.id).set(dlExecutive.toJson());
     } catch (e) {
-      log.e('UPDATE a DlExecutive', error: e);
+      log.e('UPDATE DlExecutive', error: e);
     }
   }
 
   Future<void> deleteDlExecutive(DlExecutiveModel dlExecutive) async {
+    List<DlExecutiveModel> dlExecutives = getLocalDLExecutives();
     try {
-      await db.collection(AppFireStoreCollection.dlExecutives).doc(dlExecutive.id).delete();
-      crudLocally(dlExecutive, CRUD.delete);
+      dlExecutives.remove(dlExecutive);
+      await db.collection(collectionName).doc(dlExecutive.id).delete();
+      emit(DlExecutivesSuccess(dlExecutives));
     } catch (e) {
-      log.e('DELETE a DlExecutive', error: e);
+      emit(DlExecutivesFailure(
+        e.toString(),
+        dlExecutives,
+      ));
+      log.e('DELETE CATEGORY', error: e);
     }
   }
 
   Future<void> deleteAllDlExecutive() async {
     try {
-      final dlExecutivesCollection = await db.collection(AppFireStoreCollection.dlExecutives).get();
+      final dlExecutivesCollection = await db.collection(collectionName).get();
       final dlExecutiveDocs = dlExecutivesCollection.docs;
 
       final batch = db.batch();
@@ -103,35 +151,6 @@ class DlExecutiveCubit extends Cubit<DlExecutivesState> {
       batch.commit();
     } catch (e) {
       log.e('DELETE All DlExecutive', error: e);
-    }
-  }
-
-  void crudLocally(DlExecutiveModel dlExecutive, CRUD crud) {
-    try {
-      if (state is DlExecutivesSuccess) {
-        final dlExecutives = (state as DlExecutivesSuccess).dlExecutives;
-        if (crud == CRUD.create) {
-          dlExecutives.add(dlExecutive);
-          emit(DlExecutivesLoading());
-          emit(DlExecutivesSuccess(dlExecutives));
-        } else {
-          int index = (state as DlExecutivesSuccess).dlExecutives.indexWhere((existingDlExecutive) => existingDlExecutive.id == dlExecutive.id);
-
-          if (index != -1) {
-            if (crud == CRUD.update) {
-              dlExecutives[index] = dlExecutive;
-            } else if (crud == CRUD.delete) {
-              dlExecutives.removeAt(index);
-            }
-            emit(DlExecutivesLoading());
-            emit(DlExecutivesSuccess(dlExecutives));
-          } else {
-            log.e('updateDlExecutiveLocally', error: 'Not found');
-          }
-        }
-      }
-    } catch (e) {
-      log.e('updateDlExecutiveLocally', error: e);
     }
   }
 
@@ -153,5 +172,15 @@ class DlExecutiveCubit extends Cubit<DlExecutivesState> {
     }
 
     return Future.value(uploadTask);
+  }
+
+  List<DlExecutiveModel> getLocalDLExecutives() {
+    List<DlExecutiveModel> dlExecutives = [];
+    if (state is DlExecutivesSuccess) {
+      dlExecutives.addAll((state as DlExecutivesSuccess).dlExecutives);
+    } else if (state is DlExecutivesFailure) {
+      dlExecutives.addAll((state as DlExecutivesFailure).dlExecutives);
+    }
+    return dlExecutives;
   }
 }

@@ -26,7 +26,7 @@ class AppDivider extends StatelessWidget {
         ? Column(
             mainAxisSize: MainAxisSize.max,
             children: [
-              _AppContainer(
+              AppDivider2(
                 height: height ?? 1.r,
                 width: width ?? 1.r,
               ).expanded(),
@@ -35,7 +35,7 @@ class AppDivider extends StatelessWidget {
         : Row(
             mainAxisSize: MainAxisSize.max,
             children: [
-              _AppContainer(
+              AppDivider2(
                 height: height ?? 1.r,
                 width: width ?? 1.r,
               ).expanded(),
@@ -44,10 +44,11 @@ class AppDivider extends StatelessWidget {
   }
 }
 
-class _AppContainer extends StatelessWidget {
+class AppDivider2 extends StatelessWidget {
   final double height;
   final double width;
-  const _AppContainer({
+  const AppDivider2({
+    super.key,
     required this.height,
     required this.width,
   });

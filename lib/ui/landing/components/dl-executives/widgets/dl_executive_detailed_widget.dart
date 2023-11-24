@@ -3,7 +3,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:memee_admin/blocs/dl_executives/dl_executive_cubit.dart';
-import 'package:memee_admin/blocs/export_import/export_import_cubit.dart';
 import 'package:memee_admin/core/initializer/app_di_registration.dart';
 import 'package:memee_admin/core/shared/app_strings.dart';
 import 'package:memee_admin/models/dl_executive_model.dart';
@@ -70,7 +69,6 @@ class _DLExecutiveDetailedState extends State<_DLExecutiveDetailed> {
 
   @override
   Widget build(BuildContext context) {
-    //final size = MediaQuery.of(context).size;
     final _dlCubit = context.read<DlExecutiveCubit>();
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -101,7 +99,7 @@ class _DLExecutiveDetailedState extends State<_DLExecutiveDetailed> {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Text(
-              selectedId.isNotEmpty ? 'ID: ${dlExecutive.id}' : AppStrings.add,
+              selectedId.isNotEmpty ? 'ID: $selectedId' : AppStrings.add,
               style: Theme.of(context).textTheme.titleSmall,
             ),
             AppSwitch(
@@ -147,8 +145,7 @@ class _DLExecutiveDetailedState extends State<_DLExecutiveDetailed> {
                   readOnly: !enableEdit,
                 )
               ],
-            ).flexible(),
-            const VerticalDivider().paddingH(),
+            ).gapRight(4.w),
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisAlignment: MainAxisAlignment.end,
@@ -158,9 +155,10 @@ class _DLExecutiveDetailedState extends State<_DLExecutiveDetailed> {
                   label: AppStrings.dlNo,
                   readOnly: !enableEdit,
                 ).gapBottom(16.h),
-                Image.network(
-                  dlExecutive.dlUrl,
-                ).gapBottom(16.h),
+                if (dlExecutive.dlUrl != null)
+                  Image.network(
+                    dlExecutive.dlUrl!,
+                  ).gapBottom(16.h),
                 if (widget.dlExecutive == null || enableEdit)
                   AppButton(
                     label: AppStrings.changeDL,
@@ -174,7 +172,7 @@ class _DLExecutiveDetailedState extends State<_DLExecutiveDetailed> {
                     },
                   )
               ],
-            ).flexible(),
+            ),
           ],
         ).gapBottom(32.h),
         Row(
@@ -186,11 +184,29 @@ class _DLExecutiveDetailedState extends State<_DLExecutiveDetailed> {
             if (widget.dlExecutive == null || enableEdit)
               AppButton.positive(
                 onTap: () {
-                  dlExecutive.name = _nameController.text.toString().trim();
-                  dlExecutive.phoneNumber = _phoneNumberController.text.toString().trim();
-                  dlExecutive.email = _emailController.text.toString().trim();
-                  dlExecutive.aadhar = _aadharController.text.toString().trim();
-                  dlExecutive.dlNumber = _dlNumberController.text.toString().trim();
+                  final name = _nameController.text.toString().trim();
+                  final phoneNumber = _phoneNumberController.text.toString().trim();
+                  final email = _emailController.text.toString().trim();
+                  final aadhar = _aadharController.text.toString().trim();
+                  final dlNumber = _dlNumberController.text.toString().trim();
+
+                  if (widget.dlExecutive == null) {
+                    dlExecutive = DlExecutiveModel(
+                      name: name,
+                      email: email,
+                      phoneNumber: phoneNumber,
+                      dlNumber: dlNumber,
+                      aadhar: aadhar,
+                    );
+                    _dlCubit.addDlExecutive(dlExecutive);
+                  } else {
+                    dlExecutive.name = _nameController.text.toString().trim();
+                    dlExecutive.phoneNumber = _phoneNumberController.text.toString().trim();
+                    dlExecutive.email = _emailController.text.toString().trim();
+                    dlExecutive.aadhar = _aadharController.text.toString().trim();
+                    dlExecutive.dlNumber = _dlNumberController.text.toString().trim();
+                    _dlCubit.updateDlExecutive(dlExecutive);
+                  }
                 },
               ).gapLeft(8.w),
           ],
@@ -200,11 +216,11 @@ class _DLExecutiveDetailedState extends State<_DLExecutiveDetailed> {
   }
 
   _resetForm(DlExecutiveModel dlExecutive) {
-    selectedId = dlExecutive.id;
+    selectedId = dlExecutive.id!;
     selectedName = dlExecutive.name;
     selectedEmail = dlExecutive.email;
     selectedPhoneNumber = dlExecutive.phoneNumber;
-    selectedAadhar = dlExecutive.aadhar;
+    selectedAadhar = dlExecutive.aadhar!;
     selectedDlNumber = dlExecutive.dlNumber;
   }
 

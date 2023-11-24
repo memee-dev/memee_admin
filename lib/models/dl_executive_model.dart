@@ -1,11 +1,11 @@
 class DlExecutiveModel {
-  final String id;
+  String id;
   String name;
   String email;
   String phoneNumber;
-  String dlUrl;
+  String? dlUrl;
   String dlNumber;
-  String aadhar;
+  String? aadhar;
   bool active;
   bool alloted;
 
@@ -14,11 +14,11 @@ class DlExecutiveModel {
     required this.name,
     required this.email,
     required this.phoneNumber,
-    required this.dlUrl,
+    this.dlUrl,
     required this.dlNumber,
     required this.aadhar,
-    required this.active,
-    required this.alloted,
+    this.active = true,
+    this.alloted = false,
   });
 
   factory DlExecutiveModel.fromMap(Map<String, dynamic> map) {

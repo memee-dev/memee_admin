@@ -3,8 +3,8 @@ class UserModel {
     required this.address,
     required this.id,
     required this.phoneNumber,
-    required this.verified,
-    required this.active,
+    this.verified = false,
+    this.active = true,
     required this.userName,
     required this.email,
   });
@@ -18,8 +18,7 @@ class UserModel {
   String email;
 
   factory UserModel.fromJson(Map<dynamic, dynamic> json) => UserModel(
-        address: List<AddressModel>.from(
-            json['address'].map((x) => AddressModel.fromJson(x))),
+        address: List<AddressModel>.from(json['address'].map((x) => AddressModel.fromJson(x))),
         phoneNumber: json['phoneNumber'],
         verified: json['verified'],
         id: json['id'],
@@ -32,8 +31,7 @@ class UserModel {
   }
 
   Map<String, dynamic> toJson() => {
-        'address':
-            List<Map<String, dynamic>>.from(address.map((x) => x.toJson())),
+        'address': List<Map<String, dynamic>>.from(address.map((x) => x.toJson())),
         'phoneNumber': phoneNumber,
         'verified': verified,
         'id': id,
