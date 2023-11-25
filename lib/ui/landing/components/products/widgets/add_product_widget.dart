@@ -1,3 +1,4 @@
+import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -34,195 +35,226 @@ class AddProductWidget extends StatelessWidget {
 
 class _AddProductWidget extends StatelessWidget {
   final ProductModel? product;
-  bool enableEdit = false;
+
   _AddProductWidget(this.product);
 
   @override
   Widget build(BuildContext context) {
+    final _toggleCubit = locator.get<ToggleCubit>();
+    bool enableEdit = false;
     final size = MediaQuery.of(context).size;
-    final TextEditingController _productnameController =
-        TextEditingController();
-    final TextEditingController _descriptionController =
-        TextEditingController();
+    final _productnameController = TextEditingController();
+    final _descriptionController = TextEditingController();
     late CategoryModel _selectedCategory;
-    List<String> images = [];
+    List<String>? images;
     List<ProductDetailsModel> productDetails = [];
     final toggleCubit = locator.get<ToggleCubit>();
 
     DocType docType = getDocType<ProductModel>(product, enableEdit);
 
     final fieldWidth = size.width / 4;
-    return BlocBuilder<CategoriesCubit, CategoriesState>(
-      bloc: locator.get<CategoriesCubit>()..fetchCategories(),
-      builder: (context, state) {
-        if (state is CategoriesResponseState) {
-          final indexCubit = locator.get<IndexCubit>();
-          final categories = state.categories;
-          if (categories.isNotEmpty) {
-            _selectedCategory = categories.first;
-            return Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                DialogHeader(
-                  label: AppStrings.product,
-                  docType: docType,
-                  onTap: () {
-                    // setState(() {
-                    //   enableEdit = !enableEdit;
-                    //   if (!enableEdit) {
-                    //     _resetForm(user);
-                    //   }
-                    // });
-                  },
-                ),
-                Row(
-                  children: [
-                    Text(
-                      '${AppStrings.add} ${AppStrings.product}',
-                      style: Theme.of(context).textTheme.displaySmall,
-                    ).gapRight(24.w),
-                  ],
-                ).gapBottom(32.h),
-                Row(
+
+    _resetForm() {
+      if (product != null) {
+        _selectedCategory = product!.category;
+        _productnameController.text = product!.name;
+        _productnameController.text = product?.description ?? '';
+        images = product!.images ?? [];
+        productDetails = product!.productDetails;
+      }
+    }
+
+    _resetForm();
+    return BlocBuilder<ToggleCubit, bool>(
+      bloc: _toggleCubit,
+      builder: (_, toggle) {
+        return BlocBuilder<CategoriesCubit, CategoriesState>(
+          bloc: locator.get<CategoriesCubit>()..fetchCategories(),
+          builder: (context, state) {
+            if (state is CategoriesResponseState) {
+              final indexCubit = locator.get<IndexCubit>();
+              final categories = state.categories;
+              if (categories.isNotEmpty) {
+                _selectedCategory = categories.first;
+                return Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
                   children: [
-                    Column(
+                    DialogHeader(
+                      label: AppStrings.product,
+                      docType: docType,
+                      onTap: () {
+                        _toggleCubit.change();
+                        enableEdit = !enableEdit;
+                        if (!enableEdit) {
+                          _resetForm();
+                        }
+                      },
+                    ),
+                    Row(
                       children: [
-                        AppTextField(
-                          width: fieldWidth,
-                          controller: _productnameController,
-                          label: AppStrings.name,
-                        ).gapBottom(8.h),
-                        AppTextField(
-                          width: fieldWidth,
-                          controller: _descriptionController,
-                          label: AppStrings.description,
-                        ).gapBottom(8.h),
-                        AppButton(
-                          onTap: () {},
-                          label: '${AppStrings.add} ${AppStrings.image}',
-                        ).gapBottom(8.h),
-                        if (images.isNotEmpty)
-                          ...images
-                              .map((e) => Stack(
-                                    children: [
-                                      Positioned(
-                                        bottom: 0.0,
-                                        child: IconButton(
-                                          onPressed: () => images
-                                              .removeAt(images.indexOf(e)),
-                                          icon: const Icon(
-                                            Icons.remove_circle_outline,
-                                          ),
-                                        ),
-                                      ),
-                                      Image.network(e),
-                                    ],
-                                  ))
-                              .toList(),
+                        Text(
+                          '${AppStrings.add} ${AppStrings.product}',
+                          style: Theme.of(context).textTheme.displaySmall,
+                        ).gapRight(24.w),
                       ],
-                    ).gapRight(8.w),
-                    Column(
+                    ).gapBottom(32.h),
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        BlocBuilder<IndexCubit, int>(
-                          bloc: indexCubit,
-                          builder: (_, index) {
-                            return AppDropDown<CategoryModel>(
-                              value: _selectedCategory,
-                              items: categories,
-                              onChanged: (CategoryModel? val) {
-                                if (val != null) {
-                                  _selectedCategory = val;
-                                  indexCubit
-                                      .onIndexChange(categories.indexOf(val));
-                                }
-                              },
-                            );
-                          },
-                        ).sizedBoxW(fieldWidth).gapBottom(8.h),
-                        AppButton(
-                          label: '${AppStrings.add} ${AppStrings.product}',
-                          onTap: () async {
-                            final result = await showDetailedDialog(
-                              context,
-                              child: const ProductDetailWidget(),
-                            );
-                            if (result != null &&
-                                result is ProductDetailsModel) {
-                              productDetails.add(result);
-                              toggleCubit.change();
-                            }
-                          },
-                        ).gapBottom(8.h),
-                        BlocBuilder<ToggleCubit, bool>(
-                          bloc: toggleCubit..initialValue(true),
-                          builder: (_, state) {
-                            if (productDetails.isNotEmpty) {
-                              return Column(
-                                children: productDetails
+                        Column(
+                          children: [
+                            AppTextField(
+                              width: fieldWidth,
+                              controller: _productnameController,
+                              label: AppStrings.name,
+                            ).gapBottom(8.h),
+                            AppTextField(
+                              width: fieldWidth,
+                              controller: _descriptionController,
+                              label: AppStrings.description,
+                            ).gapBottom(8.h),
+                            AppButton(
+                              onTap: () {},
+                              label: '${AppStrings.add} ${AppStrings.image}',
+                            ).gapBottom(8.h),
+                            if (images != null && images!.isNotEmpty)
+                              CarouselSlider(
+                                options: CarouselOptions(),
+                                items: images!
                                     .map(
-                                      (details) => Row(
+                                      (image) => Stack(
+                                        alignment: Alignment.center,
                                         children: [
-                                          Text('Price: ${details.price}')
-                                              .gapRight(4.w),
-                                          Text('Discounter Price: ${details.discountedPrice}')
-                                              .gapRight(4.w),
-                                          Text('Quantity: ${details.qty}')
-                                              .gapRight(4.w),
-                                          Text('Type: ${details.type.name}')
-                                              .gapRight(4.w),
-                                          GestureDetector(
-                                            onTap: () {
-                                              productDetails.remove(details);
-                                              toggleCubit.change();
-                                            },
-                                            child:
-                                                const Icon(Icons.remove_circle),
-                                          )
+                                          Image.network(
+                                            image,
+                                            fit: BoxFit.cover,
+                                          ),
+                                          Positioned(
+                                            bottom: 0.0,
+                                            child: IconButton(
+                                              onPressed: () {
+                                                images!.removeAt(
+                                                    images!.indexOf(image));
+                                                _toggleCubit.change();
+                                              },
+                                              icon: const Icon(
+                                                Icons.remove_circle_outline,
+                                              ),
+                                            ),
+                                          ),
                                         ],
                                       ),
                                     )
                                     .toList(),
-                              );
-                            }
-                            return const SizedBox.shrink();
-                          },
+                              ).sizedBox(height: 100.h),
+                          ],
+                        ).gapRight(8.w),
+                        Column(
+                          children: [
+                            BlocBuilder<IndexCubit, int>(
+                              bloc: indexCubit,
+                              builder: (_, index) {
+                                return AppDropDown<CategoryModel>(
+                                  value: _selectedCategory,
+                                  items: categories,
+                                  onChanged: (CategoryModel? val) {
+                                    if (val != null) {
+                                      _selectedCategory = val;
+                                      indexCubit.onIndexChange(
+                                          categories.indexOf(val));
+                                    }
+                                  },
+                                );
+                              },
+                            ).sizedBoxW(fieldWidth).gapBottom(8.h),
+                            AppButton(
+                              label: '${AppStrings.add} ${AppStrings.product}',
+                              onTap: () async {
+                                final result = await showDetailedDialog(
+                                  context,
+                                  child: const ProductDetailWidget(),
+                                );
+                                if (result != null &&
+                                    result is ProductDetailsModel) {
+                                  productDetails.add(result);
+                                  toggleCubit.change();
+                                }
+                              },
+                            ).gapBottom(8.h),
+                            BlocBuilder<ToggleCubit, bool>(
+                              bloc: toggleCubit..initialValue(true),
+                              builder: (_, state) {
+                                if (productDetails.isNotEmpty) {
+                                  return Column(
+                                    children: productDetails
+                                        .map(
+                                          (details) => Row(
+                                            children: [
+                                              Text('Price: ${details.price}')
+                                                  .gapRight(4.w),
+                                              Text('Discounter Price: ${details.discountedPrice}')
+                                                  .gapRight(4.w),
+                                              Text('Quantity: ${details.qty}')
+                                                  .gapRight(4.w),
+                                              Text('Type: ${details.type.name}')
+                                                  .gapRight(4.w),
+                                              if (docType != DocType.view)
+                                                GestureDetector(
+                                                  onTap: () {
+                                                    productDetails
+                                                        .remove(details);
+                                                    toggleCubit.change();
+                                                  },
+                                                  child: const Icon(
+                                                      Icons.remove_circle),
+                                                )
+                                            ],
+                                          ),
+                                        )
+                                        .toList(),
+                                  );
+                                }
+                                return const SizedBox.shrink();
+                              },
+                            ),
+                          ],
                         ),
                       ],
-                    ),
-                  ],
-                ).gapBottom(32.h),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    AppButton.negative(
-                      onTap: () => Navigator.pop(context),
-                    ),
-                    AppButton.positive(
-                      onTap: () {
-                        final name = _productnameController.text.trim();
-                        final description = _descriptionController.text.trim();
+                    ).gapBottom(32.h),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        AppButton.negative(
+                          onTap: () => Navigator.pop(context),
+                        ),
+                        AppButton.positive(
+                          onTap: () {
+                            final name = _productnameController.text.trim();
+                            final description =
+                                _descriptionController.text.trim();
 
-                        if (name.isNotEmpty) {
-                          context.read<ProductsCubit>().addProduct(
-                                name: name,
-                                category: _selectedCategory,
-                                description: description,
-                                images: images,
-                                productDetails: productDetails,
-                              );
-                          Navigator.pop(context);
-                        }
-                      },
-                    ).gapLeft(8.w),
+                            if (name.isNotEmpty) {
+                              context.read<ProductsCubit>().addProduct(
+                                    name: name,
+                                    category: _selectedCategory,
+                                    description: description,
+                                    images: images,
+                                    productDetails: productDetails,
+                                  );
+                              Navigator.pop(context);
+                            }
+                          },
+                        ).gapLeft(8.w),
+                      ],
+                    )
                   ],
-                )
-              ],
-            );
-          }
-        }
-        return const SizedBox.shrink();
+                );
+              }
+            }
+            return const SizedBox.shrink();
+          },
+        );
       },
     );
   }

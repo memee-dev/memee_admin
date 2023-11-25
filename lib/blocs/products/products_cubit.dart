@@ -25,9 +25,7 @@ class ProductsCubit extends Cubit<ProductsState> {
       for (var doc in docs) {
         final data = doc.data();
         data['id'] = doc.id;
-        products.add(
-          ProductModel.fromMap(data),
-        );
+        products.add(ProductModel.fromMap(data));
       }
       emit(ProductsSuccess(products));
     } catch (e) {

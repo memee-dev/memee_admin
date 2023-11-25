@@ -25,7 +25,7 @@ class ProductModel {
       name: map['name'],
       category: CategoryModel.fromMap(map['category']),
       description: map['description'],
-      images: map['images'],
+      images: List<String>.from(map['images'].map((x) => x)),
       productDetails: List<ProductDetailsModel>.from(
           map['productDetails'].map((x) => ProductDetailsModel.fromMap(x))),
       active: map['active'],

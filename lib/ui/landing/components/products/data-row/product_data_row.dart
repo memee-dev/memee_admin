@@ -6,6 +6,7 @@ import 'package:memee_admin/ui/__shared/widgets/app_switch.dart';
 import 'package:memee_admin/ui/landing/components/dl-executives/widgets/dl_executive_detailed_widget.dart';
 import 'package:memee_admin/ui/landing/components/products/widgets/view_edit_product_widget.dart';
 import '../../../../__shared/dialog/detailed_dialog.dart';
+import '../widgets/add_product_widget.dart';
 
 DataRow productDataRow(
   BuildContext context,
@@ -28,7 +29,8 @@ DataRow productDataRow(
     onSelectChanged: (selected) async {
       final result = await showDetailedDialog(
         context,
-        child: ViewEditProductWidget(product: product),
+        // child: ViewEditProductWidget(product: product),
+        child: AddProductWidget(product: product),
       );
       if (result != null && result is ProductModel) {
         product = result;
