@@ -76,9 +76,7 @@ class _DLExecutiveWidget extends StatelessWidget {
                             isLoading: state == ExportImportState.loading,
                             label: AppStrings.import,
                             onTap: () {
-                              ctx
-                                  .read<ExportImportCubit>()
-                                  .importExcel<DlExecutiveModel>();
+                              ctx.read<ExportImportCubit>().importExcel<DlExecutiveModel>();
                             },
                           );
                         },
@@ -95,14 +93,9 @@ class _DLExecutiveWidget extends StatelessWidget {
                             isLoading: state == ExportImportState.loading,
                             label: AppStrings.export,
                             onTap: () {
-                              if (dlExecutiveCubit.state
-                                  is DlExecutivesSuccess) {
-                                ctx
-                                    .read<ExportImportCubit>()
-                                    .exportExcel<DlExecutiveModel>(
-                                      data: (dlExecutiveCubit.state
-                                              as DlExecutivesSuccess)
-                                          .dlExecutives,
+                              if (dlExecutiveCubit.state is DlExecutivesSuccess) {
+                                ctx.read<ExportImportCubit>().exportExcel<DlExecutiveModel>(
+                                      data: (dlExecutiveCubit.state as DlExecutivesSuccess).dlExecutives,
                                       sheetName: AppStrings.users,
                                       title: AppStrings.categoriesTitle,
                                     );
@@ -134,8 +127,14 @@ class _DLExecutiveWidget extends StatelessWidget {
                       return AppDataTable(
                         headers: dataColumnHeaders,
                         items: state.dlExecutives
-                            .map((dlExecutive) =>
-                                dlExecutiveDataRow(context, dlExecutive))
+                            .map(
+                              (dlExecutive) => dlExecutiveDataRow(
+                                context,
+                                dlExecutive: dlExecutive,
+                                onDelete: () {},
+                                onSelectChanged: (bool? val) {},
+                              ),
+                            )
                             .toList(),
                       );
                     }

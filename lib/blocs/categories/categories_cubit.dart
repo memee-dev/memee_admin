@@ -38,11 +38,11 @@ class CategoriesCubit extends Cubit<CategoriesState> {
     }
   }
 
-  void addCategory(
+  Future<void> addCategory(
     String categoryName,
     String image,
     bool status,
-  ) {
+  ) async {
     List<CategoryModel> categories = getLocalCategories();
 
     try {
@@ -66,7 +66,7 @@ class CategoriesCubit extends Cubit<CategoriesState> {
         active: status,
       );
 
-      ref.doc(sequentialDocId).set(category.toJson());
+      await ref.doc(sequentialDocId).set(category.toJson());
       categories.add(category);
       emit(CategoriesSuccess(categories));
     } catch (e) {
@@ -96,9 +96,17 @@ class CategoriesCubit extends Cubit<CategoriesState> {
   }
 
   Future<void> updateCategory(CategoryModel category) async {
+    List<CategoryModel> categories = getLocalCategories();
     try {
       await db.collection(collectionName).doc(category.id).set(category.toJson());
+      int index = categories.indexWhere((element) => category.id == element.id);
+      categories[index] = category;
+      emit(CategoriesSuccess(categories));
     } catch (e) {
+      emit(CategoriesFailure(
+        e.toString(),
+        const [],
+      ));
       log.e('UPDATE CATEGORY', error: e);
     }
   }

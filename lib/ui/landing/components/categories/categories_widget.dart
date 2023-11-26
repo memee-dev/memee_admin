@@ -18,20 +18,20 @@ import '../../../__shared/widgets/empty_widget.dart';
 import 'data-row/categories_data_row.dart';
 
 class CategoriesWidget extends StatelessWidget {
-  final TextEditingController _searchController = TextEditingController();
-  final _categoriesCubit = locator.get<CategoriesCubit>();
-
-  final dataColumnHeaders = [
-    'ID',
-    'Name',
-    'Status',
-    'Actions',
-  ];
-
-  CategoriesWidget({super.key});
+  const CategoriesWidget({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final _searchController = TextEditingController();
+    final _categoriesCubit = locator.get<CategoriesCubit>();
+
+    final dataColumnHeaders = [
+      'ID',
+      'Name',
+      'Status',
+      'Actions',
+    ];
+
     return Stack(children: [
       Positioned(
         right: 16.w,

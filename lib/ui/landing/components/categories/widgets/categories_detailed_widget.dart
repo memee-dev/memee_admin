@@ -9,6 +9,7 @@ import 'package:memee_admin/models/category_model.dart';
 import 'package:memee_admin/ui/__shared/extensions/widget_extensions.dart';
 import 'package:memee_admin/ui/__shared/widgets/app_switch.dart';
 import 'package:memee_admin/ui/__shared/widgets/app_textfield.dart';
+import 'package:memee_admin/ui/__shared/widgets/utils.dart';
 
 import '../../../../__shared/enum/doc_type.dart';
 import '../../../../__shared/widgets/app_button.dart';
@@ -25,6 +26,8 @@ class CategoriesDetailedWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     final _categoryCubit = locator.get<CategoriesCubit>();
     final _toggleCubit = locator.get<ToggleCubit>();
+    final _switchCubit = locator.get<ToggleCubit>();
+    final _saveCubit = locator.get<ToggleCubit>();
 
     final _categorynameController = TextEditingController();
     final _imageController = TextEditingController();
@@ -32,6 +35,7 @@ class CategoriesDetailedWidget extends StatelessWidget {
     late String selectedCategoryName = '';
     late String selectedImage = '';
     late bool selectedStatus = true;
+    late bool isLoading = false;
 
     DocType docType = getDocType<CategoryModel>(category, false);
 
@@ -49,7 +53,7 @@ class CategoriesDetailedWidget extends StatelessWidget {
     return BlocBuilder<ToggleCubit, bool>(
       bloc: _toggleCubit,
       builder: (_, state) {
-        print('onBuilder=>docType: $docType, docType != DocType.view: ${docType != DocType.view}');
+        double hfWidth = 75.w;
         return Row(
           mainAxisSize: MainAxisSize.min,
           children: [
@@ -68,7 +72,6 @@ class CategoriesDetailedWidget extends StatelessWidget {
                       IconButton(
                         onPressed: () {
                           docType = getDocType<CategoryModel>(category, docType != DocType.edit);
-                          print('onPressed=>docType: $docType');
                           _toggleCubit.change();
                         },
                         icon: Icon(
@@ -76,7 +79,7 @@ class CategoriesDetailedWidget extends StatelessWidget {
                         ),
                       ),
                   ],
-                ).sizedBoxW(null).gapBottom(16.h),
+                ).sizedBoxW(hfWidth).gapBottom(16.h),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
@@ -84,17 +87,22 @@ class CategoriesDetailedWidget extends StatelessWidget {
                       (docType != DocType.add) ? 'ID: ${category!.id}' : '',
                       style: Theme.of(context).textTheme.titleSmall,
                     ),
-                    AppSwitch(
-                      value: selectedStatus,
-                      enableEdit: docType != DocType.view,
-                      showConfirmationDailog: false,
-                      onTap: (bool val) {
-                        selectedStatus = val;
-                        _toggleCubit.change();
+                    BlocBuilder<ToggleCubit, bool>(
+                      bloc: _switchCubit..initialValue(true),
+                      builder: (_, __) {
+                        return AppSwitch(
+                          value: selectedStatus,
+                          enableEdit: docType != DocType.view,
+                          showConfirmationDailog: false,
+                          onTap: (bool val) {
+                            selectedStatus = val;
+                            _switchCubit.change();
+                          },
+                        );
                       },
                     )
                   ],
-                ).sizedBoxW(null).gapBottom(12.h),
+                ).sizedBoxW(hfWidth).gapBottom(12.h),
                 AppTextField(
                   readOnly: docType == DocType.view,
                   controller: _categorynameController..text = selectedCategoryName,
@@ -113,19 +121,50 @@ class CategoriesDetailedWidget extends StatelessWidget {
                       onTap: () => Navigator.pop(context),
                     ),
                     if (docType != DocType.view)
-                      AppButton.positive(
-                        padding: paddingButton,
-                        onTap: () {
-                          _categoryCubit.addCategory(
-                            _categorynameController.text,
-                            _imageController.text,
-                            selectedStatus,
+                      BlocBuilder<ToggleCubit, bool>(
+                        bloc: _saveCubit,
+                        builder: (_, __) {
+                          return AppButton.positive(
+                            isLoading: isLoading,
+                            padding: paddingButton,
+                            onTap: () async {
+                              isLoading = true;
+                              _saveCubit.change();
+
+                              final name = _categorynameController.text.trim();
+                              final image = _imageController.text.trim();
+                              if (name.isNotEmpty && image.isNotEmpty) {
+                                if (docType == DocType.add) {
+                                  _categoryCubit.addCategory(
+                                    name,
+                                    image,
+                                    selectedStatus,
+                                  );
+                                } else {
+                                  if (category != null) {
+                                    await _categoryCubit.updateCategory(
+                                      CategoryModel(
+                                        id: category!.id,
+                                        name: name,
+                                        image: image,
+                                        active: selectedStatus,
+                                      ),
+                                    );
+                                  }
+                                }
+
+                                Navigator.pop(context);
+                              } else {
+                                snackBar(context, 'Please fill the fields');
+                              }
+                              isLoading = false;
+                              _saveCubit.change();
+                            },
                           );
-                          Navigator.pop(context);
                         },
                       ).gapLeft(8.w),
                   ],
-                ).sizedBoxW(null),
+                ).sizedBoxW(hfWidth),
               ],
             ),
           ],

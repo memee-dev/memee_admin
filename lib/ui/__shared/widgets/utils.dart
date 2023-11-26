@@ -5,10 +5,16 @@ dynamic snackBar(
   String label, {
   SnackBarAction? action,
   Duration? duration,
+  Color textColor = Colors.amber,
 }) =>
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content: Text(label),
+        content: Text(
+          label,
+          style: Theme.of(context).textTheme.displaySmall?.copyWith(
+                color: textColor,
+              ),
+        ),
         duration: duration ?? const Duration(seconds: 1),
         action: action,
       ),
