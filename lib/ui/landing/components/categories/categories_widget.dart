@@ -118,7 +118,15 @@ class CategoriesWidget extends StatelessWidget {
                           .map((category) => categoryDataRow(
                                 context,
                                 category: category,
-                                onEdit: () {},
+                                onSelectChanged: (selected) async {
+                                  final result = await showDetailedDialog(
+                                    context,
+                                    child: CategoriesDetailedWidget(category: category),
+                                  );
+                                  if (result != null && result is CategoryModel) {
+                                    category = result;
+                                  }
+                                },
                                 onDelete: () {
                                   showConfirmationDialog(
                                     context,

@@ -9,6 +9,7 @@ class AppButton extends StatelessWidget {
   final Color bgColor;
   final Color textColor;
   final Function() onTap;
+  final EdgeInsetsGeometry? padding;
 
   const AppButton({
     super.key,
@@ -17,6 +18,7 @@ class AppButton extends StatelessWidget {
     this.bgColor = Colors.amber,
     this.textColor = Colors.black,
     this.isLoading = false,
+    this.padding,
   });
 
   const AppButton.positive({
@@ -26,6 +28,7 @@ class AppButton extends StatelessWidget {
     this.bgColor = Colors.amber,
     this.textColor = Colors.black,
     this.isLoading = false,
+    this.padding,
   });
 
   const AppButton.negative({
@@ -35,6 +38,7 @@ class AppButton extends StatelessWidget {
     this.bgColor = Colors.black,
     this.textColor = Colors.amber,
     this.isLoading = false,
+    this.padding,
   });
 
   @override
@@ -44,10 +48,11 @@ class AppButton extends StatelessWidget {
       onTap: onTap,
       child: Container(
         alignment: Alignment.center,
-        padding: EdgeInsets.symmetric(
-          horizontal: 16.w,
-          vertical: 12.h,
-        ),
+        padding: padding ??
+            EdgeInsets.symmetric(
+              horizontal: 16.w,
+              vertical: 12.h,
+            ),
         decoration: BoxDecoration(
           color: bgColor,
           borderRadius: BorderRadius.circular(8.sp),
@@ -56,10 +61,7 @@ class AppButton extends StatelessWidget {
             ? const CircularProgressIndicator.adaptive()
             : Text(
                 label,
-                style: Theme.of(context)
-                    .textTheme
-                    .bodySmall
-                    ?.copyWith(color: textColor),
+                style: Theme.of(context).textTheme.bodySmall?.copyWith(color: textColor),
               ),
       ),
     );

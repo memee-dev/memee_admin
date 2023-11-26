@@ -38,7 +38,11 @@ class CategoriesCubit extends Cubit<CategoriesState> {
     }
   }
 
-  void addCategory(String categoryName,String image) {
+  void addCategory(
+    String categoryName,
+    String image,
+    bool status,
+  ) {
     List<CategoryModel> categories = getLocalCategories();
 
     try {
@@ -55,8 +59,12 @@ class CategoriesCubit extends Cubit<CategoriesState> {
 
       sequentialDocId = 'c$sequentialDocId';
 
-      final category =
-          CategoryModel(id: sequentialDocId, name: categoryName, image: image);
+      final category = CategoryModel(
+        id: sequentialDocId,
+        name: categoryName,
+        image: image,
+        active: status,
+      );
 
       ref.doc(sequentialDocId).set(category.toJson());
       categories.add(category);
@@ -89,10 +97,7 @@ class CategoriesCubit extends Cubit<CategoriesState> {
 
   Future<void> updateCategory(CategoryModel category) async {
     try {
-      await db
-          .collection(collectionName)
-          .doc(category.id)
-          .set(category.toJson());
+      await db.collection(collectionName).doc(category.id).set(category.toJson());
     } catch (e) {
       log.e('UPDATE CATEGORY', error: e);
     }

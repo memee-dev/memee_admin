@@ -11,7 +11,7 @@ DataRow categoryDataRow(
   BuildContext context, {
   required CategoryModel category,
   required Function() onDelete,
-  required Function() onEdit,
+  required Function(bool?)? onSelectChanged,
 }) {
   return DataRow(
     cells: [
@@ -26,18 +26,13 @@ DataRow categoryDataRow(
           },
         ),
       ),
-      DataCell(Row(
-        children: [
-          IconButton(
-            onPressed: onEdit,
-            icon: const Icon(Icons.edit_outlined),
-          ).gapRight(4.w),
-          IconButton(
-            onPressed: onDelete,
-            icon: const Icon(Icons.delete_forever_outlined),
-          )
-        ],
-      ))
+      DataCell(
+        IconButton(
+          onPressed: onDelete,
+          icon: const Icon(Icons.delete_forever_outlined),
+        ),
+      )
     ],
+    onSelectChanged: onSelectChanged,
   );
 }
