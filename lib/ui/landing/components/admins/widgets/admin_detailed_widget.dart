@@ -8,7 +8,6 @@ import 'package:memee_admin/models/admin_model.dart';
 import 'package:memee_admin/ui/__shared/enum/doc_type.dart';
 import 'package:memee_admin/ui/__shared/extensions/widget_extensions.dart';
 import 'package:memee_admin/ui/__shared/widgets/app_textfield.dart';
-import '../../../../../blocs/index/index_cubit.dart';
 import '../../../../../blocs/toggle/toggle_cubit.dart';
 import '../../../../__shared/widgets/app_button.dart';
 import '../../../../__shared/widgets/app_dropdown.dart';
@@ -27,8 +26,8 @@ class AdminDetailedWidget extends StatelessWidget {
     final _adminCubit = locator.get<AdminCubit>();
     final _toggleCubit = locator.get<ToggleCubit>();
     final _switchCubit = locator.get<ToggleCubit>();
+    final _dropdownCubit = locator.get<ToggleCubit>();
     final _saveCubit = locator.get<ToggleCubit>();
-    final indexCubit = locator.get<IndexCubit>();
     final TextEditingController _nameController = TextEditingController();
     final TextEditingController _emailController = TextEditingController();
 
@@ -58,7 +57,7 @@ class AdminDetailedWidget extends StatelessWidget {
     return BlocBuilder<ToggleCubit, bool>(
       bloc: _toggleCubit,
       builder: (_, state) {
-        double hfWidth = 75.w;
+        double hfWidth = 175.w;
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisSize: MainAxisSize.min,
@@ -89,9 +88,9 @@ class AdminDetailedWidget extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  selectedId.isNotEmpty ? 'ID: ${admin!.id}' : AppStrings.add,
+                  selectedId.isNotEmpty ? 'ID: ${admin!.id}' : '',
                   style: Theme.of(context).textTheme.titleSmall,
-                ).gapBottom(16),
+                ),
                 BlocBuilder<ToggleCubit, bool>(
                   bloc: _switchCubit..initialValue(true),
                   builder: (_, __) {
@@ -107,8 +106,9 @@ class AdminDetailedWidget extends StatelessWidget {
                   },
                 )
               ],
-            ),
+            ).sizedBoxW(hfWidth).gapBottom(16),
             Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Column(
@@ -131,9 +131,9 @@ class AdminDetailedWidget extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
-                    BlocBuilder<IndexCubit, int>(
-                      bloc: indexCubit,
-                      builder: (context, state) {
+                    BlocBuilder<ToggleCubit, bool>(
+                      bloc: _dropdownCubit,
+                      builder: (_, state) {
                         return AppDropDown<int>(
                           value: selectedAdminLevel,
                           items: adminLevel,
@@ -141,7 +141,7 @@ class AdminDetailedWidget extends StatelessWidget {
                           onChanged: (int? newValue) {
                             if (docType != DocType.view) {
                               selectedAdminLevel = newValue!;
-                              _toggleCubit.change();
+                              _dropdownCubit.change();
                             }
                           },
                         );
@@ -150,7 +150,7 @@ class AdminDetailedWidget extends StatelessWidget {
                   ],
                 ).flexible()
               ],
-            ).gapBottom(32.h),
+            ).sizedBoxW(hfWidth).gapBottom(32.h),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
@@ -171,18 +171,29 @@ class AdminDetailedWidget extends StatelessWidget {
 
                           final name = _nameController.text.toString().trim();
                           final email = _emailController.text.toString().trim();
-                          final adminLevel = selectedAdminLevel;
-                          final active = selectedStatus;
-                          if (admin != null) {
-                            await _adminCubit.updateAdmin(
-                              AdminModel(
-                                id: admin!.id,
+
+                          if (name.isNotEmpty && email.isNotEmpty) {
+                            if (docType == DocType.add) {
+                              _adminCubit.addAdmin(
                                 name: name,
                                 email: email,
-                                adminLevel: adminLevel,
-                                active: selectedStatus,
-                              ),
-                            );
+                                adminLevel: selectedAdminLevel,
+                                status: selectedStatus,
+                              );
+                            } else {
+                              if (admin != null) {
+                                await _adminCubit.updateAdmin(
+                                  AdminModel(
+                                    id: admin!.id,
+                                    name: name,
+                                    email: email,
+                                    adminLevel: selectedAdminLevel,
+                                    active: selectedStatus,
+                                  ),
+                                );
+                              }
+                            }
+                            Navigator.pop(context);
                           } else {
                             snackBar(context, 'Please fill the fields');
                           }

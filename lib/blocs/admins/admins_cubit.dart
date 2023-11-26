@@ -25,7 +25,9 @@ class AdminCubit extends Cubit<AdminsState> {
       final docs = adminDoc.docs;
 
       for (var doc in docs) {
-        admins.add(AdminModel.fromMap(doc.data()));
+        final data = doc.data();
+        data['id'] = doc.id;
+        admins.add(AdminModel.fromMap(data));
       }
 
       emit(AdminsSuccess(admins));
@@ -38,19 +40,31 @@ class AdminCubit extends Cubit<AdminsState> {
     }
   }
 
-  Future<void> addAdmin(AdminModel admin) async {
+  Future<void> addAdmin({
+    required String name,
+    required String email,
+    required int adminLevel,
+    required bool status,
+  }) async {
     List<AdminModel> admins = getLocalAdmins();
     try {
       final adminCredential = await auth.createUserWithEmailAndPassword(
-        email: admin.email,
+        email: email,
         password: '123456', //TODO: please genrate random password and sendEMail
       );
 
       final user = adminCredential.user;
       if (user != null) {
         final adminCollection = db.collection(collectionName);
-        await adminCollection.doc(user.uid).set(admin.toJson());
-        admins.add(admin);
+        final _admin = AdminModel(
+          id: user.uid,
+          name: name,
+          email: email,
+          adminLevel: adminLevel,
+          active: status,
+        );
+        await adminCollection.doc(_admin.id).set(_admin.toJson());
+        admins.add(_admin);
         emit(AdminsSuccess(admins));
       }
     } catch (e) {
@@ -78,10 +92,18 @@ class AdminCubit extends Cubit<AdminsState> {
   }
 
   Future<void> updateAdmin(AdminModel admin) async {
+    List<AdminModel> admins = getLocalAdmins();
     try {
       await db.collection(collectionName).doc(admin.id).set(admin.toJson());
+      int index = admins.indexWhere((element) => admin.id == element.id);
+      admins[index] = admin;
+      emit(AdminsSuccess(admins));
     } catch (e) {
-      log.e('UPDATE Admin', error: e);
+      emit(AdminsFailure(
+        e.toString(),
+        const [],
+      ));
+      log.e('UPDATE ADMIN', error: e);
     }
   }
 
