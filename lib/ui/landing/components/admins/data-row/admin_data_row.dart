@@ -8,8 +8,12 @@ import 'package:memee_admin/ui/landing/components/admins/widgets/admin_detailed_
 import '../../../../__shared/dialog/detailed_dialog.dart';
 
 DataRow dataRow(
-  BuildContext context,
-  AdminModel admin,
+  BuildContext context,{
+  required AdminModel admin,
+  required Function() onDelete,
+  required Function(bool?)? onSelectChanged,
+}
+  
 ) {
   return DataRow(
     cells: [

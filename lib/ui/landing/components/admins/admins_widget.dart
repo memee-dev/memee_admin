@@ -12,7 +12,9 @@ import 'package:memee_admin/ui/landing/components/admins/data-row/admin_data_row
 import '../../../../blocs/admins/admins_cubit.dart';
 import '../../../../core/initializer/app_di_registration.dart';
 import '../../../../models/admin_model.dart';
+import '../../../__shared/dialog/confirmation_dialog.dart';
 import '../../../__shared/dialog/detailed_dialog.dart';
+import '../../../__shared/widgets/empty_widget.dart';
 import 'widgets/admin_detailed_widget.dart';
 
 class AdminWidget extends StatelessWidget {
@@ -20,29 +22,17 @@ class AdminWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider.value(
-      value: locator.get<AdminCubit>(),
-      child: _AdminWidget(),
-    );
-  }
-}
+    final TextEditingController _searchController = TextEditingController();
+    final _adminCubit = locator.get<AdminCubit>();
 
-class _AdminWidget extends StatelessWidget {
-  final TextEditingController _searchController = TextEditingController();
+    final dataColumnHeaders = [
+      'ID',
+      'Name',
+      'Email',
+      'Admin Level',
+      'Status',
+    ];
 
-  final dataColumnHeaders = [
-    'ID',
-    'Name',
-    'Email',
-    'Admin Level',
-    'Status',
-  ];
-
-  _AdminWidget();
-
-  @override
-  Widget build(BuildContext context) {
-    final adminCubit = context.read<AdminCubit>();
     return Stack(
       children: [
         Positioned(
@@ -80,7 +70,9 @@ class _AdminWidget extends StatelessWidget {
                             isLoading: state == ExportImportState.loading,
                             label: AppStrings.import,
                             onTap: () {
-                              ctx.read<ExportImportCubit>().importExcel<AdminModel>();
+                              ctx
+                                  .read<ExportImportCubit>()
+                                  .importExcel<AdminModel>();
                             },
                           );
                         },
@@ -97,9 +89,12 @@ class _AdminWidget extends StatelessWidget {
                             isLoading: state == ExportImportState.loading,
                             label: AppStrings.export,
                             onTap: () {
-                              if (adminCubit.state is AdminsSuccess) {
-                                ctx.read<ExportImportCubit>().exportExcel<AdminModel>(
-                                      data: (adminCubit.state as AdminsSuccess).admins,
+                              if (_adminCubit.state is AdminsSuccess) {
+                                ctx
+                                    .read<ExportImportCubit>()
+                                    .exportExcel<AdminModel>(
+                                      data: (_adminCubit.state as AdminsSuccess)
+                                          .admins,
                                       sheetName: AppStrings.admins,
                                       title: AppStrings.categoriesTitle,
                                     );
@@ -117,22 +112,46 @@ class _AdminWidget extends StatelessWidget {
               child: SingleChildScrollView(
                 scrollDirection: Axis.horizontal,
                 child: BlocBuilder<AdminCubit, AdminsState>(
-                  bloc: adminCubit..fetchAdmins(),
+                  bloc: _adminCubit..fetchAdmins(),
                   builder: (context, state) {
                     if (state is AdminsLoading) {
                       return const Center(
                         child: CircularProgressIndicator.adaptive(),
                       );
-                    } else if (state is AdminsFailure) {
-                      return Center(
-                        child: Text(state.message),
-                      );
-                    } else if (state is AdminsSuccess) {
+                    } else if (state is AdminsResponseState) {
+                      if (state.admins.isEmpty) {
+                        return const EmptyWidget(
+                            label: '${AppStrings.no} ${AppStrings.admins}');
+                      }
                       return AppDataTable(
                         headers: dataColumnHeaders,
-                        items: state.admins.map((admin) {
-                          return dataRow(context, admin);
-                        }).toList(),
+                        items: state.admins
+                            .map((admin) => dataRow(
+                                  context,
+                                  admin: admin,
+                                  onSelectChanged: (selected) async {
+                                    final result = await showDetailedDialog(
+                                      context,
+                                      child: AdminDetailedWidget(admin: admin),
+                                    );
+                                    if (result != null &&
+                                        result is AdminModel) {
+                                      admin = result;
+                                    }
+                                  },
+                                  onDelete: () {
+                                    showConfirmationDialog(
+                                      context,
+                                      onTap: (bool val) {
+                                        if (val) {
+                                          _adminCubit.deleteAdmin(admin);
+                                        }
+                                        Navigator.of(context).pop();
+                                      },
+                                    );
+                                  },
+                                ))
+                            .toList(),
                       );
                     }
                     return const SizedBox.shrink();
