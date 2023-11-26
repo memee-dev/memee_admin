@@ -23,17 +23,6 @@ class CategoriesDetailedWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return _CategoryDetailed(category: category);
-  }
-}
-
-class _CategoryDetailed extends StatelessWidget {
-  final CategoryModel? category;
-
-  const _CategoryDetailed({required this.category});
-
-  @override
-  Widget build(BuildContext context) {
     final _categoryCubit = locator.get<CategoriesCubit>();
     final _toggleCubit = locator.get<ToggleCubit>();
 
