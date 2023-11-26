@@ -45,7 +45,8 @@ class ExportImportCubit extends Cubit<ExportImportState> {
     var excelData = excel.encode();
 
     if (kIsWeb) {
-      final blob = html.Blob([excelData], 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+      final blob = html.Blob([excelData],
+          'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
 
       final url = html.Url.createObjectUrlFromBlob(blob);
       html.AnchorElement(href: url)
@@ -97,14 +98,13 @@ class ExportImportCubit extends Cubit<ExportImportState> {
 
                 if (id != null && name != null && active != null) {
                   data.add(CategoryModel(
-                    id: id,
-                    name: name,
-                    active: active,
-                  ) as T);
+                      id: id, name: name, active: active, image: '') as T);
                 }
               }
             }
-            locator.get<CategoriesCubit>().addCategories(data as List<CategoryModel>);
+            locator
+                .get<CategoriesCubit>()
+                .addCategories(data as List<CategoryModel>);
           }
         }
       });

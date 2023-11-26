@@ -1,11 +1,13 @@
 class CategoryModel {
   final String id;
   String name;
+  String image;
   bool active;
 
   CategoryModel({
     required this.id,
     required this.name,
+    required this.image,
     this.active = true,
   });
 
@@ -14,6 +16,7 @@ class CategoryModel {
       id: map['id'],
       name: map['name'],
       active: map['active'],
+      image: map['image'],
     );
   }
 
@@ -22,6 +25,7 @@ class CategoryModel {
     if (addId) map['id'] = id;
     map['name'] = name;
     map['active'] = active;
+    map['image'] = image;
     return map;
   }
 

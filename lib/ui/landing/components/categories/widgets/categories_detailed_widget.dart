@@ -13,6 +13,7 @@ import '../../../../__shared/widgets/app_button.dart';
 
 class CategoriesDetailedWidget extends StatelessWidget {
   final CategoryModel? category;
+
   const CategoriesDetailedWidget({
     super.key,
     this.category,
@@ -40,14 +41,17 @@ class _CategoryDetailed extends StatefulWidget {
 
 class _CategoryDetailedState extends State<_CategoryDetailed> {
   final TextEditingController _categorynameController = TextEditingController();
+  final TextEditingController _imageController = TextEditingController();
 
   bool enableAdd = false;
 
   late CategoryModel category;
   late String selectedId = '';
   late String selectedCategoryName = '';
+  late String selectedImage = '';
 
   final indexCubit = locator.get<IndexCubit>();
+
   @override
   void initState() {
     super.initState();
@@ -82,6 +86,10 @@ class _CategoryDetailedState extends State<_CategoryDetailed> {
           controller: _categorynameController..text = selectedCategoryName,
           label: AppStrings.name,
         ).sizedBoxW(size.width / 4).gapBottom(32.h),
+        AppTextField(
+          controller: _imageController..text = selectedImage,
+          label: AppStrings.image,
+        ).sizedBoxW(size.width / 4).gapBottom(32.h),
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
@@ -91,7 +99,8 @@ class _CategoryDetailedState extends State<_CategoryDetailed> {
             AppButton.positive(
               onTap: () {
                 // category.name = _categorynameController.text.toString().trim();
-                context.read<CategoriesCubit>().addCategory(_categorynameController.text);
+                context.read<CategoriesCubit>().addCategory(
+                    _categorynameController.text, _imageController.text);
                 Navigator.pop(context);
               },
             ).gapLeft(8.w),
