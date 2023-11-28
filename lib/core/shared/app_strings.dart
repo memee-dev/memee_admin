@@ -39,6 +39,7 @@ mixin AppStrings {
 
   static const String home = 'Home';
   static const String orders = 'Orders';
+    static const String details = 'Details';
   static const String products = 'Products';
   static const String product = 'Product';
   static const String categories = 'Categories';
