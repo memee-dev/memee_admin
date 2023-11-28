@@ -6,30 +6,26 @@ import 'package:memee_admin/core/shared/app_strings.dart';
 import 'package:memee_admin/ui/__shared/extensions/widget_extensions.dart';
 import 'package:memee_admin/ui/__shared/widgets/app_textfield.dart';
 
+import '../../../../blocs/export_import/export_import_cubit.dart';
 import '../../../../core/initializer/app_di_registration.dart';
+import '../../../../core/shared/app_column.dart';
 import '../../../../models/product_model.dart';
 import '../../../__shared/dialog/confirmation_dialog.dart';
 import '../../../__shared/dialog/detailed_dialog.dart';
+import '../../../__shared/widgets/app_button.dart';
 import '../../../__shared/widgets/data-table/app_data_table.dart';
 import '../../../__shared/widgets/empty_widget.dart';
-import '../products/widgets/add_product_widget.dart';
 import 'data-row/product_2_data_row.dart';
 import 'widgets/product_2_detailed_widget.dart';
 
 class ProductsWidget2 extends StatelessWidget {
-  final TextEditingController _searchController = TextEditingController();
-  final productsCubit = locator.get<ProductsCubit>();
-
-  final dataColumnHeaders = [
-    'ID',
-    'Name',
-    'Status',
-  ];
-
-  ProductsWidget2({super.key});
+  const ProductsWidget2({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final _searchController = TextEditingController();
+    final _productsCubit = locator.get<ProductsCubit>();
+
     return Stack(
       children: [
         Positioned(
@@ -46,18 +42,62 @@ class ProductsWidget2 extends StatelessWidget {
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: AppTextField(
-                controller: _searchController,
-                label: '${AppStrings.search} ${AppStrings.products}',
-              ),
+            Row(
+              children: [
+                SizedBox(
+                  width: MediaQuery.of(context).size.width / 4,
+                  child: AppTextField(
+                    controller: _searchController,
+                    label: '${AppStrings.search} ${AppStrings.products}',
+                  ),
+                ).gapRight(24.w),
+                Flexible(
+                  child: BlocProvider(
+                    create: (_) => locator.get<ExportImportCubit>(),
+                    child: BlocBuilder<ExportImportCubit, ExportImportState>(
+                      bloc: locator.get<ExportImportCubit>(),
+                      builder: (ctx, state) {
+                        return AppButton(
+                          isLoading: state == ExportImportState.loading,
+                          label: AppStrings.import,
+                          onTap: () {
+                            ctx.read<ExportImportCubit>().importExcel<ProductModel>();
+                          },
+                        );
+                      },
+                    ),
+                  ),
+                ),
+                SizedBox(width: 8.w),
+                Flexible(
+                  child: BlocProvider(
+                    create: (_) => locator.get<ExportImportCubit>(),
+                    child: BlocBuilder<ExportImportCubit, ExportImportState>(
+                      builder: (ctx, state) {
+                        return AppButton(
+                          isLoading: state == ExportImportState.loading,
+                          label: AppStrings.export,
+                          onTap: () {
+                            if (_productsCubit.state is ProductsSuccess) {
+                              ctx.read<ExportImportCubit>().exportExcel<ProductModel>(
+                                    data: (_productsCubit.state as ProductsSuccess).products,
+                                    sheetName: AppStrings.products,
+                                    title: AppColumn.products,
+                                  );
+                            }
+                          },
+                        );
+                      },
+                    ),
+                  ),
+                ),
+              ],
             ),
             Expanded(
               child: SingleChildScrollView(
                 scrollDirection: Axis.horizontal,
                 child: BlocBuilder<ProductsCubit, ProductsState>(
-                  bloc: productsCubit..fetchProducts(),
+                  bloc: _productsCubit..fetchProducts(),
                   builder: (context, state) {
                     if (state is ProductsLoading) {
                       return const Center(
@@ -71,9 +111,8 @@ class ProductsWidget2 extends StatelessWidget {
                       if (state.products.isEmpty) {
                         return const EmptyWidget(label: '${AppStrings.no} ${AppStrings.products}');
                       }
-                      return 
-                      AppDataTable(
-                        headers: dataColumnHeaders,
+                      return AppDataTable(
+                        headers: AppColumn.products,
                         items: state.products
                             .map((product) => product2DataRow(
                                   context,
@@ -92,7 +131,7 @@ class ProductsWidget2 extends StatelessWidget {
                                       context,
                                       onTap: (bool val) {
                                         if (val) {
-                                          productsCubit.deleteProducts(product);
+                                          _productsCubit.deleteProducts(product);
                                         }
                                         Navigator.of(context).pop();
                                       },

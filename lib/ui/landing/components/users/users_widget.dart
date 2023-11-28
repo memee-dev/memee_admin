@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:memee_admin/blocs/export_import/export_import_cubit.dart';
+import 'package:memee_admin/core/shared/app_column.dart';
 import 'package:memee_admin/core/shared/app_strings.dart';
 import 'package:memee_admin/ui/__shared/extensions/widget_extensions.dart';
 import 'package:memee_admin/ui/__shared/widgets/app_button.dart';
@@ -29,15 +30,6 @@ class UserWidget extends StatelessWidget {
 
 class _UserWidget extends StatelessWidget {
   final TextEditingController _searchController = TextEditingController();
-
-  final dataColumnHeaders = [
-    'ID',
-    'UserName',
-    'Email',
-    'PhoneNumber',
-    'Verifed',
-    'Status',
-  ];
 
   @override
   Widget build(BuildContext context) {
@@ -78,9 +70,7 @@ class _UserWidget extends StatelessWidget {
                             isLoading: state == ExportImportState.loading,
                             label: AppStrings.import,
                             onTap: () {
-                              ctx
-                                  .read<ExportImportCubit>()
-                                  .importExcel<UserModel>();
+                              ctx.read<ExportImportCubit>().importExcel<UserModel>();
                             },
                           );
                         },
@@ -98,13 +88,10 @@ class _UserWidget extends StatelessWidget {
                             label: AppStrings.export,
                             onTap: () {
                               if (userCubit.state is UsersSuccess) {
-                                ctx
-                                    .read<ExportImportCubit>()
-                                    .exportExcel<UserModel>(
-                                      data: (userCubit.state as UsersSuccess)
-                                          .users,
+                                ctx.read<ExportImportCubit>().exportExcel<UserModel>(
+                                      data: (userCubit.state as UsersSuccess).users,
                                       sheetName: AppStrings.users,
-                                      title: AppStrings.categoriesTitle,
+                                      title: AppColumn.users,
                                     );
                               }
                             },
@@ -132,10 +119,8 @@ class _UserWidget extends StatelessWidget {
                       );
                     } else if (state is UsersSuccess) {
                       return AppDataTable(
-                        headers: dataColumnHeaders,
-                        items: state.users
-                            .map((user) => userDataRow(context, user))
-                            .toList(),
+                        headers: AppColumn.users,
+                        items: state.users.map((user) => userDataRow(context, user)).toList(),
                       );
                     }
                     return const SizedBox.shrink();

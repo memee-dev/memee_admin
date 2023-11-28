@@ -13,6 +13,7 @@ import 'package:memee_admin/ui/landing/components/categories/widgets/categories_
 
 import '../../../../blocs/categories/categories_cubit.dart';
 import '../../../../core/initializer/app_di_registration.dart';
+import '../../../../core/shared/app_column.dart';
 import '../../../__shared/widgets/data-table/app_data_table.dart';
 import '../../../__shared/widgets/empty_widget.dart';
 import 'data-row/categories_data_row.dart';
@@ -24,13 +25,6 @@ class CategoriesWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     final _searchController = TextEditingController();
     final _categoriesCubit = locator.get<CategoriesCubit>();
-
-    final dataColumnHeaders = [
-      'ID',
-      'Name',
-      'Status',
-      'Actions',
-    ];
 
     return Stack(children: [
       Positioned(
@@ -87,7 +81,7 @@ class CategoriesWidget extends StatelessWidget {
                             ctx.read<ExportImportCubit>().exportExcel<CategoryModel>(
                                   data: (_categoriesCubit.state as CategoriesSuccess).categories,
                                   sheetName: AppStrings.categories,
-                                  title: AppStrings.categoriesTitle,
+                                  title: AppColumn.categories,
                                 );
                           }
                         },
@@ -113,7 +107,7 @@ class CategoriesWidget extends StatelessWidget {
                       return const EmptyWidget(label: '${AppStrings.no} ${AppStrings.categories}');
                     }
                     return AppDataTable(
-                      headers: dataColumnHeaders,
+                      headers: AppColumn.categories,
                       items: state.categories
                           .map((category) => categoryDataRow(
                                 context,

@@ -35,7 +35,11 @@ class AppSwitch extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.end,
           children: [
             if (postiveLabel != null && negativeaLabel != null)
-              Text((value ? postiveLabel : negativeaLabel)!).gapRight(4.w),
+              Text((value ? postiveLabel : negativeaLabel)!).gapRight(4.w)
+            else if (postiveLabel != null)
+              Text((postiveLabel)!).gapRight(4.w)
+            else if (negativeaLabel != null)
+              Text((negativeaLabel)!).gapRight(4.w),
             Switch(
               value: state,
               onChanged: (value) async {

@@ -27,7 +27,8 @@ class DL2Detailed extends StatelessWidget {
   Widget build(BuildContext context) {
     final _dlCubit = locator.get<DlExecutiveCubit>();
     final _toggleCubit = locator.get<ToggleCubit>();
-    final _switchCubit = locator.get<ToggleCubit>();
+    final _activeCubit = locator.get<ToggleCubit>();
+    final _allotedCubit = locator.get<ToggleCubit>();
     final _saveCubit = locator.get<ToggleCubit>();
 
     final TextEditingController _nameController = TextEditingController();
@@ -97,19 +98,39 @@ class DL2Detailed extends StatelessWidget {
                       (docType != DocType.add) ? 'ID: ${dlExecutive!.id}' : '',
                       style: Theme.of(context).textTheme.titleSmall,
                     ),
-                    BlocBuilder<ToggleCubit, bool>(
-                      bloc: _switchCubit..initialValue(true),
-                      builder: (_, __) {
-                        return AppSwitch(
-                          value: selectedStatus,
-                          enableEdit: docType != DocType.view,
-                          showConfirmationDailog: false,
-                          onTap: (bool val) {
-                            selectedStatus = val;
-                            _switchCubit.change();
+                    Row(
+                      children: [
+                        BlocBuilder<ToggleCubit, bool>(
+                          bloc: _allotedCubit..initialValue(true),
+                          builder: (_, __) {
+                            return AppSwitch(
+                              postiveLabel: AppStrings.allot,
+                              value: selectedAlloted,
+                              enableEdit: docType != DocType.view,
+                              showConfirmationDailog: false,
+                              onTap: (bool val) {
+                                selectedAlloted = val;
+                                _allotedCubit.change();
+                              },
+                            );
                           },
-                        );
-                      },
+                        ).gapRight(16.w),
+                        BlocBuilder<ToggleCubit, bool>(
+                          bloc: _activeCubit..initialValue(true),
+                          builder: (_, __) {
+                            return AppSwitch(
+                              postiveLabel: AppStrings.active,
+                              value: selectedStatus,
+                              enableEdit: docType != DocType.view,
+                              showConfirmationDailog: false,
+                              onTap: (bool val) {
+                                selectedStatus = val;
+                                _activeCubit.change();
+                              },
+                            );
+                          },
+                        ),
+                      ],
                     )
                   ],
                 ).sizedBoxW(hfWidth).gapBottom(12.h),
@@ -196,13 +217,13 @@ class DL2Detailed extends StatelessWidget {
                               if (name.isNotEmpty && phoneNumber.isNotEmpty && email.isNotEmpty && aadhar.isNotEmpty && dlNumber.isNotEmpty) {
                                 if (docType == DocType.add) {
                                   _dlCubit.addDlExecutive(
-                                    name: name,
-                                    phoneNumber: phoneNumber,
-                                    email: email,
-                                    aadhar: aadhar,
-                                    dlNumber: dlNumber,
-                                    active: selectedStatus,
-                                  );
+                                      name: name,
+                                      phoneNumber: phoneNumber,
+                                      email: email,
+                                      aadhar: aadhar,
+                                      dlNumber: dlNumber,
+                                      active: selectedStatus,
+                                      alloted: selectedAlloted);
                                 } else {
                                   if (dlExecutive != null) {
                                     await _dlCubit.updateDlExecutive(
@@ -214,6 +235,7 @@ class DL2Detailed extends StatelessWidget {
                                         aadhar: aadhar,
                                         dlNumber: dlNumber,
                                         active: selectedStatus,
+                                        alloted: selectedAlloted,
                                       ),
                                     );
                                   }

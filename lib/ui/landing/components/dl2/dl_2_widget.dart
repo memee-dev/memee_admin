@@ -3,13 +3,13 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:memee_admin/blocs/dl_executives/dl_executive_cubit.dart';
 import 'package:memee_admin/blocs/export_import/export_import_cubit.dart';
+import 'package:memee_admin/core/shared/app_column.dart';
 import 'package:memee_admin/core/shared/app_strings.dart';
 import 'package:memee_admin/models/dl_executive_model.dart';
 import 'package:memee_admin/ui/__shared/extensions/widget_extensions.dart';
 import 'package:memee_admin/ui/__shared/widgets/app_button.dart';
 import 'package:memee_admin/ui/__shared/widgets/app_textfield.dart';
 import 'package:memee_admin/ui/landing/components/dl-executives/data-row/dl_executive_data_row.dart';
-import 'package:memee_admin/ui/landing/components/dl-executives/widgets/dl_executive_detailed_widget.dart';
 import '../../../../core/initializer/app_di_registration.dart';
 import '../../../__shared/dialog/confirmation_dialog.dart';
 import '../../../__shared/dialog/detailed_dialog.dart';
@@ -24,13 +24,7 @@ class DLExecutiveWidget2 extends StatelessWidget {
   Widget build(BuildContext context) {
     final _searchController = TextEditingController();
     final _dlCubit = locator.get<DlExecutiveCubit>();
-    final dataColumnHeaders = [
-      'Name',
-      'Email',
-      'PhoneNumber',
-      'Alloted',
-      'Status',
-    ];
+
     return Stack(
       children: [
         Positioned(
@@ -89,7 +83,7 @@ class DLExecutiveWidget2 extends StatelessWidget {
                               ctx.read<ExportImportCubit>().exportExcel<DlExecutiveModel>(
                                     data: (_dlCubit.state as DlExecutivesSuccess).dlExecutives,
                                     sheetName: AppStrings.users,
-                                    title: AppStrings.categoriesTitle,
+                                    title: AppColumn.dlExecutives,
                                   );
                             }
                           },
@@ -115,7 +109,7 @@ class DLExecutiveWidget2 extends StatelessWidget {
                         return const EmptyWidget(label: '${AppStrings.no} ${AppStrings.categories}');
                       }
                       return AppDataTable(
-                        headers: dataColumnHeaders,
+                        headers: AppColumn.dlExecutives,
                         items: state.dlExecutives
                             .map((dlExecutive) => dlExecutiveDataRow(
                                   context,

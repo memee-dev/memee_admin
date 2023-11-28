@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:memee_admin/blocs/export_import/export_import_cubit.dart';
+import 'package:memee_admin/core/shared/app_column.dart';
 import 'package:memee_admin/core/shared/app_strings.dart';
 import 'package:memee_admin/ui/__shared/extensions/widget_extensions.dart';
 import 'package:memee_admin/ui/__shared/widgets/app_button.dart';
@@ -22,16 +23,8 @@ class AdminWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final TextEditingController _searchController = TextEditingController();
+    final _searchController = TextEditingController();
     final _adminCubit = locator.get<AdminCubit>();
-
-    final dataColumnHeaders = [
-      'ID',
-      'Name',
-      'Email',
-      'Admin Level',
-      'Status',
-    ];
 
     return Stack(
       children: [
@@ -70,9 +63,7 @@ class AdminWidget extends StatelessWidget {
                             isLoading: state == ExportImportState.loading,
                             label: AppStrings.import,
                             onTap: () {
-                              ctx
-                                  .read<ExportImportCubit>()
-                                  .importExcel<AdminModel>();
+                              ctx.read<ExportImportCubit>().importExcel<AdminModel>();
                             },
                           );
                         },
@@ -90,13 +81,10 @@ class AdminWidget extends StatelessWidget {
                             label: AppStrings.export,
                             onTap: () {
                               if (_adminCubit.state is AdminsSuccess) {
-                                ctx
-                                    .read<ExportImportCubit>()
-                                    .exportExcel<AdminModel>(
-                                      data: (_adminCubit.state as AdminsSuccess)
-                                          .admins,
+                                ctx.read<ExportImportCubit>().exportExcel<AdminModel>(
+                                      data: (_adminCubit.state as AdminsSuccess).admins,
                                       sheetName: AppStrings.admins,
-                                      title: AppStrings.categoriesTitle,
+                                      title: AppColumn.admins,
                                     );
                               }
                             },
@@ -120,11 +108,10 @@ class AdminWidget extends StatelessWidget {
                       );
                     } else if (state is AdminsResponseState) {
                       if (state.admins.isEmpty) {
-                        return const EmptyWidget(
-                            label: '${AppStrings.no} ${AppStrings.admins}');
+                        return const EmptyWidget(label: '${AppStrings.no} ${AppStrings.admins}');
                       }
                       return AppDataTable(
-                        headers: dataColumnHeaders,
+                        headers: AppColumn.admins,
                         items: state.admins
                             .map((admin) => dataRow(
                                   context,
@@ -134,8 +121,7 @@ class AdminWidget extends StatelessWidget {
                                       context,
                                       child: AdminDetailedWidget(admin: admin),
                                     );
-                                    if (result != null &&
-                                        result is AdminModel) {
+                                    if (result != null && result is AdminModel) {
                                       admin = result;
                                     }
                                   },
