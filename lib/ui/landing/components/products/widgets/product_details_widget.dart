@@ -54,7 +54,7 @@ class ProductDetailWidget extends StatelessWidget {
                   ProductDetailsModel(
                     price: double.parse(price),
                     discountedPrice: double.parse(dPrice),
-                    qty: int.parse(qty),
+                    qty: double.parse(qty),
                     type: _selectedType,
                   ),
                 );

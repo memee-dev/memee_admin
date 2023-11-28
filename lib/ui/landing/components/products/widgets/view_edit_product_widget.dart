@@ -30,6 +30,7 @@ class ViewEditProductWidget extends StatelessWidget {
   }
 }
 
+// ignore: must_be_immutable
 class _ViewEditProductWidget extends StatelessWidget {
   final ProductModel product;
   _ViewEditProductWidget(this.product);

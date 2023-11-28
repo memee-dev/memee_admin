@@ -9,6 +9,7 @@ import 'package:memee_admin/ui/landing/components/users/users_widget.dart';
 import '../components/admins/admins_widget.dart';
 import '../components/dl2/dl_2_widget.dart';
 import '../components/orders/orders_widget.dart';
+import '../components/products2/products_2_widget.dart';
 
 class LandingItemModel {
   final String name;
@@ -26,4 +27,5 @@ final List<LandingItemModel> items = [
   const LandingItemModel(AppStrings.admins, AdminWidget()),
   const LandingItemModel(AppStrings.dlExecutive, DLExecutiveWidget()),
   const LandingItemModel('dl2', DLExecutiveWidget2()),
+  LandingItemModel('Products Widget2', ProductsWidget2()),
 ];

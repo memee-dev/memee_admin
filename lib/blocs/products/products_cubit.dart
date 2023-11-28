@@ -108,7 +108,20 @@ class ProductsCubit extends Cubit<ProductsState> {
       log.e('UPDATE Product', error: e);
     }
   }
-
+Future<void> deleteProducts(ProductModel product) async {
+    List<ProductModel> products = getLocalProducts();
+    try {
+      products.remove(product);
+      await db.collection(collectionName).doc(product.id).delete();
+      emit(ProductsSuccess(products));
+    } catch (e) {
+      emit(ProductsFailure(
+        e.toString(),
+        products,
+      ));
+      log.e('DELETE PRODUCT', error: e);
+    }
+  }
   List<ProductModel> getLocalProducts() {
     List<ProductModel> products = [];
     if (state is ProductsSuccess) {
