@@ -9,13 +9,13 @@ import 'package:memee_admin/models/dl_executive_model.dart';
 import 'package:memee_admin/ui/__shared/extensions/widget_extensions.dart';
 import 'package:memee_admin/ui/__shared/widgets/app_button.dart';
 import 'package:memee_admin/ui/__shared/widgets/app_textfield.dart';
-import 'package:memee_admin/ui/landing/components/dl-executives/data-row/dl_executive_data_row.dart';
 import '../../../../core/initializer/app_di_registration.dart';
 import '../../../__shared/dialog/confirmation_dialog.dart';
 import '../../../__shared/dialog/detailed_dialog.dart';
 import '../../../__shared/widgets/data-table/app_data_table.dart';
 import '../../../__shared/widgets/empty_widget.dart';
-import 'widgets/dl_2_detailed.dart';
+import 'data-row/dl_executive_data_row.dart';
+import 'widgets/dl_detailed_widget.dart';
 
 class DLExecutiveWidget2 extends StatelessWidget {
   const DLExecutiveWidget2({super.key});
@@ -106,7 +106,7 @@ class DLExecutiveWidget2 extends StatelessWidget {
                       );
                     } else if (state is DlExecutivesResponseState) {
                       if (state.dlExecutives.isEmpty) {
-                        return const EmptyWidget(label: '${AppStrings.no} ${AppStrings.categories}');
+                        return const EmptyWidget(label: '${AppStrings.no} ${AppStrings.dlExecutive}');
                       }
                       return AppDataTable(
                         headers: AppColumn.dlExecutives,

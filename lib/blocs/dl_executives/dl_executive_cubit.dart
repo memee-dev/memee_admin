@@ -57,14 +57,13 @@ class DlExecutiveCubit extends Cubit<DlExecutivesState> {
     List<DlExecutiveModel> dlExecutives = getLocalDLExecutives();
 
     try {
-      final ref = db.collection(collectionName);
       int lastNumber = 1;
 
       late String sequentialDocId;
       if (dlExecutives.isEmpty) {
         sequentialDocId = lastNumber.toString().padLeft(3, '0');
       } else {
-        lastNumber = int.parse(dlExecutives.last.id.substring(1));
+        lastNumber = int.parse(dlExecutives.last.id.substring(2));
         sequentialDocId = (lastNumber + 1).toString().padLeft(3, '0');
       }
 
@@ -77,8 +76,12 @@ class DlExecutiveCubit extends Cubit<DlExecutivesState> {
         phoneNumber: phoneNumber,
         dlNumber: dlNumber,
         aadhar: aadhar,
+        active: active,
+        alloted: alloted,
       );
-      ref.doc(sequentialDocId).set(dl.toJson());
+
+      final ref = db.collection(collectionName);
+      await ref.doc(sequentialDocId).set(dl.toJson());
       dlExecutives.add(dl);
       emit(DlExecutivesSuccess(dlExecutives));
     } catch (e) {
