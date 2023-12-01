@@ -48,18 +48,22 @@ class ProductsCubit extends Cubit<ProductsState> {
     List<ProductModel> products = getLocalProducts();
 
     try {
+      // final filteredProducts =
+      //     products.where((element) => element.category.id == category.id);
+      // filteredProducts.last;
+
       final ref = db.collection(collectionName);
       int lastNumber = 0;
 
       ref
           .where(
-            'categoryId',
+            'category:id',
             isEqualTo: category.id,
           )
-          .orderBy('id', descending: true)
+          .orderBy('createdAt', descending: true)
           .limit(1)
           .get()
-          .then((QuerySnapshot querySnapshot) {
+          .then((QuerySnapshot querySnapshot) async {
         if (querySnapshot.docs.isNotEmpty) {
           lastNumber =
               int.parse(querySnapshot.docs.first['productId'].substring(6));
@@ -81,8 +85,10 @@ class ProductsCubit extends Cubit<ProductsState> {
           images: images,
           productDetails: productDetails,
         );
-
-        ref.doc(productId).set(product.toJson());
+        final data = product.toJson();
+        data['createdAt'] = DateTime.now();
+        data['updatedAt'] = DateTime.now();
+        await ref.doc(productId).set(data);
         products.add(product);
         emit(ProductsSuccess(products));
       }).catchError((e) {
@@ -102,13 +108,24 @@ class ProductsCubit extends Cubit<ProductsState> {
   }
 
   Future<void> updateProducts(ProductModel product) async {
+    List<ProductModel> products = getLocalProducts();
     try {
-      await db.collection(collectionName).doc(product.id).set(product.toJson());
+      final data = product.toJson();
+      data['updatedAt'] = DateTime.now();
+      await db.collection(collectionName).doc(product.id).set(data);
+      int index = products.indexWhere((element) => product.id == element.id);
+      products[index] = product;
+      emit(ProductsSuccess(products));
     } catch (e) {
-      log.e('UPDATE Product', error: e);
+      emit(ProductsFailure(
+        e.toString(),
+        const [],
+      ));
+      log.e('UPDATE CATEGORY', error: e);
     }
   }
-Future<void> deleteProducts(ProductModel product) async {
+
+  Future<void> deleteProducts(ProductModel product) async {
     List<ProductModel> products = getLocalProducts();
     try {
       products.remove(product);
@@ -122,6 +139,7 @@ Future<void> deleteProducts(ProductModel product) async {
       log.e('DELETE PRODUCT', error: e);
     }
   }
+
   List<ProductModel> getLocalProducts() {
     List<ProductModel> products = [];
     if (state is ProductsSuccess) {

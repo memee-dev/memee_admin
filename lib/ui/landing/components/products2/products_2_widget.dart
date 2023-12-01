@@ -103,11 +103,7 @@ class ProductsWidget2 extends StatelessWidget {
                       return const Center(
                         child: CircularProgressIndicator.adaptive(),
                       );
-                    } else if (state is ProductsFailure) {
-                      return Center(
-                        child: Text(state.message),
-                      );
-                    } else if (state is ProductsResponseState) {
+                    }  else if (state is ProductsResponseState) {
                       if (state.products.isEmpty) {
                         return const EmptyWidget(label: '${AppStrings.no} ${AppStrings.products}');
                       }

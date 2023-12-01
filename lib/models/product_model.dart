@@ -12,7 +12,7 @@ class ProductModel {
   ProductModel({
     required this.id,
     required this.name,
-     required this.category,
+    required this.category,
     required this.description,
     this.images,
     required this.productDetails,
@@ -25,15 +25,17 @@ class ProductModel {
       name: map['name'],
       category: CategoryModel.fromMap(map['category']),
       description: map['description'],
-      images: map['images'] != null ? List<String>.from(map['images'].map((x) => x)) : [],
-      productDetails: List<ProductDetailsModel>.from(map['productDetails'].map((x) => ProductDetailsModel.fromMap(x))),
+      images: map['images'] != null
+          ? List<String>.from(map['images'].map((x) => x))
+          : [],
+      productDetails: List<ProductDetailsModel>.from(
+          map['productDetails'].map((x) => ProductDetailsModel.fromMap(x))),
       active: map['active'] ?? false,
     );
   }
 
   Map<String, dynamic> toJson() {
     final map = <String, dynamic>{};
-    map['id'] = id;
     map['name'] = name;
     map['category'] = category.toJson(addId: true);
     map['description'] = description;
@@ -48,6 +50,7 @@ class ProductModel {
         ),
       );
     }
+
     return map;
   }
 }
