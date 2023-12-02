@@ -34,7 +34,7 @@ class DLExecutiveWidget extends StatelessWidget {
             onPressed: () {
               showDetailedDialog(
                 context,
-                child: const DL2Detailed(),
+                child: const DLDetailed(),
               );
             },
             child: const Icon(Icons.add),
@@ -126,7 +126,7 @@ class DLExecutiveWidget extends StatelessWidget {
                                     final result = await showDetailedDialog(
                                       context,
                                       child:
-                                          DL2Detailed(dlExecutive: dlExecutive),
+                                          DLDetailed(dlExecutive: dlExecutive),
                                     );
                                     if (result != null &&
                                         result is DlExecutiveModel) {

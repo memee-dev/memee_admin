@@ -15,10 +15,10 @@ import 'package:memee_admin/ui/__shared/widgets/app_textfield.dart';
 import '../../../../../blocs/toggle/toggle_cubit.dart';
 import '../../../../__shared/widgets/utils.dart';
 
-class DL2Detailed extends StatelessWidget {
+class DLDetailed extends StatelessWidget {
   final DlExecutiveModel? dlExecutive;
 
-  const DL2Detailed({
+  const DLDetailed({
     super.key,
     this.dlExecutive,
   });
@@ -32,7 +32,8 @@ class DL2Detailed extends StatelessWidget {
     final _saveCubit = locator.get<ToggleCubit>();
 
     final TextEditingController _nameController = TextEditingController();
-    final TextEditingController _phoneNumberController = TextEditingController();
+    final TextEditingController _phoneNumberController =
+        TextEditingController();
     final TextEditingController _emailController = TextEditingController();
     final TextEditingController _aadharController = TextEditingController();
     final TextEditingController _dlNumberController = TextEditingController();
@@ -82,11 +83,14 @@ class DL2Detailed extends StatelessWidget {
                     if ((docType != DocType.add))
                       IconButton(
                         onPressed: () {
-                          docType = getDocType<DlExecutiveModel>(dlExecutive, docType != DocType.edit);
+                          docType = getDocType<DlExecutiveModel>(
+                              dlExecutive, docType != DocType.edit);
                           _toggleCubit.change();
                         },
                         icon: Icon(
-                          docType == DocType.edit ? Icons.close_outlined : Icons.edit_outlined,
+                          docType == DocType.edit
+                              ? Icons.close_outlined
+                              : Icons.edit_outlined,
                         ),
                       ),
                   ],
@@ -146,7 +150,8 @@ class DL2Detailed extends StatelessWidget {
                           readOnly: docType == DocType.view,
                         ).gapBottom(8.w),
                         AppTextField(
-                          controller: _phoneNumberController..text = selectedPhoneNumber,
+                          controller: _phoneNumberController
+                            ..text = selectedPhoneNumber,
                           label: AppStrings.phoneNumber,
                           readOnly: docType == DocType.view,
                         ).gapBottom(8.w),
@@ -167,11 +172,13 @@ class DL2Detailed extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: [
                         AppTextField(
-                          controller: _dlNumberController..text = selectedDlNumber,
+                          controller: _dlNumberController
+                            ..text = selectedDlNumber,
                           label: AppStrings.dlNo,
                           readOnly: docType == DocType.view,
                         ).gapBottom(16.h),
-                        if (docType != DocType.add && dlExecutive!.dlUrl != null)
+                        if (docType != DocType.add &&
+                            dlExecutive!.dlUrl != null)
                           Image.network(
                             dlExecutive!.dlUrl!,
                           ).gapBottom(16.h),
@@ -179,9 +186,10 @@ class DL2Detailed extends StatelessWidget {
                           AppButton(
                             label: AppStrings.changeDL,
                             onTap: () async {
-                              final image = await locator.get<ImagePicker>().pickImage(
-                                    source: ImageSource.gallery,
-                                  );
+                              final image =
+                                  await locator.get<ImagePicker>().pickImage(
+                                        source: ImageSource.gallery,
+                                      );
                               if (image != null) {
                                 _dlCubit.updateDLImage(image);
                               }
@@ -209,12 +217,21 @@ class DL2Detailed extends StatelessWidget {
                               isLoading = true;
                               _saveCubit.change();
 
-                              final name = _nameController.text.toString().trim();
-                              final email = _emailController.text.toString().trim();
-                              final aadhar = _aadharController.text.toString().trim();
-                              final phoneNumber = _phoneNumberController.text.toString().trim();
-                              final dlNumber = _dlNumberController.text.toString().trim();
-                              if (name.isNotEmpty && phoneNumber.isNotEmpty && email.isNotEmpty && aadhar.isNotEmpty && dlNumber.isNotEmpty) {
+                              final name =
+                                  _nameController.text.toString().trim();
+                              final email =
+                                  _emailController.text.toString().trim();
+                              final aadhar =
+                                  _aadharController.text.toString().trim();
+                              final phoneNumber =
+                                  _phoneNumberController.text.toString().trim();
+                              final dlNumber =
+                                  _dlNumberController.text.toString().trim();
+                              if (name.isNotEmpty &&
+                                  phoneNumber.isNotEmpty &&
+                                  email.isNotEmpty &&
+                                  aadhar.isNotEmpty &&
+                                  dlNumber.isNotEmpty) {
                                 if (docType == DocType.add) {
                                   _dlCubit.addDlExecutive(
                                       name: name,
