@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:memee_admin/core/shared/app_strings.dart';
 import 'package:memee_admin/models/product_model.dart';
@@ -7,41 +8,23 @@ import 'package:memee_admin/ui/__shared/widgets/app_button.dart';
 import 'package:memee_admin/ui/__shared/widgets/app_dropdown.dart';
 import 'package:memee_admin/ui/__shared/widgets/app_textfield.dart';
 
+import '../../../../../blocs/toggle/toggle_cubit.dart';
+import '../../../../../core/initializer/app_di_registration.dart';
 import '../../../../__shared/enum/doc_type.dart';
 
-class ProductDetailWidget extends StatelessWidget {
+class ProductDetail2Widget extends StatelessWidget {
   final ProductDetailsModel? productDetails;
-  const ProductDetailWidget({
-    super.key,
-    required this.productDetails,
-  });
+  const ProductDetail2Widget({super.key, this.productDetails});
 
   @override
   Widget build(BuildContext context) {
-    
+    DocType docType = getDocType<ProductDetailsModel>(productDetails, false);
+
+    final _refreshCubit = locator.get<ToggleCubit>();
     final _priceController = TextEditingController();
     final _dPriceController = TextEditingController();
     final _qtyController = TextEditingController();
-    ProductType selectedType = ProductType.kg;
-
-    late double selectedPrice ;
-    late double selectedDprice  ;
-    late double selectedQty  ;
-    
-
-    DocType docType = getDocType<ProductDetailsModel>(productDetails, false);
-    _resetForm() {
-      if (productDetails != null) {
-        selectedPrice = productDetails!.price;
-        selectedDprice = productDetails!.discountedPrice;
-        selectedQty = productDetails!.qty ;
-        selectedType = productDetails!.type;
-       
-      }
-    }
-
-    _resetForm();
-
+    ProductType _selectedType = ProductType.kg;
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
@@ -57,16 +40,24 @@ class ProductDetailWidget extends StatelessWidget {
           controller: _qtyController,
           label: AppStrings.qty,
         ).gapBottom(8.h),
-        AppDropDown<ProductType>(
-          value: selectedType,
-          items: ProductType.values,
-          onChanged: (val) {
-            if (val != null) {
-              selectedType == val;
-            }
+        BlocBuilder<ToggleCubit, bool>(
+          bloc: _refreshCubit..initialValue(true),
+          builder: (_, state) {
+            return AppDropDown<ProductType>(
+              value: _selectedType,
+              items: ProductType.values,
+              onChanged: (ProductType? val) {
+                if (docType != DocType.view && val != null) {
+                  _selectedType = val;
+                  _refreshCubit.change();
+                }
+              },
+            );
           },
         ).gapBottom(32.h),
         Row(
+          mainAxisSize: MainAxisSize.min,
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
             AppButton.negative(onTap: () => Navigator.pop(context))
                 .gapRight(8.w),
@@ -81,7 +72,7 @@ class ProductDetailWidget extends StatelessWidget {
                     price: double.parse(price),
                     discountedPrice: double.parse(dPrice),
                     qty: double.parse(qty),
-                    type: selectedType,
+                    type: _selectedType,
                   ),
                 );
               }

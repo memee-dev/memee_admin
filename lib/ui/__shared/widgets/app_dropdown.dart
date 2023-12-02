@@ -20,7 +20,6 @@ class AppDropDown<T> extends StatelessWidget {
     final borderRadius = BorderRadius.circular(2.sp);
     final padding = EdgeInsets.symmetric(horizontal: 4.w);
     return Container(
-      //padding: padding,
       decoration: BoxDecoration(
         borderRadius: borderRadius,
         border: Border.all(

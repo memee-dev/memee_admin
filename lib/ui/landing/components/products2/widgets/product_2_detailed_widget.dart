@@ -14,12 +14,12 @@ import 'package:memee_admin/ui/__shared/widgets/app_dropdown.dart';
 import 'package:memee_admin/ui/__shared/widgets/app_switch.dart';
 import 'package:memee_admin/ui/__shared/widgets/app_textfield.dart';
 
-import '../../../../../blocs/index/index_cubit.dart';
+import 'package:image_picker/image_picker.dart';
 import '../../../../__shared/dialog/detailed_dialog.dart';
 import '../../../../__shared/enum/doc_type.dart';
 import '../../../../__shared/widgets/app_button.dart';
 import '../../../../__shared/widgets/utils.dart';
-import '../../products/widgets/product_details_widget.dart';
+import 'product_2_detailed_dialog.dart';
 
 class Products2DetailedWidget extends StatelessWidget {
   final ProductModel? product;
@@ -65,6 +65,18 @@ class Products2DetailedWidget extends StatelessWidget {
     }
 
     _resetForm(); //editand view
+    Future<void> _pickImage() async {
+      final picker = ImagePicker();
+      final pickedFile = await picker.pickImage(
+        source: ImageSource.gallery,
+      );
+
+      if (pickedFile != null) {
+        String imagePath = pickedFile.path;
+        selectedImages.add(imagePath);
+        _refreshCubit.change();
+      }
+    }
 
     final paddingButton = EdgeInsets.symmetric(horizontal: 8.w, vertical: 8.h);
     return BlocBuilder<ToggleCubit, bool>(
@@ -129,7 +141,8 @@ class Products2DetailedWidget extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           AppTextField(
                             width: fieldWidth,
@@ -145,16 +158,12 @@ class Products2DetailedWidget extends StatelessWidget {
                             label: AppStrings.description,
                           ).gapBottom(8.h),
                           if ((docType != DocType.view))
-                            Center(
-                              child: AppButton.positive(
-                                onTap: () {},
-                                label: docType == DocType.add
-                                    ? '${AppStrings.add} ${AppStrings.image}'
-                                    : '${AppStrings.edit} ${AppStrings.image}',
-                              ).sizedBox(
-                                width: 75.w,
-                                height: 40.h,
-                              ),
+                            AppButton.positive(
+                              onTap: _pickImage,
+                              label: '${AppStrings.add} ${AppStrings.image}',
+                            ).sizedBox(
+                              width: 75.w,
+                              height: 40.h,
                             ),
                           if (product != null &&
                               product!.images != null &&
@@ -203,15 +212,15 @@ class Products2DetailedWidget extends StatelessWidget {
                                   ..fetchCategories(),
                                 builder: (context, state) {
                                   if (state is CategoriesResponseState) {
-                                    final indexCubit =
-                                        locator.get<IndexCubit>();
+                                    final refreshCubit =
+                                        locator.get<ToggleCubit>();
                                     final categories = state.categories;
                                     if (categories.isNotEmpty) {
                                       if (docType == DocType.add) {
                                         selectedCategory = categories.first;
                                       }
-                                      return BlocBuilder<IndexCubit, int>(
-                                        bloc: indexCubit,
+                                      return BlocBuilder<ToggleCubit, bool>(
+                                        bloc: refreshCubit,
                                         builder: (_, index) {
                                           return AppDropDown<CategoryModel>(
                                             value: selectedCategory,
@@ -220,8 +229,7 @@ class Products2DetailedWidget extends StatelessWidget {
                                               if (docType != DocType.view &&
                                                   val != null) {
                                                 selectedCategory = val;
-                                                indexCubit.onIndexChange(
-                                                    categories.indexOf(val));
+                                                refreshCubit.change();
                                               }
                                             },
                                           );
@@ -233,25 +241,19 @@ class Products2DetailedWidget extends StatelessWidget {
                                 },
                               ),
                               if (docType != DocType.view)
-                                BlocBuilder<ToggleCubit, bool>(
-                                  bloc: _refreshCubit,
-                                  builder: (_, __) {
-                                    return AppButton(
-                                      label: docType == DocType.add
-                                          ? '${AppStrings.add} ${AppStrings.details}'
-                                          : '${AppStrings.edit} ${AppStrings.details}',
-                                      onTap: () async {
-                                        final result = await showDetailedDialog(
-                                          context,
-                                          child: const ProductDetailWidget(),
-                                        );
-                                        if (result != null &&
-                                            result is ProductDetailsModel) {
-                                          productDetails.add(result);
-                                          _productDetailsRefreshCubit.change();
-                                        }
-                                      },
+                                AppButton(
+                                  label:
+                                      '${AppStrings.add} ${AppStrings.details}',
+                                  onTap: () async {
+                                    final result = await showDetailedDialog(
+                                      context,
+                                      child: const ProductDetail2Widget(),
                                     );
+                                    if (result != null &&
+                                        result is ProductDetailsModel) {
+                                      productDetails.add(result);
+                                      _productDetailsRefreshCubit.change();
+                                    }
                                   },
                                 ),
                             ],
