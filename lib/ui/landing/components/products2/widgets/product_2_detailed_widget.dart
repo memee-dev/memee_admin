@@ -44,9 +44,11 @@ class Products2DetailedWidget extends StatelessWidget {
 
     final _descriptionController = TextEditingController();
     final _nameController = TextEditingController();
+    final _imageController = TextEditingController();
 
     late String selectedName = '';
     late String selectedDescription = '';
+    late String selectedImage = '';
     late bool selectedStatus = true;
     late List<String> selectedImages = [];
 
@@ -65,18 +67,6 @@ class Products2DetailedWidget extends StatelessWidget {
     }
 
     _resetForm(); //editand view
-    Future<void> _pickImage() async {
-      final picker = ImagePicker();
-      final pickedFile = await picker.pickImage(
-        source: ImageSource.gallery,
-      );
-
-      if (pickedFile != null) {
-        String imagePath = pickedFile.path;
-        selectedImages.add(imagePath);
-        _refreshCubit.change();
-      }
-    }
 
     final paddingButton = EdgeInsets.symmetric(horizontal: 8.w, vertical: 8.h);
     return BlocBuilder<ToggleCubit, bool>(
@@ -141,7 +131,7 @@ class Products2DetailedWidget extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Column(
-                        crossAxisAlignment: CrossAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           AppTextField(
@@ -158,19 +148,33 @@ class Products2DetailedWidget extends StatelessWidget {
                             label: AppStrings.description,
                           ).gapBottom(8.h),
                           if ((docType != DocType.view))
-                            AppButton.positive(
-                              onTap: _pickImage,
-                              label: '${AppStrings.add} ${AppStrings.image}',
-                            ).sizedBox(
-                              width: 75.w,
-                              height: 40.h,
-                            ),
+                            Row(
+                              children: [
+                                AppTextField(
+                                  width: fieldWidth,
+                                  readOnly: docType == DocType.view,
+                                  controller: _imageController,
+                                  label: AppStrings.image,
+                                ).gapRight(4.w),
+                                FloatingActionButton(
+                                  onPressed: () {
+                                    final img = _imageController.text.trim();
+                                    if (img != '') {
+                                      selectedImages.add(img);
+                                      _imageController.clear();
+                                      _refreshCubit.change();
+                                    }
+                                  },
+                                  child: const Icon(Icons.add_circle_outline),
+                                ),
+                              ],
+                            ).gapBottom(8.h),
                           if (product != null &&
                               product!.images != null &&
                               product!.images!.isNotEmpty)
                             CarouselSlider(
                               options: CarouselOptions(),
-                              items: product!.images!
+                              items: [...product!.images!, ...selectedImages]
                                   .map(
                                     (image) => Stack(
                                       alignment: Alignment.center,
@@ -184,9 +188,7 @@ class Products2DetailedWidget extends StatelessWidget {
                                             bottom: 0.0,
                                             child: IconButton(
                                               onPressed: () {
-                                                selectedImages.removeAt(
-                                                    selectedImages
-                                                        .indexOf(image));
+                                                selectedImages.remove(image);
                                                 _refreshCubit.change();
                                               },
                                               icon: const Icon(
