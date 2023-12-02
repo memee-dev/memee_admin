@@ -6,7 +6,7 @@ import '../components/categories/categories_widget.dart';
 import '../components/dl/dl_widget.dart';
 import '../components/home/home_widget.dart';
 import '../components/orders/orders_widget.dart';
-import '../components/products2/products_widget.dart';
+import '../components/products/products_widget.dart';
 import '../components/users/users_widget.dart';
 
 class LandingItemModel {
