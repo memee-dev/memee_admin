@@ -33,15 +33,14 @@ class Products2DetailedWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
     final _productCubit = locator.get<ProductsCubit>();
-    final _toggleCubit = locator.get<ToggleCubit>();
+    final _refreshCubit = locator.get<ToggleCubit>();
     final _switchCubit = locator.get<ToggleCubit>();
-    ProductType _selectedType = ProductType.kg;
     final _saveCubit = locator.get<ToggleCubit>();
-    List<ProductDetailsModel> productDetails = [];
-    late CategoryModel _selectedCategory;
-    final fieldWidth = size.width / 4;
+    final _productDetailsRefreshCubit = locator.get<ToggleCubit>();
 
-    final toggleCubit = locator.get<ToggleCubit>();
+    List<ProductDetailsModel> productDetails = [];
+    late CategoryModel selectedCategory;
+    final fieldWidth = size.width / 4;
 
     final _descriptionController = TextEditingController();
     final _nameController = TextEditingController();
@@ -49,27 +48,27 @@ class Products2DetailedWidget extends StatelessWidget {
     late String selectedName = '';
     late String selectedDescription = '';
     late bool selectedStatus = true;
-    late bool isLoading = false;
     late List<String> selectedImages = [];
 
     DocType docType = getDocType<ProductModel>(product, false);
 
+    late bool isLoading = false;
     _resetForm() {
       if (product != null) {
-        _selectedCategory = product!.category;
+        selectedCategory = product!.category;
         selectedName = product!.name;
         selectedDescription = product!.description;
         selectedStatus = product!.active;
-        selectedImages.addAll(product!.images!);
+        selectedImages = product!.images ?? [];
         productDetails = product!.productDetails;
       }
     }
 
-    _resetForm();
+    _resetForm(); //editand view
 
     final paddingButton = EdgeInsets.symmetric(horizontal: 8.w, vertical: 8.h);
     return BlocBuilder<ToggleCubit, bool>(
-        bloc: _toggleCubit,
+        bloc: _refreshCubit,
         builder: (_, state) {
           double hfWidth = 245.w;
           return Row(
@@ -91,7 +90,7 @@ class Products2DetailedWidget extends StatelessWidget {
                           onPressed: () {
                             docType = getDocType<ProductModel>(
                                 product, docType != DocType.edit);
-                            _toggleCubit.change();
+                            _refreshCubit.change();
                           },
                           icon: Icon(
                             docType == DocType.edit
@@ -179,7 +178,7 @@ class Products2DetailedWidget extends StatelessWidget {
                                                 selectedImages.removeAt(
                                                     selectedImages
                                                         .indexOf(image));
-                                                _toggleCubit.change();
+                                                _refreshCubit.change();
                                               },
                                               icon: const Icon(
                                                 Icons.remove_circle_outline,
@@ -208,16 +207,19 @@ class Products2DetailedWidget extends StatelessWidget {
                                         locator.get<IndexCubit>();
                                     final categories = state.categories;
                                     if (categories.isNotEmpty) {
-                                      _selectedCategory = categories.first;
+                                      if (docType == DocType.add) {
+                                        selectedCategory = categories.first;
+                                      }
                                       return BlocBuilder<IndexCubit, int>(
                                         bloc: indexCubit,
                                         builder: (_, index) {
                                           return AppDropDown<CategoryModel>(
-                                            value: _selectedCategory,
+                                            value: selectedCategory,
                                             items: categories,
                                             onChanged: (CategoryModel? val) {
-                                              if (val != null) {
-                                                _selectedCategory = val;
+                                              if (docType != DocType.view &&
+                                                  val != null) {
+                                                selectedCategory = val;
                                                 indexCubit.onIndexChange(
                                                     categories.indexOf(val));
                                               }
@@ -232,7 +234,7 @@ class Products2DetailedWidget extends StatelessWidget {
                               ),
                               if (docType != DocType.view)
                                 BlocBuilder<ToggleCubit, bool>(
-                                  bloc: _toggleCubit,
+                                  bloc: _refreshCubit,
                                   builder: (_, __) {
                                     return AppButton(
                                       label: docType == DocType.add
@@ -246,7 +248,7 @@ class Products2DetailedWidget extends StatelessWidget {
                                         if (result != null &&
                                             result is ProductDetailsModel) {
                                           productDetails.add(result);
-                                          toggleCubit.change();
+                                          _productDetailsRefreshCubit.change();
                                         }
                                       },
                                     );
@@ -255,7 +257,8 @@ class Products2DetailedWidget extends StatelessWidget {
                             ],
                           ).gapBottom(8.h),
                           BlocBuilder<ToggleCubit, bool>(
-                            bloc: toggleCubit..initialValue(false),
+                            bloc: _productDetailsRefreshCubit
+                              ..initialValue(false),
                             builder: (_, state) {
                               if (productDetails.isNotEmpty) {
                                 return Column(
@@ -276,7 +279,8 @@ class Products2DetailedWidget extends StatelessWidget {
                                                 onTap: () {
                                                   productDetails
                                                       .remove(details);
-                                                  toggleCubit.change();
+                                                  _productDetailsRefreshCubit
+                                                      .change();
                                                 },
                                                 child: const Icon(
                                                     Icons.remove_circle),
@@ -320,8 +324,9 @@ class Products2DetailedWidget extends StatelessWidget {
                                     if (docType == DocType.add) {
                                       _productCubit.addProduct(
                                         name: name,
-                                        category: _selectedCategory,
+                                        category: selectedCategory,
                                         description: description,
+                                        images: selectedImages,
                                         productDetails: productDetails,
                                       );
                                     } else {
@@ -330,10 +335,11 @@ class Products2DetailedWidget extends StatelessWidget {
                                           ProductModel(
                                             id: product!.id,
                                             name: name,
-                                            category: _selectedCategory,
+                                            category: selectedCategory,
                                             description: description,
                                             active: selectedStatus,
-                                            productDetails: [],
+                                            images: selectedImages,
+                                            productDetails: productDetails,
                                           ),
                                         );
                                       }
