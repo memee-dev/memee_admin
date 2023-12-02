@@ -12,9 +12,9 @@ import '../../../../../blocs/toggle/toggle_cubit.dart';
 import '../../../../../core/initializer/app_di_registration.dart';
 import '../../../../__shared/enum/doc_type.dart';
 
-class ProductDetail2Widget extends StatelessWidget {
+class DetailDialogWidget extends StatelessWidget {
   final ProductDetailsModel? productDetails;
-  const ProductDetail2Widget({super.key, this.productDetails});
+  const DetailDialogWidget({super.key, this.productDetails});
 
   @override
   Widget build(BuildContext context) {

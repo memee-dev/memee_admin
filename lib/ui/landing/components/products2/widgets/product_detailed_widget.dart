@@ -14,17 +14,16 @@ import 'package:memee_admin/ui/__shared/widgets/app_dropdown.dart';
 import 'package:memee_admin/ui/__shared/widgets/app_switch.dart';
 import 'package:memee_admin/ui/__shared/widgets/app_textfield.dart';
 
-import 'package:image_picker/image_picker.dart';
 import '../../../../__shared/dialog/detailed_dialog.dart';
 import '../../../../__shared/enum/doc_type.dart';
 import '../../../../__shared/widgets/app_button.dart';
 import '../../../../__shared/widgets/utils.dart';
-import 'product_2_detailed_dialog.dart';
+import 'detailed_dialog_widget.dart';
 
-class Products2DetailedWidget extends StatelessWidget {
+class ProductDetailedWidget extends StatelessWidget {
   final ProductModel? product;
 
-  const Products2DetailedWidget({
+  const ProductDetailedWidget({
     super.key,
     this.product,
   });
@@ -249,7 +248,7 @@ class Products2DetailedWidget extends StatelessWidget {
                                   onTap: () async {
                                     final result = await showDetailedDialog(
                                       context,
-                                      child: const ProductDetail2Widget(),
+                                      child: const DetailDialogWidget(),
                                     );
                                     if (result != null &&
                                         result is ProductDetailsModel) {

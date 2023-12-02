@@ -17,8 +17,8 @@ import '../../../__shared/widgets/empty_widget.dart';
 import 'data-row/dl_executive_data_row.dart';
 import 'widgets/dl_detailed_widget.dart';
 
-class DLExecutiveWidget2 extends StatelessWidget {
-  const DLExecutiveWidget2({super.key});
+class DLExecutiveWidget extends StatelessWidget {
+  const DLExecutiveWidget({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -62,7 +62,9 @@ class DLExecutiveWidget2 extends StatelessWidget {
                           isLoading: state == ExportImportState.loading,
                           label: AppStrings.import,
                           onTap: () {
-                            ctx.read<ExportImportCubit>().importExcel<DlExecutiveModel>();
+                            ctx
+                                .read<ExportImportCubit>()
+                                .importExcel<DlExecutiveModel>();
                           },
                         );
                       },
@@ -80,8 +82,12 @@ class DLExecutiveWidget2 extends StatelessWidget {
                           label: AppStrings.export,
                           onTap: () {
                             if (_dlCubit.state is DlExecutivesSuccess) {
-                              ctx.read<ExportImportCubit>().exportExcel<DlExecutiveModel>(
-                                    data: (_dlCubit.state as DlExecutivesSuccess).dlExecutives,
+                              ctx
+                                  .read<ExportImportCubit>()
+                                  .exportExcel<DlExecutiveModel>(
+                                    data:
+                                        (_dlCubit.state as DlExecutivesSuccess)
+                                            .dlExecutives,
                                     sheetName: AppStrings.users,
                                     title: AppColumn.dlExecutives,
                                   );
@@ -106,7 +112,9 @@ class DLExecutiveWidget2 extends StatelessWidget {
                       );
                     } else if (state is DlExecutivesResponseState) {
                       if (state.dlExecutives.isEmpty) {
-                        return const EmptyWidget(label: '${AppStrings.no} ${AppStrings.dlExecutive}');
+                        return const EmptyWidget(
+                            label:
+                                '${AppStrings.no} ${AppStrings.dlExecutive}');
                       }
                       return AppDataTable(
                         headers: AppColumn.dlExecutives,
@@ -117,9 +125,11 @@ class DLExecutiveWidget2 extends StatelessWidget {
                                   onSelectChanged: (selected) async {
                                     final result = await showDetailedDialog(
                                       context,
-                                      child: DL2Detailed(dlExecutive: dlExecutive),
+                                      child:
+                                          DL2Detailed(dlExecutive: dlExecutive),
                                     );
-                                    if (result != null && result is DlExecutiveModel) {
+                                    if (result != null &&
+                                        result is DlExecutiveModel) {
                                       dlExecutive = result;
                                     }
                                   },
@@ -128,7 +138,8 @@ class DLExecutiveWidget2 extends StatelessWidget {
                                       context,
                                       onTap: (bool val) {
                                         if (val) {
-                                          _dlCubit.deleteDlExecutive(dlExecutive);
+                                          _dlCubit
+                                              .deleteDlExecutive(dlExecutive);
                                         }
                                         Navigator.of(context).pop();
                                       },

@@ -15,11 +15,11 @@ import '../../../__shared/dialog/detailed_dialog.dart';
 import '../../../__shared/widgets/app_button.dart';
 import '../../../__shared/widgets/data-table/app_data_table.dart';
 import '../../../__shared/widgets/empty_widget.dart';
-import 'data-row/product_2_data_row.dart';
-import 'widgets/product_2_detailed_widget.dart';
+import 'data-row/product_data_row.dart';
+import 'widgets/product_detailed_widget.dart';
 
-class ProductsWidget2 extends StatelessWidget {
-  const ProductsWidget2({super.key});
+class ProductsWidget extends StatelessWidget {
+  const ProductsWidget({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -34,7 +34,7 @@ class ProductsWidget2 extends StatelessWidget {
           child: FloatingActionButton(
             onPressed: () => showDetailedDialog(
               context,
-              child: const Products2DetailedWidget(),
+              child: const ProductDetailedWidget(),
             ),
             child: const Icon(Icons.add),
           ),
@@ -61,7 +61,9 @@ class ProductsWidget2 extends StatelessWidget {
                           isLoading: state == ExportImportState.loading,
                           label: AppStrings.import,
                           onTap: () {
-                            ctx.read<ExportImportCubit>().importExcel<ProductModel>();
+                            ctx
+                                .read<ExportImportCubit>()
+                                .importExcel<ProductModel>();
                           },
                         );
                       },
@@ -79,8 +81,12 @@ class ProductsWidget2 extends StatelessWidget {
                           label: AppStrings.export,
                           onTap: () {
                             if (_productsCubit.state is ProductsSuccess) {
-                              ctx.read<ExportImportCubit>().exportExcel<ProductModel>(
-                                    data: (_productsCubit.state as ProductsSuccess).products,
+                              ctx
+                                  .read<ExportImportCubit>()
+                                  .exportExcel<ProductModel>(
+                                    data: (_productsCubit.state
+                                            as ProductsSuccess)
+                                        .products,
                                     sheetName: AppStrings.products,
                                     title: AppColumn.products,
                                   );
@@ -103,22 +109,25 @@ class ProductsWidget2 extends StatelessWidget {
                       return const Center(
                         child: CircularProgressIndicator.adaptive(),
                       );
-                    }  else if (state is ProductsResponseState) {
+                    } else if (state is ProductsResponseState) {
                       if (state.products.isEmpty) {
-                        return const EmptyWidget(label: '${AppStrings.no} ${AppStrings.products}');
+                        return const EmptyWidget(
+                            label: '${AppStrings.no} ${AppStrings.products}');
                       }
                       return AppDataTable(
                         headers: AppColumn.products,
                         items: state.products
-                            .map((product) => product2DataRow(
+                            .map((product) => productDataRow(
                                   context,
                                   product: product,
                                   onSelectChanged: (selected) async {
                                     final result = await showDetailedDialog(
                                       context,
-                                      child: Products2DetailedWidget(product: product),
+                                      child: ProductDetailedWidget(
+                                          product: product),
                                     );
-                                    if (result != null && result is ProductModel) {
+                                    if (result != null &&
+                                        result is ProductModel) {
                                       product = result;
                                     }
                                   },
@@ -127,7 +136,8 @@ class ProductsWidget2 extends StatelessWidget {
                                       context,
                                       onTap: (bool val) {
                                         if (val) {
-                                          _productsCubit.deleteProducts(product);
+                                          _productsCubit
+                                              .deleteProducts(product);
                                         }
                                         Navigator.of(context).pop();
                                       },
