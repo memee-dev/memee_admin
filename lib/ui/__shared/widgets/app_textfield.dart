@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:memee_admin/ui/__shared/extensions/widget_extensions.dart';
 
+// ignore: must_be_immutable
 class AppTextField extends StatelessWidget {
   final TextEditingController controller;
   final String label;
@@ -9,6 +10,7 @@ class AppTextField extends StatelessWidget {
   final Widget? suffixIcon;
   final bool readOnly;
   final double? width;
+  final Function(String)? onChanged;
   List<TextInputFormatter>? inputFormatters;
 
   AppTextField({
@@ -20,6 +22,7 @@ class AppTextField extends StatelessWidget {
     this.readOnly = false,
     this.width,
     this.inputFormatters,
+    this.onChanged,
   });
 
   AppTextField.digits({
@@ -30,6 +33,7 @@ class AppTextField extends StatelessWidget {
     this.suffixIcon,
     this.readOnly = false,
     this.width,
+    this.onChanged,
   }) {
     inputFormatters = [
       FilteringTextInputFormatter.digitsOnly,
@@ -44,6 +48,7 @@ class AppTextField extends StatelessWidget {
     this.suffixIcon,
     this.readOnly = false,
     this.width,
+    this.onChanged,
   }) {
     inputFormatters = [
       FilteringTextInputFormatter.allow(RegExp(r'^\d+\.?\d{0,2}')),
@@ -59,6 +64,7 @@ class AppTextField extends StatelessWidget {
       controller: controller,
       style: Theme.of(context).textTheme.bodySmall,
       keyboardType: TextInputType.emailAddress,
+      onChanged: onChanged,
       decoration: InputDecoration(
         labelText: label,
         labelStyle: Theme.of(context).textTheme.bodySmall,

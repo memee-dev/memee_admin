@@ -1,3 +1,4 @@
+import 'package:algolia/algolia.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -32,6 +33,12 @@ void apiConfig(GetIt locator) {
   );
   locator.registerLazySingleton<FirebaseStorage>(
     () => FirebaseStorage.instance,
+  );
+  locator.registerLazySingleton<Algolia>(
+    () => const Algolia.init(
+      applicationId: 'LDNGTJUKYJ',
+      apiKey: 'abf28250124d323a522237e9b4988456',
+    ),
   );
   locator.registerLazySingleton<ImagePicker>(
     () => ImagePicker(),

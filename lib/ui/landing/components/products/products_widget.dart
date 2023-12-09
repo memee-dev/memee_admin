@@ -1,3 +1,4 @@
+import 'package:algolia/algolia.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -49,6 +50,9 @@ class ProductsWidget extends StatelessWidget {
                   child: AppTextField(
                     controller: _searchController,
                     label: '${AppStrings.search} ${AppStrings.products}',
+                    onChanged: (val) async {
+                      _productsCubit.searchProducts(val);
+                    },
                   ),
                 ).gapRight(24.w),
                 Flexible(
