@@ -2,6 +2,7 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:memee_admin/blocs/categories/categories_cubit.dart';
 import 'package:memee_admin/blocs/products/products_cubit.dart';
 import 'package:memee_admin/blocs/toggle/toggle_cubit.dart';
@@ -149,20 +150,12 @@ class ProductDetailedWidget extends StatelessWidget {
                           if ((docType != DocType.view))
                             Row(
                               children: [
-                                AppTextField(
-                                  width: fieldWidth,
-                                  readOnly: docType == DocType.view,
-                                  controller: _imageController,
-                                  label: AppStrings.image,
-                                ).gapRight(4.w),
+                                const Text(
+                                        '${AppStrings.add} ${AppStrings.image}')
+                                    .gapRight(4.w),
                                 FloatingActionButton(
-                                  onPressed: () {
-                                    final img = _imageController.text.trim();
-                                    if (img != '') {
-                                      selectedImages.add(img);
-                                      _imageController.clear();
-                                      _refreshCubit.change();
-                                    }
+                                  onPressed: () async {
+                                    _productCubit.uploadProductImageToStorage();
                                   },
                                   child: const Icon(Icons.add_circle_outline),
                                 ),
@@ -323,7 +316,10 @@ class ProductDetailedWidget extends StatelessWidget {
                                   final description =
                                       _descriptionController.text.trim();
                                   if (name.isNotEmpty &&
-                                      description.isNotEmpty) {
+                                      description.isNotEmpty &&
+                                      (selectedImages.isNotEmpty ||
+                                          _productCubit
+                                              .productImageFiles.isNotEmpty)) {
                                     if (docType == DocType.add) {
                                       _productCubit.addProduct(
                                         name: name,

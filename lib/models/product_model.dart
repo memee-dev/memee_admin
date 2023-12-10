@@ -6,7 +6,7 @@ class ProductModel {
   final CategoryModel category;
   final String description;
   bool active;
-  final List<String>? images;
+  final List<String> images;
   final List<ProductDetailsModel> productDetails;
 
   ProductModel({
@@ -14,7 +14,7 @@ class ProductModel {
     required this.name,
     required this.category,
     required this.description,
-    this.images,
+    this.images = const [],
     required this.productDetails,
     this.active = true,
   });

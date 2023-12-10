@@ -77,6 +77,6 @@ void blocConfig(GetIt locator) {
     () => DlExecutiveCubit(locator(), locator()),
   );
   locator.registerLazySingleton<ProductsCubit>(
-    () => ProductsCubit(locator()),
+    () => ProductsCubit(locator(), locator()),
   );
 }
