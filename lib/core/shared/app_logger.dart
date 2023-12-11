@@ -12,4 +12,4 @@ class _Log {
       _logger.f(message, error: error, stackTrace: stackTrace);
 }
 
-final log = _Log();
+final console = _Log();

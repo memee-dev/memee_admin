@@ -40,7 +40,7 @@ class DlExecutiveCubit extends Cubit<DlExecutivesState> {
         e.toString(),
         dlExecutives,
       ));
-      log.e('FETCH DlExecutives', error: e);
+      console.e('FETCH DlExecutives', error: e);
     }
   }
 
@@ -89,7 +89,7 @@ class DlExecutiveCubit extends Cubit<DlExecutivesState> {
         e.toString(),
         dlExecutives,
       ));
-      log.e('ADD a DlExecutive', error: e);
+      console.e('ADD a DlExecutive', error: e);
     }
   }
 
@@ -115,15 +115,18 @@ class DlExecutiveCubit extends Cubit<DlExecutivesState> {
         e.toString(),
         const [],
       ));
-      log.e('ADD All DlExecutives', error: e);
+      console.e('ADD All DlExecutives', error: e);
     }
   }
 
   Future<void> updateDlExecutive(DlExecutiveModel dlExecutive) async {
     try {
-      await db.collection(collectionName).doc(dlExecutive.id).set(dlExecutive.toJson());
+      await db
+          .collection(collectionName)
+          .doc(dlExecutive.id)
+          .set(dlExecutive.toJson());
     } catch (e) {
-      log.e('UPDATE DlExecutive', error: e);
+      console.e('UPDATE DlExecutive', error: e);
     }
   }
 
@@ -138,7 +141,7 @@ class DlExecutiveCubit extends Cubit<DlExecutivesState> {
         e.toString(),
         dlExecutives,
       ));
-      log.e('DELETE CATEGORY', error: e);
+      console.e('DELETE CATEGORY', error: e);
     }
   }
 
@@ -153,7 +156,7 @@ class DlExecutiveCubit extends Cubit<DlExecutivesState> {
       }
       batch.commit();
     } catch (e) {
-      log.e('DELETE All DlExecutive', error: e);
+      console.e('DELETE All DlExecutive', error: e);
     }
   }
 
@@ -161,7 +164,8 @@ class DlExecutiveCubit extends Cubit<DlExecutivesState> {
     UploadTask uploadTask;
 
     // Create a Reference to the file
-    Reference ref = storage.ref().child('flutter-tests').child('/some-image.jpg');
+    Reference ref =
+        storage.ref().child('flutter-tests').child('/some-image.jpg');
 
     final metadata = SettableMetadata(
       contentType: 'image/jpeg',

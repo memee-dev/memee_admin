@@ -32,7 +32,7 @@ class UserCubit extends Cubit<UsersState> {
         e.toString(),
         users,
       ));
-      log.e('FETCH Users', error: e);
+      console.e('FETCH Users', error: e);
     }
   }
 
@@ -59,7 +59,7 @@ class UserCubit extends Cubit<UsersState> {
         e.toString(),
         users,
       ));
-      log.e('ADD a User', error: e);
+      console.e('ADD a User', error: e);
     }
   }
 
@@ -85,7 +85,7 @@ class UserCubit extends Cubit<UsersState> {
         e.toString(),
         const [],
       ));
-      log.e('ADD All Users', error: e);
+      console.e('ADD All Users', error: e);
     }
   }
 
@@ -93,7 +93,7 @@ class UserCubit extends Cubit<UsersState> {
     try {
       await db.collection(collectionName).doc(user.id).set(user.toJson());
     } catch (e) {
-      log.e('UPDATE a User', error: e);
+      console.e('UPDATE a User', error: e);
     }
   }
 
@@ -108,7 +108,7 @@ class UserCubit extends Cubit<UsersState> {
         e.toString(),
         users,
       ));
-      log.e('DELETE User', error: e);
+      console.e('DELETE User', error: e);
     }
   }
 
@@ -123,7 +123,7 @@ class UserCubit extends Cubit<UsersState> {
       }
       batch.commit();
     } catch (e) {
-      log.e('DELETE All Users', error: e);
+      console.e('DELETE All Users', error: e);
     }
   }
 

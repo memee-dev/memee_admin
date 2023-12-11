@@ -34,7 +34,7 @@ class CategoriesCubit extends Cubit<CategoriesState> {
         e.toString(),
         categories,
       ));
-      log.e('FETCH CATEGORY', error: e);
+      console.e('FETCH CATEGORY', error: e);
     }
   }
 
@@ -73,7 +73,7 @@ class CategoriesCubit extends Cubit<CategoriesState> {
         e.toString(),
         categories,
       ));
-      log.e('ADD CATEGORY', error: e);
+      console.e('ADD CATEGORY', error: e);
     }
   }
 
@@ -90,7 +90,7 @@ class CategoriesCubit extends Cubit<CategoriesState> {
         e.toString(),
         const [],
       ));
-      log.e('ADD CATEGORIES', error: e);
+      console.e('ADD CATEGORIES', error: e);
     }
   }
 
@@ -109,7 +109,7 @@ class CategoriesCubit extends Cubit<CategoriesState> {
         e.toString(),
         const [],
       ));
-      log.e('UPDATE CATEGORY', error: e);
+      console.e('UPDATE CATEGORY', error: e);
     }
   }
 
@@ -124,7 +124,7 @@ class CategoriesCubit extends Cubit<CategoriesState> {
         e.toString(),
         categories,
       ));
-      log.e('DELETE CATEGORY', error: e);
+      console.e('DELETE CATEGORY', error: e);
     }
   }
 

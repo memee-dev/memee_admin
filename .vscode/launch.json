@@ -5,11 +5,17 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "web-dev",
+            "name": "web-d-dev",
             "request": "launch",
             "type": "dart",
             "program": "lib/main.dart",
             "args": ["-d", "chrome", "--web-renderer", "html" ]
+        },
+        {
+            "name": "web-dev",
+            "request": "launch",
+            "type": "dart",
+            "program": "lib/main.dart"
         },
         {
             "name": "memee_admin (profile mode)",

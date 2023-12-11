@@ -1,5 +1,3 @@
-
-
 import 'package:algolia/algolia.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:equatable/equatable.dart';
@@ -41,7 +39,7 @@ class ProductsCubit extends Cubit<ProductsState> {
         e.toString(),
         products,
       ));
-      log.e('FETCH Products', error: e);
+      console.e('FETCH Products', error: e);
     }
   }
 
@@ -78,7 +76,7 @@ class ProductsCubit extends Cubit<ProductsState> {
         e.toString(),
         products,
       ));
-      log.e('FETCH Products', error: e);
+      console.e('FETCH Products', error: e);
     }
   }
 
@@ -138,14 +136,14 @@ class ProductsCubit extends Cubit<ProductsState> {
           e.toString(),
           products,
         ));
-        log.e('ADD a Product', error: e);
+        console.e('ADD a Product', error: e);
       });
     } catch (e) {
       emit(ProductsFailure(
         e.toString(),
         products,
       ));
-      log.e('ADD a Product', error: e);
+      console.e('ADD a Product', error: e);
     }
   }
 
@@ -167,7 +165,7 @@ class ProductsCubit extends Cubit<ProductsState> {
         e.toString(),
         const [],
       ));
-      log.e('UPDATE CATEGORY', error: e);
+      console.e('UPDATE CATEGORY', error: e);
     }
   }
 
@@ -181,7 +179,7 @@ class ProductsCubit extends Cubit<ProductsState> {
         e.toString(),
         products,
       ));
-      log.e('DELETE PRODUCT', error: e);
+      console.e('DELETE PRODUCT', error: e);
     }
   }
 
@@ -198,7 +196,7 @@ class ProductsCubit extends Cubit<ProductsState> {
         e.toString(),
         products,
       ));
-      log.e('DELETE PRODUCT', error: e);
+      console.e('DELETE PRODUCT', error: e);
     }
   }
 

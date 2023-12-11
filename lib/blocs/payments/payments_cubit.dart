@@ -34,12 +34,10 @@ class PaymentsCubit extends Cubit<PaymentsState> {
         e.toString(),
         payments,
       ));
-      log.e('FETCH PAYMENT', error: e);
+      console.e('FETCH PAYMENT', error: e);
     }
   }
 
-
- 
   List<PaymentModel> getLocalPayments() {
     List<PaymentModel> payments = [];
     if (state is PaymentsSuccess) {

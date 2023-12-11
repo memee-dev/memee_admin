@@ -36,7 +36,7 @@ class AdminCubit extends Cubit<AdminsState> {
         e.toString(),
         admins,
       ));
-      log.e('FETCH Admins', error: e);
+      console.e('FETCH Admins', error: e);
     }
   }
 
@@ -72,7 +72,7 @@ class AdminCubit extends Cubit<AdminsState> {
         e.toString(),
         admins,
       ));
-      log.e('ADD A ADMIN', error: e);
+      console.e('ADD A ADMIN', error: e);
     }
   }
 
@@ -87,7 +87,7 @@ class AdminCubit extends Cubit<AdminsState> {
         e.toString(),
         admins,
       ));
-      log.e('DELETE ADMIN', error: e);
+      console.e('DELETE ADMIN', error: e);
     }
   }
 
@@ -103,7 +103,7 @@ class AdminCubit extends Cubit<AdminsState> {
         e.toString(),
         const [],
       ));
-      log.e('UPDATE ADMIN', error: e);
+      console.e('UPDATE ADMIN', error: e);
     }
   }
 
