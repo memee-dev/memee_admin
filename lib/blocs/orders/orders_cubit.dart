@@ -29,7 +29,7 @@ class OrdersCubit extends Cubit<OrdersState> {
         orders.add(OrderModel.fromMap(data));
       }
 
-      emit(OrdersSuccess(fakeOrders));
+      emit(OrdersSuccess(orders));
     } catch (e) {
       emit(OrdersFailure(
         e.toString(),

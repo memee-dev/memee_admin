@@ -46,3 +46,9 @@ app.*.map.json
 # FVM
 .fvm/
 .vscode/settings.json
+y/index.html
+public/index.html
+.gitignore
+.firebase/hosting.eQ.cache
+.firebaserc
+firebase.json

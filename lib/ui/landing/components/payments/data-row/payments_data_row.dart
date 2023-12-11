@@ -9,12 +9,11 @@ DataRow paymentDataRow(
   return DataRow(
     cells: [
       DataCell(Text(payment.id)),
-      DataCell(Text(payment.userName)),
       DataCell(Text(payment.orderId)),
-      DataCell(Text(payment.productName)),
-      DataCell(Text(payment.categoryName)),
+      DataCell(Text(payment.userName)),
       DataCell(Text(payment.dlName)),
       DataCell(Text(payment.amount)),
+      DataCell(Text(payment.paymentStatus)),
     ],
   );
 }

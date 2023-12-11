@@ -72,7 +72,7 @@ class ProductDetailedWidget extends StatelessWidget {
     return BlocBuilder<ToggleCubit, bool>(
         bloc: _refreshCubit,
         builder: (_, state) {
-          double hfWidth = 245.w;
+          double hfWidth = 280.w;
           return Row(
             mainAxisSize: MainAxisSize.min,
             children: [
@@ -128,7 +128,6 @@ class ProductDetailedWidget extends StatelessWidget {
                   ).sizedBoxW(hfWidth).gapBottom(16),
                   Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -164,38 +163,41 @@ class ProductDetailedWidget extends StatelessWidget {
                           if (product != null &&
                               product!.images != null &&
                               product!.images!.isNotEmpty)
-                            CarouselSlider(
-                              options: CarouselOptions(),
-                              items: [...product!.images!, ...selectedImages]
-                                  .map(
-                                    (image) => Stack(
-                                      alignment: Alignment.center,
-                                      children: [
-                                        Image.network(
-                                          image,
-                                          fit: BoxFit.cover,
-                                        ),
-                                        if (docType != DocType.view)
-                                          Positioned(
-                                            bottom: 0.0,
-                                            child: IconButton(
-                                              onPressed: () {
-                                                selectedImages.remove(image);
-                                                _refreshCubit.change();
-                                              },
-                                              icon: const Icon(
-                                                Icons.remove_circle_outline,
+                            SizedBox(
+                              width: fieldWidth,
+                              child: CarouselSlider(
+                                options: CarouselOptions(disableCenter: true),
+                                items: [...product!.images!, ...selectedImages]
+                                    .map(
+                                      (image) => Stack(
+                                        alignment: Alignment.center,
+                                        children: [
+                                          Image.network(
+                                            image,
+                                            fit: BoxFit.cover,
+                                          ),
+                                          if (docType != DocType.view)
+                                            Positioned(
+                                              bottom: 0.0,
+                                              child: IconButton(
+                                                onPressed: () {
+                                                  selectedImages.remove(image);
+                                                  _refreshCubit.change();
+                                                },
+                                                icon: const Icon(
+                                                  Icons.remove_circle_outline,
+                                                ),
                                               ),
                                             ),
-                                          ),
-                                      ],
-                                    ),
-                                  )
-                                  .toList(),
+                                        ],
+                                      ),
+                                    )
+                                    .toList(),
+                              ),
                             )
                         ],
                       ).flexible(),
-                      SizedBox(width: 8.w),
+                      SizedBox(width: 20.w),
                       Column(
                         children: [
                           Row(

@@ -2,8 +2,8 @@ class PaymentModel {
   final String id;
   String userName;
   String orderId;
-  String productName;
-  String categoryName;
+  String paymentStatus;
+
   String dlName;
   String amount;
 
@@ -11,8 +11,7 @@ class PaymentModel {
     required this.id,
     required this.userName,
     required this.orderId,
-    required this.productName,
-    required this.categoryName,
+    required this.paymentStatus,
     required this.dlName,
     required this.amount,
   });
@@ -22,8 +21,7 @@ class PaymentModel {
       id: map['id'],
       userName: map['userName'],
       orderId: map['orderId'],
-      productName: map['productName'],
-      categoryName: map['categoryName'],
+      paymentStatus: map['paymentStatus'],
       dlName: map['dlName'],
       amount: map['amount'],
     );
@@ -34,8 +32,7 @@ class PaymentModel {
     if (addId) map['id'] = id;
     map['userName'] = userName;
     map['orderId'] = orderId;
-    map['productName'] = productName;
-    map['categoryName'] = categoryName;
+    map['paymentStatus'] = paymentStatus;
     map['dlName'] = dlName;
     map['amount'] = amount;
     return map;
@@ -44,19 +41,19 @@ class PaymentModel {
 
 List<PaymentModel> fakePayments = [
   PaymentModel(
-      id: 'P001',
-      userName: 'Zakariya',
-      orderId: 'O001',
-      productName: 'Chicken leg',
-      categoryName: 'Chicken',
-      dlName: 'ashok',
-      amount: '200'),
+    id: 'P001',
+    userName: 'Zakariya',
+    orderId: 'O001',
+    paymentStatus: 'Failed',
+    dlName: 'ashok',
+    amount: '200',
+  ),
   PaymentModel(
-      id: 'P002',
-      userName: 'Yousuf',
-      orderId: 'O002',
-      productName: 'Vanjiram',
-      categoryName: 'Fish',
-      dlName: 'dilip',
-      amount: '1000'),
+    id: 'P002',
+    userName: 'Yousuf',
+    orderId: 'O002',
+    paymentStatus: 'Processing',
+    dlName: 'dilip',
+    amount: '1000',
+  ),
 ];
