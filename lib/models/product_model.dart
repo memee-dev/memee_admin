@@ -40,8 +40,8 @@ class ProductModel {
     map['category'] = category.toJson(addId: true);
     map['description'] = description;
     map['active'] = active;
-    if (images != null && images!.isNotEmpty) {
-      map['images'] = List<String>.from(images!.map((x) => x));
+    if (images.isNotEmpty) {
+      map['images'] = List<String>.from(images.map((x) => x));
     }
     if (productDetails.isNotEmpty) {
       map['productDetails'] = List<Map<String, dynamic>>.from(

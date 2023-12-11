@@ -7,6 +7,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:memee_admin/blocs/categories/categories_cubit.dart';
 import 'package:memee_admin/blocs/dl_executives/dl_executive_cubit.dart';
 import 'package:memee_admin/blocs/export_import/export_import_cubit.dart';
+import 'package:memee_admin/blocs/payments/payments_cubit.dart';
 import 'package:memee_admin/blocs/products/products_cubit.dart';
 
 import '../../blocs/admins/admins_cubit.dart';
@@ -72,6 +73,9 @@ void blocConfig(GetIt locator) {
   );
   locator.registerLazySingleton<UserCubit>(
     () => UserCubit(locator()),
+  );
+  locator.registerLazySingleton<PaymentsCubit>(
+    () => PaymentsCubit(locator()),
   );
   locator.registerLazySingleton<DlExecutiveCubit>(
     () => DlExecutiveCubit(locator(), locator()),

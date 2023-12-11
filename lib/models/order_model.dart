@@ -1,21 +1,21 @@
-import 'package:equatable/equatable.dart';
 
-// ignore: must_be_immutable
-class CategoryModel extends Equatable {
+
+
+class OrderModel {
   final String id;
   String name;
   String image;
   bool active;
 
-  CategoryModel({
+  OrderModel({
     required this.id,
     required this.name,
     required this.image,
     this.active = true,
   });
 
-  factory CategoryModel.fromMap(Map<String, dynamic> map) {
-    return CategoryModel(
+  factory OrderModel.fromMap(Map<String, dynamic> map) {
+    return OrderModel(
       id: map['id'],
       name: map['name'],
       active: map['active'],
@@ -35,6 +35,4 @@ class CategoryModel extends Equatable {
   @override
   String toString() => name;
 
-  @override
-  List<Object?> get props => [id, name, image, active];
 }

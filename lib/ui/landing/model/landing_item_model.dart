@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:memee_admin/core/shared/app_strings.dart';
+import 'package:memee_admin/ui/landing/components/payments/payments_widget.dart';
 
 import '../components/admins/admins_widget.dart';
 import '../components/categories/categories_widget.dart';
@@ -24,4 +25,5 @@ final List<LandingItemModel> items = [
   const LandingItemModel(AppStrings.users, UserWidget()),
   const LandingItemModel(AppStrings.admins, AdminWidget()),
   const LandingItemModel(AppStrings.dlExecutive, DLExecutiveWidget()),
+  const LandingItemModel(AppStrings.payments, PaymentsWidget()),
 ];

@@ -51,6 +51,7 @@ mixin AppStrings {
   static const String dlExecutive = 'Delivery Executives';
   static const String dl = 'Driving Licence';
   static const String dlNo = 'Licence Number';
+  static const String payments = 'Payments';
 
   static const String export = 'Export';
   static const String import = 'Import';
