@@ -9,6 +9,7 @@ import 'package:memee_admin/blocs/dl_executives/dl_executive_cubit.dart';
 import 'package:memee_admin/blocs/export_import/export_import_cubit.dart';
 import 'package:memee_admin/blocs/payments/payments_cubit.dart';
 import 'package:memee_admin/blocs/products/products_cubit.dart';
+import 'package:memee_admin/core/initializer/app_aloglia.dart';
 
 import '../../blocs/admins/admins_cubit.dart';
 import '../../blocs/auth/auth_cubit.dart';
@@ -36,10 +37,16 @@ void apiConfig(GetIt locator) {
   locator.registerLazySingleton<FirebaseStorage>(
     () => FirebaseStorage.instance,
   );
-  locator.registerLazySingleton<Algolia>(
-    () => const Algolia.init(
+  locator.registerLazySingleton<ProductAlgolia>(
+    () => ProductAlgolia.init(
       applicationId: 'LDNGTJUKYJ',
       apiKey: 'abf28250124d323a522237e9b4988456',
+    ),
+  );
+  locator.registerLazySingleton<OrderAlgolia>(
+    () => OrderAlgolia.init(
+      applicationId: 'LDNGTJUKYJ',
+      apiKey: 'bf2bdd713969c387563bc023e9731a7d',
     ),
   );
   locator.registerLazySingleton<ImagePicker>(

@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -83,19 +82,26 @@ class ProductsWidget extends StatelessWidget {
                         return AppButton(
                           isLoading: state == ExportImportState.loading,
                           label: AppStrings.export,
-                          onTap: () {
+                          onTap: () async {
                             if (_productsCubit.state is ProductsSuccess) {
-                              ctx
-                                  .read<ExportImportCubit>()
-                                  .exportExcel<ProductModel>(
-                                    data: (_productsCubit.state
-                                            as ProductsSuccess)
-                                        .products,
-                                    sheetName: AppStrings.products,
-                                    title: AppColumn.products,
-                                  );
+                              await exportDataToCSV(
+                                  _productsCubit.exportData());
                             }
                           },
+
+                          //  {
+                          //   if (_productsCubit.state is ProductsSuccess) {
+                          //     ctx
+                          //         .read<ExportImportCubit>()
+                          //         .exportExcel<ProductModel>(
+                          //           data: (_productsCubit.state
+                          //                   as ProductsSuccess)
+                          //               .products,
+                          //           sheetName: AppStrings.products,
+                          //           title: AppColumn.products,
+                          //         );
+                          //   }
+                          // },
                         );
                       },
                     ),

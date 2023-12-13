@@ -4,6 +4,9 @@ import 'dart:convert';
 import 'dart:html' as html;
 import 'dart:io';
 import 'package:csv/csv.dart';
+import 'dart:convert' show utf8;
+
+import 'dart:typed_data';
 
 import 'package:excel/excel.dart';
 import 'package:flutter/foundation.dart';
@@ -12,7 +15,7 @@ import 'package:memee_admin/blocs/categories/categories_cubit.dart';
 import 'package:memee_admin/core/shared/app_logger.dart';
 import 'package:memee_admin/core/shared/app_strings.dart';
 import 'package:memee_admin/models/category_model.dart';
-import 'package:path_provider/path_provider.dart';
+
 
 import '../../core/initializer/app_di_registration.dart';
 import '../../models/product_model.dart';
@@ -156,4 +159,30 @@ List<List<dynamic>> flattenJson(Map<String, dynamic> json) {
   process(json);
 
   return result;
+}
+
+
+Future<void> exportDataToCSV(List<List<dynamic>> data) async {
+  try {
+    String csv = const ListToCsvConverter().convert(data);
+
+    // Convert CSV string to Uint8List
+    Uint8List csvBytes = Uint8List.fromList(utf8.encode(csv));
+
+    // Create a blob URL for the CSV data
+    String blobUrl = html.Url.createObjectUrlFromBlob(
+      html.Blob([csvBytes]),
+    );
+
+    // Create an anchor element with the blob URL
+    html.AnchorElement(href: blobUrl)
+      ..target = 'blank'
+      ..download = 'exported_data.csv'
+      ..click();
+
+    // Revoke the blob URL to free up resources
+    html.Url.revokeObjectUrl(blobUrl);
+  } catch (e) {
+    print("Error exporting data: $e");
+  }
 }

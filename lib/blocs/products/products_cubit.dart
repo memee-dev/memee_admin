@@ -1,10 +1,10 @@
-import 'package:algolia/algolia.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:equatable/equatable.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:memee_admin/core/initializer/app_aloglia.dart';
 import 'package:memee_admin/core/shared/app_firestore.dart';
 import 'package:memee_admin/models/category_model.dart';
 
@@ -52,7 +52,7 @@ class ProductsCubit extends Cubit<ProductsState> {
         emit(ProductsLoading());
         searching = true;
         final query = locator
-            .get<Algolia>()
+            .get<ProductAlgolia>()
             .instance
             .index(AppFireStoreCollection.products)
             .query(searchQuery);
@@ -221,5 +221,20 @@ class ProductsCubit extends Cubit<ProductsState> {
       }
     }
     return uploadedImages;
+  }
+
+  List<List<dynamic>> exportData() {
+    List<ProductModel> products = (state as ProductsSuccess).products;
+
+    return [
+      ['ID', 'Name', 'Category', 'Description', 'Active'],
+      ...products.map((product) => [
+            product.id,
+            product.name,
+            product.category?.name ?? '',
+            product.description,
+            product.active.toString(),
+          ]),
+    ];
   }
 }
