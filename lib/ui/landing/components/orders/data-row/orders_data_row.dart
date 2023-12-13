@@ -9,11 +9,9 @@ DataRow orderDataRow(
   return DataRow(
     cells: [
       DataCell(Text(order.id)),
-      DataCell(Text(order.userName)),
-      DataCell(Text(order.productName)),
-      DataCell(Text(order.categoryName)),
-      DataCell(Text(order.paymentStatus)),
+      DataCell(Text(order.paymentId)),
       DataCell(Text(order.orderStatus)),
+      DataCell(Text(order.orderedTime.toString())),
     ],
   );
 }

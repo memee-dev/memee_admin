@@ -35,10 +35,8 @@ mixin AppColumn {
   ];
   static const List<String> orders = [
     'ID',
-    'User Name',
-    'Product',
-    'Category',
-    'Payment Status',
-    'Order Status'
+    'Payment Id',
+    'Order Status',
+    'Ordered Time'
   ];
 }

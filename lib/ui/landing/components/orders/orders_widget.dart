@@ -35,6 +35,9 @@ class OrdersWidget extends StatelessWidget {
                 child: AppTextField(
                   controller: _searchController,
                   label: '${AppStrings.search} ${AppStrings.orders}',
+                  onChanged: (val) async {
+                      _ordersCubit.searchOrders(val);
+                    },
                 ),
               ).gapRight(24.w),
               Flexible(

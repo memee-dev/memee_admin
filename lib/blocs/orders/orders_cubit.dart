@@ -3,6 +3,8 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:memee_admin/core/shared/app_firestore.dart';
 
+import '../../core/initializer/app_aloglia.dart';
+import '../../core/initializer/app_di_registration.dart';
 import '../../core/shared/app_logger.dart';
 import '../../models/order_model.dart';
 import '../payments/payments_cubit.dart';
@@ -12,11 +14,12 @@ part 'orders_state.dart';
 class OrdersCubit extends Cubit<OrdersState> {
   final FirebaseFirestore db;
   final collectionName = AppFireStoreCollection.orders;
+  List<OrderModel> orders = [];
 
   OrdersCubit(this.db) : super(OrdersLoading());
 
   Future<void> fetchOrders() async {
-    List<OrderModel> orders = [];
+  
     emit(OrdersLoading());
     try {
       final orderDoc = await db.collection(collectionName).get();
@@ -36,6 +39,43 @@ class OrdersCubit extends Cubit<OrdersState> {
         orders,
       ));
       console.e('FETCH ORDERS', error: e);
+    }
+  }
+
+  bool searching = false;
+  Future<void> searchOrders(String searchQuery) async {
+    List<OrderModel> _searchedOrders = [];
+    try {
+      searchQuery = searchQuery.trim();
+      if (searchQuery.trim().length > 2) {
+        emit(OrdersLoading());
+        searching = true;
+        final query = locator
+            .get<OrderAlgolia>()
+            .instance
+            .index(AppFireStoreCollection.orders)
+            .query(searchQuery);
+        final snap = await query.getObjects();
+        final hits = snap.hits;
+
+        for (var hit in hits) {
+          _searchedOrders
+              .add(orders.firstWhere((element) => element.id == hit.objectID));
+        }
+
+        emit(OrdersSuccess(_searchedOrders));
+      } else {
+        if (searching) {
+          emit(OrdersLoading());
+          emit(OrdersSuccess(orders));
+        }
+      }
+    } catch (e) {
+      emit(OrdersFailure(
+        e.toString(),
+        orders,
+      ));
+      console.e('SEARCH Orders', error: e);
     }
   }
 
