@@ -27,8 +27,8 @@ class AppSwitch extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final cubit = locator.get<ToggleCubit>();
-    return BlocBuilder<ToggleCubit, bool>(
+    final cubit = locator.get<RefreshCubit>();
+    return BlocBuilder<RefreshCubit, bool>(
       bloc: cubit..initialValue(value),
       builder: (context, state) {
         return Row(
@@ -68,7 +68,7 @@ class AppSwitch extends StatelessWidget {
     );
   }
 
-  void _setSwitch(ToggleCubit cubit, bool state) {
+  void _setSwitch(RefreshCubit cubit, bool state) {
     cubit.change();
     onTap(!state);
   }

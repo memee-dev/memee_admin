@@ -17,7 +17,7 @@ class LoginPageMob extends StatelessWidget {
       TextEditingController(text: kDebugMode ? 'admin@memee.com' : '');
   final TextEditingController _passwordController =
       TextEditingController(text: kDebugMode ? '123456' : '');
-  final ToggleCubit hideAndSeekCubit = locator.get<ToggleCubit>();
+  final RefreshCubit hideAndSeekCubit = locator.get<RefreshCubit>();
 
   LoginPageMob({super.key});
 
@@ -30,7 +30,7 @@ class LoginPageMob extends StatelessWidget {
           controller: _emailController,
           label: AppStrings.email,
         ).gapBottom(8.h),
-        BlocBuilder<ToggleCubit, bool>(
+        BlocBuilder<RefreshCubit, bool>(
           bloc: hideAndSeekCubit,
           builder: (_, state) {
             return AppTextField(

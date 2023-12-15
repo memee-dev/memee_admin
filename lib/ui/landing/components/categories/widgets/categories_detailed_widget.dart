@@ -25,9 +25,9 @@ class CategoriesDetailedWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final _categoryCubit = locator.get<CategoriesCubit>();
-    final _toggleCubit = locator.get<ToggleCubit>();
-    final _switchCubit = locator.get<ToggleCubit>();
-    final _saveCubit = locator.get<ToggleCubit>();
+    final _toggleCubit = locator.get<RefreshCubit>();
+    final _switchCubit = locator.get<RefreshCubit>();
+    final _saveCubit = locator.get<RefreshCubit>();
 
     final _categorynameController = TextEditingController();
     final _imageController = TextEditingController();
@@ -50,7 +50,7 @@ class CategoriesDetailedWidget extends StatelessWidget {
     _resetForm();
 
     final paddingButton = EdgeInsets.symmetric(horizontal: 8.w, vertical: 8.h);
-    return BlocBuilder<ToggleCubit, bool>(
+    return BlocBuilder<RefreshCubit, bool>(
       bloc: _toggleCubit,
       builder: (_, state) {
         double hfWidth = 75.w;
@@ -71,11 +71,14 @@ class CategoriesDetailedWidget extends StatelessWidget {
                     if ((docType != DocType.add))
                       IconButton(
                         onPressed: () {
-                          docType = getDocType<CategoryModel>(category, docType != DocType.edit);
+                          docType = getDocType<CategoryModel>(
+                              category, docType != DocType.edit);
                           _toggleCubit.change();
                         },
                         icon: Icon(
-                          docType == DocType.edit ? Icons.close_outlined : Icons.edit_outlined,
+                          docType == DocType.edit
+                              ? Icons.close_outlined
+                              : Icons.edit_outlined,
                         ),
                       ),
                   ],
@@ -87,7 +90,7 @@ class CategoriesDetailedWidget extends StatelessWidget {
                       (docType != DocType.add) ? 'ID: ${category!.id}' : '',
                       style: Theme.of(context).textTheme.titleSmall,
                     ),
-                    BlocBuilder<ToggleCubit, bool>(
+                    BlocBuilder<RefreshCubit, bool>(
                       bloc: _switchCubit..initialValue(true),
                       builder: (_, __) {
                         return AppSwitch(
@@ -105,7 +108,8 @@ class CategoriesDetailedWidget extends StatelessWidget {
                 ).sizedBoxW(hfWidth).gapBottom(12.h),
                 AppTextField(
                   readOnly: docType == DocType.view,
-                  controller: _categorynameController..text = selectedCategoryName,
+                  controller: _categorynameController
+                    ..text = selectedCategoryName,
                   label: AppStrings.name,
                 ).gapBottom(8.h),
                 AppTextField(
@@ -121,7 +125,7 @@ class CategoriesDetailedWidget extends StatelessWidget {
                       onTap: () => Navigator.pop(context),
                     ),
                     if (docType != DocType.view)
-                      BlocBuilder<ToggleCubit, bool>(
+                      BlocBuilder<RefreshCubit, bool>(
                         bloc: _saveCubit,
                         builder: (_, __) {
                           return AppButton.positive(

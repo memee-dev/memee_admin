@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:equatable/equatable.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:memee_admin/core/shared/app_firestore.dart';
 
@@ -35,6 +36,19 @@ class PaymentsCubit extends Cubit<PaymentsState> {
         payments,
       ));
       console.e('FETCH PAYMENT', error: e);
+    }
+  }
+  Color getColorForPaymentStatus(String? paymentStatus) {
+    switch (paymentStatus?.toLowerCase()) {
+      case 'success':
+        return Colors.green;
+      case 'failure':
+        return Colors.red;
+      case 'pending':
+        return Colors.orange;
+      default:
+        return Colors
+            .transparent; 
     }
   }
 

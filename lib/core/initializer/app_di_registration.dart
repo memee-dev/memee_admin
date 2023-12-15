@@ -64,8 +64,8 @@ void blocConfig(GetIt locator) {
   locator.registerLazySingleton<LoginCubit>(
     () => LoginCubit(locator(), locator()),
   );
-  locator.registerFactory<ToggleCubit>(
-    () => ToggleCubit(),
+  locator.registerFactory<RefreshCubit>(
+    () => RefreshCubit(),
   );
   locator.registerFactory<IndexCubit>(
     () => IndexCubit(),

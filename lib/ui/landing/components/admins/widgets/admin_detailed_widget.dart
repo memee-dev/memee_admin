@@ -24,10 +24,10 @@ class AdminDetailedWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final _adminCubit = locator.get<AdminCubit>();
-    final _toggleCubit = locator.get<ToggleCubit>();
-    final _switchCubit = locator.get<ToggleCubit>();
-    final _dropdownCubit = locator.get<ToggleCubit>();
-    final _saveCubit = locator.get<ToggleCubit>();
+    final _toggleCubit = locator.get<RefreshCubit>();
+    final _switchCubit = locator.get<RefreshCubit>();
+    final _dropdownCubit = locator.get<RefreshCubit>();
+    final _saveCubit = locator.get<RefreshCubit>();
     final TextEditingController _nameController = TextEditingController();
     final TextEditingController _emailController = TextEditingController();
 
@@ -54,7 +54,7 @@ class AdminDetailedWidget extends StatelessWidget {
 
     final paddingButton = EdgeInsets.symmetric(horizontal: 8.w, vertical: 8.h);
 
-    return BlocBuilder<ToggleCubit, bool>(
+    return BlocBuilder<RefreshCubit, bool>(
       bloc: _toggleCubit,
       builder: (_, state) {
         double hfWidth = 175.w;
@@ -91,7 +91,7 @@ class AdminDetailedWidget extends StatelessWidget {
                   selectedId.isNotEmpty ? 'ID: ${admin!.id}' : '',
                   style: Theme.of(context).textTheme.titleSmall,
                 ),
-                BlocBuilder<ToggleCubit, bool>(
+                BlocBuilder<RefreshCubit, bool>(
                   bloc: _switchCubit..initialValue(true),
                   builder: (_, __) {
                     return AppSwitch(
@@ -131,7 +131,7 @@ class AdminDetailedWidget extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
-                    BlocBuilder<ToggleCubit, bool>(
+                    BlocBuilder<RefreshCubit, bool>(
                       bloc: _dropdownCubit,
                       builder: (_, state) {
                         return AppDropDown<int>(
@@ -159,7 +159,7 @@ class AdminDetailedWidget extends StatelessWidget {
                   onTap: () => Navigator.pop(context),
                 ),
                 if (docType != DocType.view)
-                  BlocBuilder<ToggleCubit, bool>(
+                  BlocBuilder<RefreshCubit, bool>(
                     bloc: _saveCubit,
                     builder: (_, __) {
                       return AppButton.positive(

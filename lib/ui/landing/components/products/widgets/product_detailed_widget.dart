@@ -2,7 +2,6 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:memee_admin/blocs/categories/categories_cubit.dart';
 import 'package:memee_admin/blocs/products/products_cubit.dart';
 import 'package:memee_admin/blocs/toggle/toggle_cubit.dart';
@@ -33,10 +32,10 @@ class ProductDetailedWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
     final _productCubit = locator.get<ProductsCubit>();
-    final _refreshCubit = locator.get<ToggleCubit>();
-    final _switchCubit = locator.get<ToggleCubit>();
-    final _saveCubit = locator.get<ToggleCubit>();
-    final _productDetailsRefreshCubit = locator.get<ToggleCubit>();
+    final _refreshCubit = locator.get<RefreshCubit>();
+    final _switchCubit = locator.get<RefreshCubit>();
+    final _saveCubit = locator.get<RefreshCubit>();
+    final _productDetailsRefreshCubit = locator.get<RefreshCubit>();
 
     List<ProductDetailsModel> productDetails = [];
     late CategoryModel selectedCategory;
@@ -69,7 +68,7 @@ class ProductDetailedWidget extends StatelessWidget {
     _resetForm(); //editand view
 
     final paddingButton = EdgeInsets.symmetric(horizontal: 8.w, vertical: 8.h);
-    return BlocBuilder<ToggleCubit, bool>(
+    return BlocBuilder<RefreshCubit, bool>(
         bloc: _refreshCubit,
         builder: (_, state) {
           double hfWidth = 280.w;
@@ -109,7 +108,7 @@ class ProductDetailedWidget extends StatelessWidget {
                         (docType != DocType.add) ? 'ID: ${product!.id}' : '',
                         style: Theme.of(context).textTheme.titleSmall,
                       ),
-                      BlocBuilder<ToggleCubit, bool>(
+                      BlocBuilder<RefreshCubit, bool>(
                         bloc: _switchCubit..initialValue(true),
                         builder: (_, __) {
                           return AppSwitch(
@@ -209,13 +208,13 @@ class ProductDetailedWidget extends StatelessWidget {
                                 builder: (context, state) {
                                   if (state is CategoriesResponseState) {
                                     final refreshCubit =
-                                        locator.get<ToggleCubit>();
+                                        locator.get<RefreshCubit>();
                                     final categories = state.categories;
                                     if (categories.isNotEmpty) {
                                       if (docType == DocType.add) {
                                         selectedCategory = categories.first;
                                       }
-                                      return BlocBuilder<ToggleCubit, bool>(
+                                      return BlocBuilder<RefreshCubit, bool>(
                                         bloc: refreshCubit,
                                         builder: (_, index) {
                                           return AppDropDown<CategoryModel>(
@@ -254,7 +253,7 @@ class ProductDetailedWidget extends StatelessWidget {
                                 ),
                             ],
                           ).gapBottom(8.h),
-                          BlocBuilder<ToggleCubit, bool>(
+                          BlocBuilder<RefreshCubit, bool>(
                             bloc: _productDetailsRefreshCubit
                               ..initialValue(false),
                             builder: (_, state) {
@@ -304,7 +303,7 @@ class ProductDetailedWidget extends StatelessWidget {
                         onTap: () => Navigator.pop(context),
                       ).gapRight(8.w),
                       if (docType != DocType.view)
-                        BlocBuilder<ToggleCubit, bool>(
+                        BlocBuilder<RefreshCubit, bool>(
                             bloc: _saveCubit,
                             builder: (_, __) {
                               return AppButton.positive(

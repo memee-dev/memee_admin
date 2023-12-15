@@ -100,4 +100,9 @@ class ProductDetailsModel {
       throw ArgumentError('Invalid product type');
     }
   }
+
+  @override
+  String toString() {
+    return 'Price:$price,D-Price:$discountedPrice, qty:$qty, type:${type.name}';
+  }
 }

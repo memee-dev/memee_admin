@@ -1,6 +1,10 @@
+import 'dart:ui';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:equatable/equatable.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:intl/intl.dart';
 import 'package:memee_admin/core/shared/app_firestore.dart';
 
 import '../../core/initializer/app_aloglia.dart';
@@ -19,13 +23,12 @@ class OrdersCubit extends Cubit<OrdersState> {
   OrdersCubit(this.db) : super(OrdersLoading());
 
   Future<void> fetchOrders() async {
-  
     emit(OrdersLoading());
     try {
       final orderDoc = await db.collection(collectionName).get();
 
       final docs = orderDoc.docs;
-
+      orders.clear();
       for (var doc in docs) {
         final data = doc.data();
         data['id'] = doc.id;
@@ -39,6 +42,21 @@ class OrdersCubit extends Cubit<OrdersState> {
         orders,
       ));
       console.e('FETCH ORDERS', error: e);
+    }
+  }
+
+  Color getColorForOrderStatus(String? orderStatus) {
+    switch (orderStatus?.toLowerCase()) {
+      case 'cancelled':
+        return Colors.red;
+      case 'completed':
+        return Colors.green;
+      case 'pending':
+        return Colors.orange;
+      case 'assigned':
+        return Colors.lightGreen;
+      default:
+        return Colors.transparent;
     }
   }
 

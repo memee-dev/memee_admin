@@ -70,16 +70,22 @@ class OrderModel {
 
 class ItemModel {
   final String productId;
+  final String image;
+  final String name;
   final List<SelectedItemModel> selectedItemDelails;
 
   ItemModel({
     required this.productId,
+    required this.image,
+    required this.name,
     required this.selectedItemDelails,
   });
 
   factory ItemModel.fromMap(Map<String, dynamic> map) {
     return ItemModel(
       productId: map['productId'],
+      image: map['image'],
+      name: map['name'],
       selectedItemDelails: List<SelectedItemModel>.from(
           map['selectedItems'].map((x) => SelectedItemModel.fromMap(x))),
     );
@@ -88,6 +94,8 @@ class ItemModel {
   Map<String, dynamic> toJson() {
     final map = <String, dynamic>{};
     map['productId'] = productId;
+    map['image'] = image;
+    map['name'] = name;
     if (selectedItemDelails.isNotEmpty) {
       map['selectedItems'] = List<Map<String, dynamic>>.from(
         selectedItemDelails.map(

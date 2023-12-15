@@ -22,7 +22,14 @@ mixin AppStrings {
   static const String notVerified = 'Not Verified';
   static const String password = 'Password';
   static const String search = 'Search';
+  static const String status = 'Status';
   static const String description = 'Description';
+  static const String id = 'ID';
+  static const String time = 'Time';
+  static const String created = 'Created';
+  static const String updated = 'Updated';
+  static const String total = 'Total';
+  static const String amount = 'Amount';
 
   static const String awaitingOrders = 'Awaiting Orders';
   static const String onGoingOrders = 'Ongoing Orders';
@@ -39,6 +46,7 @@ mixin AppStrings {
 
   static const String home = 'Home';
   static const String orders = 'Orders';
+  static const String order = 'Order';
   static const String details = 'Details';
   static const String products = 'Products';
   static const String product = 'Product';
@@ -52,6 +60,9 @@ mixin AppStrings {
   static const String dl = 'Driving Licence';
   static const String dlNo = 'Licence Number';
   static const String payments = 'Payments';
+  static const String payment = 'Payment';
+  static const String items = 'Items';
+  static const String units = 'Units';
 
   static const String export = 'Export';
   static const String import = 'Import';

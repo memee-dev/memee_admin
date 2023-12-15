@@ -26,10 +26,10 @@ class DLDetailed extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final _dlCubit = locator.get<DlExecutiveCubit>();
-    final _toggleCubit = locator.get<ToggleCubit>();
-    final _activeCubit = locator.get<ToggleCubit>();
-    final _allotedCubit = locator.get<ToggleCubit>();
-    final _saveCubit = locator.get<ToggleCubit>();
+    final _toggleCubit = locator.get<RefreshCubit>();
+    final _activeCubit = locator.get<RefreshCubit>();
+    final _allotedCubit = locator.get<RefreshCubit>();
+    final _saveCubit = locator.get<RefreshCubit>();
 
     final TextEditingController _nameController = TextEditingController();
     final TextEditingController _phoneNumberController =
@@ -62,7 +62,7 @@ class DLDetailed extends StatelessWidget {
     _resetForm();
     final paddingButton = EdgeInsets.symmetric(horizontal: 8.w, vertical: 8.h);
 
-    return BlocBuilder<ToggleCubit, bool>(
+    return BlocBuilder<RefreshCubit, bool>(
       bloc: _toggleCubit,
       builder: (_, state) {
         double hfWidth = 175.w;
@@ -104,7 +104,7 @@ class DLDetailed extends StatelessWidget {
                     ),
                     Row(
                       children: [
-                        BlocBuilder<ToggleCubit, bool>(
+                        BlocBuilder<RefreshCubit, bool>(
                           bloc: _allotedCubit..initialValue(true),
                           builder: (_, __) {
                             return AppSwitch(
@@ -119,7 +119,7 @@ class DLDetailed extends StatelessWidget {
                             );
                           },
                         ).gapRight(16.w),
-                        BlocBuilder<ToggleCubit, bool>(
+                        BlocBuilder<RefreshCubit, bool>(
                           bloc: _activeCubit..initialValue(true),
                           builder: (_, __) {
                             return AppSwitch(
@@ -207,7 +207,7 @@ class DLDetailed extends StatelessWidget {
                       onTap: () => Navigator.pop(context),
                     ),
                     if (docType != DocType.view)
-                      BlocBuilder<ToggleCubit, bool>(
+                      BlocBuilder<RefreshCubit, bool>(
                         bloc: _saveCubit,
                         builder: (_, __) {
                           return AppButton.positive(

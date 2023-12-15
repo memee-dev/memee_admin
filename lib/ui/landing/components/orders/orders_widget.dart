@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -12,9 +11,10 @@ import '../../../../blocs/orders/orders_cubit.dart';
 import '../../../../core/initializer/app_di_registration.dart';
 import '../../../../core/shared/app_column.dart';
 import '../../../../models/order_model.dart';
+import '../../../__shared/dialog/detailed_dialog.dart';
 import '../../../__shared/widgets/data-table/app_data_table.dart';
 import '../../../__shared/widgets/empty_widget.dart';
-
+import 'widgets/orders_detailed_widget.dart';
 
 class OrdersWidget extends StatelessWidget {
   const OrdersWidget({super.key});
@@ -36,8 +36,8 @@ class OrdersWidget extends StatelessWidget {
                   controller: _searchController,
                   label: '${AppStrings.search} ${AppStrings.orders}',
                   onChanged: (val) async {
-                      _ordersCubit.searchOrders(val);
-                    },
+                    _ordersCubit.searchOrders(val);
+                  },
                 ),
               ).gapRight(24.w),
               Flexible(
@@ -73,9 +73,8 @@ class OrdersWidget extends StatelessWidget {
                             ctx
                                 .read<ExportImportCubit>()
                                 .exportExcel<OrderModel>(
-                                  data:
-                                      (_ordersCubit.state as OrdersSuccess)
-                                          .orders,
+                                  data: (_ordersCubit.state as OrdersSuccess)
+                                      .orders,
                                   sheetName: AppStrings.orders,
                                   title: AppColumn.orders,
                                 );
@@ -109,6 +108,17 @@ class OrdersWidget extends StatelessWidget {
                           .map((order) => orderDataRow(
                                 context,
                                 order: order,
+                                onSelectChanged: (selected) async {
+                                  final result = await showDetailedDialog(
+                                    context,
+                                    child: OrdersDetailedWidget(
+                                      order: order,
+                                    ),
+                                  );
+                                  if (result != null && result is OrderModel) {
+                                    order = result;
+                                  }
+                                },
                               ))
                           .toList(),
                     );

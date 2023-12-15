@@ -20,7 +20,7 @@ class DetailDialogWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     DocType docType = getDocType<ProductDetailsModel>(productDetails, false);
 
-    final _refreshCubit = locator.get<ToggleCubit>();
+    final _refreshCubit = locator.get<RefreshCubit>();
     final _priceController = TextEditingController();
     final _dPriceController = TextEditingController();
     final _qtyController = TextEditingController();
@@ -40,7 +40,7 @@ class DetailDialogWidget extends StatelessWidget {
           controller: _qtyController,
           label: AppStrings.qty,
         ).gapBottom(8.h),
-        BlocBuilder<ToggleCubit, bool>(
+        BlocBuilder<RefreshCubit, bool>(
           bloc: _refreshCubit..initialValue(true),
           builder: (_, state) {
             return AppDropDown<ProductType>(
