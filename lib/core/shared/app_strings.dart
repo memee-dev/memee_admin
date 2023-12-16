@@ -30,6 +30,7 @@ mixin AppStrings {
   static const String updated = 'Updated';
   static const String total = 'Total';
   static const String amount = 'Amount';
+  static const String table = 'Table';
 
   static const String awaitingOrders = 'Awaiting Orders';
   static const String onGoingOrders = 'Ongoing Orders';

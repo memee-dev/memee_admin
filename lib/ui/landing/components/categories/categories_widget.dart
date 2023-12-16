@@ -22,7 +22,7 @@ class CategoriesWidget extends StatelessWidget {
   const CategoriesWidget({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context) { 
     final _searchController = TextEditingController();
     final _categoriesCubit = locator.get<CategoriesCubit>();
 
@@ -60,7 +60,9 @@ class CategoriesWidget extends StatelessWidget {
                         isLoading: state == ExportImportState.loading,
                         label: AppStrings.import,
                         onTap: () {
-                          ctx.read<ExportImportCubit>().importExcel<CategoryModel>();
+                          ctx
+                              .read<ExportImportCubit>()
+                              .importExcel<CategoryModel>();
                         },
                       );
                     },
@@ -78,8 +80,12 @@ class CategoriesWidget extends StatelessWidget {
                         label: AppStrings.export,
                         onTap: () {
                           if (_categoriesCubit.state is CategoriesSuccess) {
-                            ctx.read<ExportImportCubit>().exportExcel<CategoryModel>(
-                                  data: (_categoriesCubit.state as CategoriesSuccess).categories,
+                            ctx
+                                .read<ExportImportCubit>()
+                                .exportExcel<CategoryModel>(
+                                  data: (_categoriesCubit.state
+                                          as CategoriesSuccess)
+                                      .categories,
                                   sheetName: AppStrings.categories,
                                   title: AppColumn.categories,
                                 );
@@ -104,7 +110,8 @@ class CategoriesWidget extends StatelessWidget {
                     );
                   } else if (state is CategoriesResponseState) {
                     if (state.categories.isEmpty) {
-                      return const EmptyWidget(label: '${AppStrings.no} ${AppStrings.categories}');
+                      return const EmptyWidget(
+                          label: '${AppStrings.no} ${AppStrings.categories}');
                     }
                     return AppDataTable(
                       headers: AppColumn.categories,
@@ -115,9 +122,11 @@ class CategoriesWidget extends StatelessWidget {
                                 onSelectChanged: (selected) async {
                                   final result = await showDetailedDialog(
                                     context,
-                                    child: CategoriesDetailedWidget(category: category),
+                                    child: CategoriesDetailedWidget(
+                                        category: category),
                                   );
-                                  if (result != null && result is CategoryModel) {
+                                  if (result != null &&
+                                      result is CategoryModel) {
                                     category = result;
                                   }
                                 },
@@ -126,7 +135,8 @@ class CategoriesWidget extends StatelessWidget {
                                     context,
                                     onTap: (bool val) {
                                       if (val) {
-                                        _categoriesCubit.deleteCategory(category);
+                                        _categoriesCubit
+                                            .deleteCategory(category);
                                       }
                                       Navigator.of(context).pop();
                                     },

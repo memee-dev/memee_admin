@@ -86,7 +86,15 @@ class SecondColumn extends StatelessWidget {
                       selectedIndex = index;
                       refreshCubit.change();
                     },
-                    child: Text('${item.productId} / ${item.name}'),
+                    child: Text(
+                      '${item.productId} / ${item.name}',
+                      style: selectedIndex == index
+                          ? Theme.of(context)
+                              .textTheme
+                              .titleSmall
+                              ?.copyWith(color: Colors.white)
+                          : Theme.of(context).textTheme.titleSmall,
+                    ),
                   );
                 },
               ).gapBottom(8.h);
