@@ -56,7 +56,7 @@ class ProductsWidget extends StatelessWidget {
                 scrollDirection: Axis.horizontal,
                 child: BlocBuilder<ProductsCubit, ProductsState>(
                   bloc: _productsCubit..fetchProducts(),
-                  builder: (context, state) {
+                  builder: (_, state) {
                     if (state is ProductsLoading) {
                       return const Center(
                         child: CircularProgressIndicator.adaptive(),

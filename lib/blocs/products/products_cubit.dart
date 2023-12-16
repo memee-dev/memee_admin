@@ -154,6 +154,7 @@ class ProductsCubit extends Cubit<ProductsState> {
 
   Future<void> removeOldAndAddNewProducts(List<ProductModel> products) async {
     try {
+      this.products = products;
       final batch = db.batch();
       var collection = db.collection(collectionName);
       var snapshots = await collection.get();
@@ -167,7 +168,6 @@ class ProductsCubit extends Cubit<ProductsState> {
       }
 
       await batch.commit();
-      this.products = products;
     } catch (e) {
       emit(ProductsFailure(
         e.toString(),

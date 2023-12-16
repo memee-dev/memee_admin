@@ -53,7 +53,7 @@ class ExportImportCubit extends Cubit<ExportImportState> {
       if (csvData != null) {
         if (T == CategoryModel) {
         } else if (T == ProductModel) {
-          locator.get<ProductsCubit>().importData(csvData);
+          await locator.get<ProductsCubit>().importData(csvData);
         }
       }
     } catch (e) {
