@@ -99,11 +99,3 @@ Future<void> convertDataToCSV(String title, List<List<dynamic>> data) async {
     console.e('Error exporting data: ', error: e);
   }
 }
-
-// Future<void> convertCSVToData() async {
-//   try {
-//     List<List<dynamic>> csvData = CsvToListConverter().convert(csvContent);
-//   } catch (e) {
-//     console.e('Error exporting data: ', error: e);
-//   }
-// }
