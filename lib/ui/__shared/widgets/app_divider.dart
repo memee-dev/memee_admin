@@ -3,17 +3,18 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:memee_admin/ui/__shared/extensions/widget_extensions.dart';
 
 enum HV {
-  horizpntal,
+  horizontal,
   vertical,
 }
 
+// ignore: must_be_immutable
 class AppDivider extends StatelessWidget {
   HV? type;
   double? height;
   double? width;
 
   AppDivider.H({super.key, this.height}) {
-    type = HV.horizpntal;
+    type = HV.horizontal;
   }
 
   AppDivider.V({super.key, this.width}) {

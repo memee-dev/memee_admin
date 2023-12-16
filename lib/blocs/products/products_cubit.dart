@@ -22,6 +22,11 @@ class ProductsCubit extends Cubit<ProductsState> {
   List<ProductModel> products = [];
   ProductsCubit(this.db, this.storage) : super(ProductsLoading());
 
+  void refresh() {
+    emit(ProductsLoading());
+    emit(ProductsSuccess(products));
+  }
+
   Future<void> fetchProducts() async {
     emit(ProductsLoading());
     try {
@@ -147,6 +152,31 @@ class ProductsCubit extends Cubit<ProductsState> {
     }
   }
 
+  Future<void> removeOldAndAddNewProducts(List<ProductModel> products) async {
+    try {
+      final batch = db.batch();
+      var collection = db.collection(collectionName);
+      var snapshots = await collection.get();
+      for (var doc in snapshots.docs) {
+        batch.delete(doc.reference);
+      }
+
+      for (var product in products) {
+        final doc = db.collection(collectionName).doc(product.id);
+        batch.set(doc, product.toJson());
+      }
+
+      await batch.commit();
+      this.products = products;
+    } catch (e) {
+      emit(ProductsFailure(
+        e.toString(),
+        products,
+      ));
+      console.e('Remove Old & Add new Products', error: e);
+    }
+  }
+
   Future<void> updateProducts(ProductModel product) async {
     try {
       final List<String> uploadedImages = await uploadImageToFStorage(
@@ -224,17 +254,93 @@ class ProductsCubit extends Cubit<ProductsState> {
   }
 
   List<List<dynamic>> exportData() {
-    List<ProductModel> products = (state as ProductsSuccess).products;
+    List<List<dynamic>> csvData = [];
+    csvData.add([
+      'Product ID',
+      'Product Name',
+      'Category ID',
+      'Category Name',
+      'Category Active',
+      'Category Image',
+      'Description',
+      'Product Active',
+      'Images',
+      'Details',
+    ]);
 
-    return [
-      ['ID', 'Name', 'Category', 'Description', 'Active'],
-      ...products.map((product) => [
-            product.id,
-            product.name,
-            product.category?.name ?? '',
-            product.description,
-            product.active.toString(),
-          ]),
-    ];
+    for (ProductModel product in products) {
+      String id = product.id;
+      String name = product.name;
+      String categoryId = product.category.id;
+      String categoryName = product.category.name;
+      bool categoryActive = product.category.active;
+      String categoryImage = product.category.image;
+      String description = product.description;
+      bool productActive = product.active;
+      List<String> images = product.images;
+      List<String> details = product.productDetails
+          .map(
+            (x) => x.toString(allowCurly: true),
+          )
+          .toList();
+      csvData.add([
+        id,
+        name,
+        categoryId,
+        categoryName,
+        categoryActive,
+        categoryImage,
+        description,
+        productActive,
+        images.join(', '),
+        details.join(', '),
+      ]);
+    }
+    return csvData;
+  }
+
+  Future<void> importData(List<List> csvData) async {
+    List<ProductModel> products = [];
+
+    for (int i = 1; i < csvData.length; i++) {
+      List<dynamic> row = csvData[i];
+
+      List<String> images =
+          (row[8].split(', ') as List<String>).map((var image) {
+        return image.trim().toString();
+      }).toList();
+
+      List<ProductDetailsModel> details =
+          (row[9].toString().split('}, ')).map((var d) {
+        final val = d.replaceFirst('{', '').replaceFirst('}', '');
+        final v = val.split(', ');
+        final p = ProductDetailsModel(
+          price: double.parse(v[0].split(':')[1]),
+          discountedPrice: double.parse(v[0].split(':')[1]),
+          qty: double.parse(v[2].split(':')[1]),
+          type: ProductDetailsModel.parseProductType(v[3].split(':')[1]),
+        );
+        return p;
+      }).toList();
+
+      products.add(
+        ProductModel(
+          id: row[0],
+          name: row[1],
+          category: CategoryModel(
+            id: row[2],
+            name: row[3],
+            active: bool.parse(row[4]),
+            image: row[5],
+          ),
+          description: row[6],
+          active: bool.parse(row[7]),
+          images: images,
+          productDetails: details,
+        ),
+      );
+    }
+
+    await removeOldAndAddNewProducts(products);
   }
 }

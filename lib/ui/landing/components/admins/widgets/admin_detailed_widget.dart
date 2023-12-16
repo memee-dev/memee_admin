@@ -37,7 +37,6 @@ class AdminDetailedWidget extends StatelessWidget {
     late String selectedName = '';
     late String selectedEmail = '';
     late bool selectedStatus = false;
-    late bool isLoading = false;
     late int selectedAdminLevel = adminLevel[0];
     DocType docType = getDocType<AdminModel>(admin, false);
     _resetForm() {
@@ -51,8 +50,6 @@ class AdminDetailedWidget extends StatelessWidget {
     }
 
     _resetForm();
-
-    final paddingButton = EdgeInsets.symmetric(horizontal: 8.w, vertical: 8.h);
 
     return BlocBuilder<RefreshCubit, bool>(
       bloc: _toggleCubit,
@@ -97,7 +94,7 @@ class AdminDetailedWidget extends StatelessWidget {
                     return AppSwitch(
                       value: selectedStatus,
                       enableEdit: docType != DocType.view,
-                      showConfirmationDailog: false,
+                      showConfirmationDialog: false,
                       onTap: (bool val) {
                         selectedStatus = val;
                         _switchCubit.change();
@@ -154,19 +151,17 @@ class AdminDetailedWidget extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                AppButton.negative(
-                  padding: paddingButton,
+                AppButton.secondary(
+                  label: 'Close',
                   onTap: () => Navigator.pop(context),
                 ),
                 if (docType != DocType.view)
                   BlocBuilder<RefreshCubit, bool>(
                     bloc: _saveCubit,
                     builder: (_, __) {
-                      return AppButton.positive(
-                        isLoading: isLoading,
-                        padding: paddingButton,
+                      return AppButton.primary(
+                        label: 'Save',
                         onTap: () async {
-                          isLoading = true;
                           _saveCubit.change();
 
                           final name = _nameController.text.toString().trim();
@@ -198,7 +193,6 @@ class AdminDetailedWidget extends StatelessWidget {
                             snackBar(context, 'Please fill the fields');
                           }
 
-                          isLoading = false;
                           _saveCubit.change();
                         },
                       );

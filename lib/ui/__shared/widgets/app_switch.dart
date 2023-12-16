@@ -5,24 +5,23 @@ import 'package:memee_admin/ui/__shared/extensions/widget_extensions.dart';
 
 import '../../../blocs/toggle/toggle_cubit.dart';
 import '../../../core/initializer/app_di_registration.dart';
-import '../dialog/confirmation_dialog.dart';
 
 class AppSwitch extends StatelessWidget {
-  final String? postiveLabel;
-  final String? negativeaLabel;
+  final String? positiveLabel;
+  final String? negativeLabel;
   final bool value;
   final Function(bool) onTap;
   final bool enableEdit;
-  final bool showConfirmationDailog;
+  final bool showConfirmationDialog;
 
   const AppSwitch({
     super.key,
     required this.value,
-    this.postiveLabel,
-    this.negativeaLabel,
+    this.positiveLabel,
+    this.negativeLabel,
     required this.onTap,
     this.enableEdit = true,
-    this.showConfirmationDailog = true,
+    this.showConfirmationDialog = true,
   });
 
   @override
@@ -34,26 +33,18 @@ class AppSwitch extends StatelessWidget {
         return Row(
           mainAxisAlignment: MainAxisAlignment.end,
           children: [
-            if (postiveLabel != null && negativeaLabel != null)
-              Text((value ? postiveLabel : negativeaLabel)!).gapRight(4.w)
-            else if (postiveLabel != null)
-              Text((postiveLabel)!).gapRight(4.w)
-            else if (negativeaLabel != null)
-              Text((negativeaLabel)!).gapRight(4.w),
+            if (positiveLabel != null && negativeLabel != null)
+              Text((value ? positiveLabel : negativeLabel)!).gapRight(4.w)
+            else if (positiveLabel != null)
+              Text((positiveLabel)!).gapRight(4.w)
+            else if (negativeLabel != null)
+              Text((negativeLabel)!).gapRight(4.w),
             Switch(
               value: state,
               onChanged: (value) async {
                 if (enableEdit) {
-                  if (showConfirmationDailog) {
-                    await showConfirmationDialog(
-                      context,
-                      onTap: (bool val) {
-                        Navigator.pop(context);
-                        if (val) {
-                          _setSwitch(cubit, state);
-                        }
-                      },
-                    );
+                  if (showConfirmationDialog) {
+                    showConfirmationDialog;
                   } else {
                     cubit.change();
                     onTap(!state);

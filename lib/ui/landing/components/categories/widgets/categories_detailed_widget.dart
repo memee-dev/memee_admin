@@ -29,13 +29,12 @@ class CategoriesDetailedWidget extends StatelessWidget {
     final _switchCubit = locator.get<RefreshCubit>();
     final _saveCubit = locator.get<RefreshCubit>();
 
-    final _categorynameController = TextEditingController();
+    final _categoryNameController = TextEditingController();
     final _imageController = TextEditingController();
 
     late String selectedCategoryName = '';
     late String selectedImage = '';
     late bool selectedStatus = true;
-    late bool isLoading = false;
 
     DocType docType = getDocType<CategoryModel>(category, false);
 
@@ -49,7 +48,6 @@ class CategoriesDetailedWidget extends StatelessWidget {
 
     _resetForm();
 
-    final paddingButton = EdgeInsets.symmetric(horizontal: 8.w, vertical: 8.h);
     return BlocBuilder<RefreshCubit, bool>(
       bloc: _toggleCubit,
       builder: (_, state) {
@@ -96,7 +94,7 @@ class CategoriesDetailedWidget extends StatelessWidget {
                         return AppSwitch(
                           value: selectedStatus,
                           enableEdit: docType != DocType.view,
-                          showConfirmationDailog: false,
+                          showConfirmationDialog: false,
                           onTap: (bool val) {
                             selectedStatus = val;
                             _switchCubit.change();
@@ -108,7 +106,7 @@ class CategoriesDetailedWidget extends StatelessWidget {
                 ).sizedBoxW(hfWidth).gapBottom(12.h),
                 AppTextField(
                   readOnly: docType == DocType.view,
-                  controller: _categorynameController
+                  controller: _categoryNameController
                     ..text = selectedCategoryName,
                   label: AppStrings.name,
                 ).gapBottom(8.h),
@@ -120,22 +118,20 @@ class CategoriesDetailedWidget extends StatelessWidget {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    AppButton.negative(
-                      padding: paddingButton,
+                    AppButton.secondary(
+                      label: 'Cancel',
                       onTap: () => Navigator.pop(context),
                     ),
                     if (docType != DocType.view)
                       BlocBuilder<RefreshCubit, bool>(
                         bloc: _saveCubit,
                         builder: (_, __) {
-                          return AppButton.positive(
-                            isLoading: isLoading,
-                            padding: paddingButton,
+                          return AppButton.secondary(
+                            label: 'Save',
                             onTap: () async {
-                              isLoading = true;
                               _saveCubit.change();
 
-                              final name = _categorynameController.text.trim();
+                              final name = _categoryNameController.text.trim();
                               final image = _imageController.text.trim();
                               if (name.isNotEmpty && image.isNotEmpty) {
                                 if (docType == DocType.add) {
@@ -161,7 +157,6 @@ class CategoriesDetailedWidget extends StatelessWidget {
                               } else {
                                 snackBar(context, 'Please fill the fields');
                               }
-                              isLoading = false;
                               _saveCubit.change();
                             },
                           );

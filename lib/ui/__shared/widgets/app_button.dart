@@ -1,69 +1,86 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-import '../../../core/shared/app_strings.dart';
+import '../../../blocs/toggle/toggle_cubit.dart';
+import '../../../core/initializer/app_di_registration.dart';
 
+// ignore: must_be_immutable
 class AppButton extends StatelessWidget {
-  final bool isLoading;
   final String label;
-  final Color bgColor;
-  final Color textColor;
   final Function() onTap;
-  final EdgeInsetsGeometry? padding;
+  final Color color;
+  final Color textColor;
+  final double? width;
+  final double? height;
 
   const AppButton({
     super.key,
     required this.label,
     required this.onTap,
-    this.bgColor = Colors.amber,
+    this.color = Colors.amber,
     this.textColor = Colors.black,
-    this.isLoading = false,
-    this.padding,
+    this.width,
+    this.height,
   });
 
-  const AppButton.positive({
+  const AppButton.primary({
     super.key,
-    this.label = AppStrings.save,
+    required this.label,
     required this.onTap,
-    this.bgColor = Colors.amber,
+    this.color = Colors.amber,
     this.textColor = Colors.black,
-    this.isLoading = false,
-    this.padding,
+    this.width,
+    this.height,
   });
 
-  const AppButton.negative({
+  const AppButton.secondary({
     super.key,
-    this.label = AppStrings.cancel,
+    required this.label,
     required this.onTap,
-    this.bgColor = Colors.black,
-    this.textColor = Colors.amber,
-    this.isLoading = false,
-    this.padding,
+    this.color = Colors.black87,
+    this.textColor = Colors.amberAccent,
+    this.width,
+    this.height,
   });
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      behavior: HitTestBehavior.translucent,
-      onTap: onTap,
-      child: Container(
-        alignment: Alignment.center,
-        padding: padding ??
-            EdgeInsets.symmetric(
-              horizontal: 16.w,
-              vertical: 12.h,
-            ),
-        decoration: BoxDecoration(
-          color: bgColor,
-          borderRadius: BorderRadius.circular(8.sp),
-        ),
-        child: isLoading
-            ? const CircularProgressIndicator.adaptive()
-            : Text(
-                label,
-                style: Theme.of(context).textTheme.bodySmall?.copyWith(color: textColor),
+    final refreshCubit = locator.get<RefreshCubit>();
+    bool loading = false;
+    return BlocBuilder<RefreshCubit, bool>(
+      bloc: refreshCubit,
+      builder: (_, state) {
+        return SizedBox(
+          width: width ?? 25.w,
+          height: height ?? 40.h,
+          child: ElevatedButton(
+            onPressed: () async {
+              if (!loading) {
+                loading = true;
+                refreshCubit.change();
+                await onTap();
+                loading = false;
+                refreshCubit.change();
+              }
+            },
+            style: ElevatedButton.styleFrom(
+              backgroundColor: color,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12.r),
               ),
-      ),
+            ),
+            child: loading
+                ? const CircularProgressIndicator.adaptive()
+                : Text(
+                    label,
+                    style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                          color: textColor,
+                        ),
+                  ),
+          ),
+        );
+      },
     );
   }
 }

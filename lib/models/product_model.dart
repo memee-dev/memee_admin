@@ -53,6 +53,8 @@ class ProductModel {
 
     return map;
   }
+  @override
+  String toString() => toJson().toString();
 }
 
 enum ProductType {
@@ -78,7 +80,7 @@ class ProductDetailsModel {
       price: map['price'],
       discountedPrice: map['discountedPrice'],
       qty: map['qty'],
-      type: _parseProductType(map['type']),
+      type: parseProductType(map['type']),
     );
   }
 
@@ -91,7 +93,7 @@ class ProductDetailsModel {
     return map;
   }
 
-  static ProductType _parseProductType(String value) {
+  static ProductType parseProductType(String value) {
     if (value == 'kg') {
       return ProductType.kg;
     } else if (value == 'piece') {
@@ -102,7 +104,11 @@ class ProductDetailsModel {
   }
 
   @override
-  String toString() {
-    return 'Price:$price,D-Price:$discountedPrice, qty:$qty, type:${type.name}';
+  String toString({bool allowCurly=false}) {
+    String val = 'Price:$price, D-Price:$discountedPrice, qty:$qty, type:${type.name}';
+    if(allowCurly){
+      return '{$val}'; 
+    }
+    return val;
   }
 }

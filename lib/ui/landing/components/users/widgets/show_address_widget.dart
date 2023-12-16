@@ -34,8 +34,8 @@ class ShowAddress extends StatelessWidget {
             rChild: Align(
               alignment: Alignment.centerRight,
               child: AppSwitch(
-                postiveLabel: AppStrings.defaultt,
-                negativeaLabel: AppStrings.defaultt,
+                positiveLabel: AppStrings.defaultt,
+                negativeLabel: AppStrings.defaultt,
                 value: address.defaultt,
                 enableEdit: enableEdit,
                 onTap: (bool val) {

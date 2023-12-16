@@ -55,13 +55,7 @@ class LoginPageMob extends StatelessWidget {
             }
           },
           builder: (_, state) {
-            bool isLoading = false;
-            if (state == LoginStatus.loading) {
-              isLoading = true;
-            }
-
             return AppButton(
-              isLoading: isLoading,
               label: AppStrings.login,
               onTap: () => locator.get<LoginCubit>().loginWithEmailAndPassword(
                     email: _emailController.text,

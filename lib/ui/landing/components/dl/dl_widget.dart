@@ -59,12 +59,11 @@ class DLExecutiveWidget extends StatelessWidget {
                       bloc: locator.get<ExportImportCubit>(),
                       builder: (ctx, state) {
                         return AppButton(
-                          isLoading: state == ExportImportState.loading,
                           label: AppStrings.import,
                           onTap: () {
                             ctx
                                 .read<ExportImportCubit>()
-                                .importExcel<DlExecutiveModel>();
+                                .importCSV<DlExecutiveModel>();
                           },
                         );
                       },
@@ -78,19 +77,12 @@ class DLExecutiveWidget extends StatelessWidget {
                     child: BlocBuilder<ExportImportCubit, ExportImportState>(
                       builder: (ctx, state) {
                         return AppButton(
-                          isLoading: state == ExportImportState.loading,
                           label: AppStrings.export,
                           onTap: () {
                             if (_dlCubit.state is DlExecutivesSuccess) {
                               ctx
                                   .read<ExportImportCubit>()
-                                  .exportExcel<DlExecutiveModel>(
-                                    data:
-                                        (_dlCubit.state as DlExecutivesSuccess)
-                                            .dlExecutives,
-                                    sheetName: AppStrings.users,
-                                    title: AppColumn.dlExecutives,
-                                  );
+                                  .exportCSV<DlExecutiveModel>();
                             }
                           },
                         );

@@ -43,31 +43,27 @@ class ProductDetailedWidget extends StatelessWidget {
 
     final _descriptionController = TextEditingController();
     final _nameController = TextEditingController();
-    final _imageController = TextEditingController();
 
     late String selectedName = '';
     late String selectedDescription = '';
-    late String selectedImage = '';
     late bool selectedStatus = true;
     late List<String> selectedImages = [];
 
     DocType docType = getDocType<ProductModel>(product, false);
 
-    late bool isLoading = false;
     _resetForm() {
       if (product != null) {
         selectedCategory = product!.category;
         selectedName = product!.name;
         selectedDescription = product!.description;
         selectedStatus = product!.active;
-        selectedImages = product!.images ?? [];
+        selectedImages = product!.images;
         productDetails = product!.productDetails;
       }
     }
 
-    _resetForm(); //editand view
+    _resetForm(); //edit and view
 
-    final paddingButton = EdgeInsets.symmetric(horizontal: 8.w, vertical: 8.h);
     return BlocBuilder<RefreshCubit, bool>(
         bloc: _refreshCubit,
         builder: (_, state) {
@@ -112,10 +108,10 @@ class ProductDetailedWidget extends StatelessWidget {
                         bloc: _switchCubit..initialValue(true),
                         builder: (_, __) {
                           return AppSwitch(
-                            postiveLabel: AppStrings.active,
+                            positiveLabel: AppStrings.active,
                             value: selectedStatus,
                             enableEdit: docType != DocType.view,
-                            showConfirmationDailog: false,
+                            showConfirmationDialog: false,
                             onTap: (bool val) {
                               selectedStatus = val;
                               _switchCubit.change();
@@ -159,14 +155,12 @@ class ProductDetailedWidget extends StatelessWidget {
                                 ),
                               ],
                             ).gapBottom(8.h),
-                          if (product != null &&
-                              product!.images != null &&
-                              product!.images!.isNotEmpty)
+                          if (product != null && product!.images.isNotEmpty)
                             SizedBox(
                               width: fieldWidth,
                               child: CarouselSlider(
                                 options: CarouselOptions(disableCenter: true),
-                                items: [...product!.images!, ...selectedImages]
+                                items: [...product!.images, ...selectedImages]
                                     .map(
                                       (image) => Stack(
                                         alignment: Alignment.center,
@@ -298,19 +292,17 @@ class ProductDetailedWidget extends StatelessWidget {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      AppButton.negative(
-                        padding: paddingButton,
+                      AppButton.secondary(
+                        label: AppStrings.cancel,
                         onTap: () => Navigator.pop(context),
                       ).gapRight(8.w),
                       if (docType != DocType.view)
                         BlocBuilder<RefreshCubit, bool>(
                             bloc: _saveCubit,
                             builder: (_, __) {
-                              return AppButton.positive(
-                                isLoading: isLoading,
-                                padding: paddingButton,
+                              return AppButton.primary(
+                                label: AppStrings.save,
                                 onTap: () async {
-                                  isLoading = true;
                                   _saveCubit.change();
 
                                   final name = _nameController.text.trim();
@@ -344,12 +336,10 @@ class ProductDetailedWidget extends StatelessWidget {
                                         );
                                       }
                                     }
-
                                     Navigator.pop(context);
                                   } else {
                                     snackBar(context, 'Please fill the fields');
                                   }
-                                  isLoading = false;
                                   _saveCubit.change();
                                 },
                               );

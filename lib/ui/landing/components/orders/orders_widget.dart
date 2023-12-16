@@ -47,12 +47,9 @@ class OrdersWidget extends StatelessWidget {
                     bloc: locator.get<ExportImportCubit>(),
                     builder: (ctx, state) {
                       return AppButton(
-                        isLoading: state == ExportImportState.loading,
                         label: AppStrings.import,
                         onTap: () {
-                          ctx
-                              .read<ExportImportCubit>()
-                              .importExcel<OrderModel>();
+                          ctx.read<ExportImportCubit>().importCSV<OrderModel>();
                         },
                       );
                     },
@@ -66,18 +63,12 @@ class OrdersWidget extends StatelessWidget {
                   child: BlocBuilder<ExportImportCubit, ExportImportState>(
                     builder: (ctx, state) {
                       return AppButton(
-                        isLoading: state == ExportImportState.loading,
                         label: AppStrings.export,
                         onTap: () {
                           if (_ordersCubit.state is OrdersSuccess) {
                             ctx
                                 .read<ExportImportCubit>()
-                                .exportExcel<OrderModel>(
-                                  data: (_ordersCubit.state as OrdersSuccess)
-                                      .orders,
-                                  sheetName: AppStrings.orders,
-                                  title: AppColumn.orders,
-                                );
+                                .exportCSV<OrderModel>();
                           }
                         },
                       );

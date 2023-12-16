@@ -60,10 +60,11 @@ class AdminWidget extends StatelessWidget {
                         bloc: locator.get<ExportImportCubit>(),
                         builder: (ctx, state) {
                           return AppButton(
-                            isLoading: state == ExportImportState.loading,
                             label: AppStrings.import,
                             onTap: () {
-                              ctx.read<ExportImportCubit>().importExcel<AdminModel>();
+                              ctx
+                                  .read<ExportImportCubit>()
+                                  .importCSV<AdminModel>();
                             },
                           );
                         },
@@ -77,15 +78,12 @@ class AdminWidget extends StatelessWidget {
                       child: BlocBuilder<ExportImportCubit, ExportImportState>(
                         builder: (ctx, state) {
                           return AppButton(
-                            isLoading: state == ExportImportState.loading,
                             label: AppStrings.export,
                             onTap: () {
                               if (_adminCubit.state is AdminsSuccess) {
-                                ctx.read<ExportImportCubit>().exportExcel<AdminModel>(
-                                      data: (_adminCubit.state as AdminsSuccess).admins,
-                                      sheetName: AppStrings.admins,
-                                      title: AppColumn.admins,
-                                    );
+                                ctx
+                                    .read<ExportImportCubit>()
+                                    .exportCSV<AdminModel>();
                               }
                             },
                           );
@@ -108,7 +106,8 @@ class AdminWidget extends StatelessWidget {
                       );
                     } else if (state is AdminsResponseState) {
                       if (state.admins.isEmpty) {
-                        return const EmptyWidget(label: '${AppStrings.no} ${AppStrings.admins}');
+                        return const EmptyWidget(
+                            label: '${AppStrings.no} ${AppStrings.admins}');
                       }
                       return AppDataTable(
                         headers: AppColumn.admins,
@@ -121,7 +120,8 @@ class AdminWidget extends StatelessWidget {
                                       context,
                                       child: AdminDetailedWidget(admin: admin),
                                     );
-                                    if (result != null && result is AdminModel) {
+                                    if (result != null &&
+                                        result is AdminModel) {
                                       admin = result;
                                     }
                                   },

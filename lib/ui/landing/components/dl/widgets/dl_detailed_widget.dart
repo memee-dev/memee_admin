@@ -45,7 +45,6 @@ class DLDetailed extends StatelessWidget {
     late String selectedDlNumber = '';
     late bool selectedStatus = false;
     late bool selectedAlloted = false;
-    late bool isLoading = false;
 
     DocType docType = getDocType<DlExecutiveModel>(dlExecutive, false);
 
@@ -60,7 +59,6 @@ class DLDetailed extends StatelessWidget {
     }
 
     _resetForm();
-    final paddingButton = EdgeInsets.symmetric(horizontal: 8.w, vertical: 8.h);
 
     return BlocBuilder<RefreshCubit, bool>(
       bloc: _toggleCubit,
@@ -108,10 +106,10 @@ class DLDetailed extends StatelessWidget {
                           bloc: _allotedCubit..initialValue(true),
                           builder: (_, __) {
                             return AppSwitch(
-                              postiveLabel: AppStrings.allot,
+                              positiveLabel: AppStrings.allot,
                               value: selectedAlloted,
                               enableEdit: docType != DocType.view,
-                              showConfirmationDailog: false,
+                              showConfirmationDialog: false,
                               onTap: (bool val) {
                                 selectedAlloted = val;
                                 _allotedCubit.change();
@@ -123,10 +121,10 @@ class DLDetailed extends StatelessWidget {
                           bloc: _activeCubit..initialValue(true),
                           builder: (_, __) {
                             return AppSwitch(
-                              postiveLabel: AppStrings.active,
+                              positiveLabel: AppStrings.active,
                               value: selectedStatus,
                               enableEdit: docType != DocType.view,
-                              showConfirmationDailog: false,
+                              showConfirmationDialog: false,
                               onTap: (bool val) {
                                 selectedStatus = val;
                                 _activeCubit.change();
@@ -202,19 +200,17 @@ class DLDetailed extends StatelessWidget {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    AppButton.negative(
-                      padding: paddingButton,
+                    AppButton.secondary(
+                      label: AppStrings.cancel,
                       onTap: () => Navigator.pop(context),
                     ),
                     if (docType != DocType.view)
                       BlocBuilder<RefreshCubit, bool>(
                         bloc: _saveCubit,
                         builder: (_, __) {
-                          return AppButton.positive(
-                            isLoading: isLoading,
-                            padding: paddingButton,
+                          return AppButton.primary(
+                            label: AppStrings.save,
                             onTap: () async {
-                              isLoading = true;
                               _saveCubit.change();
 
                               final name =
@@ -262,7 +258,6 @@ class DLDetailed extends StatelessWidget {
                               } else {
                                 snackBar(context, 'Please fill the fields');
                               }
-                              isLoading = false;
                               _saveCubit.change();
                             },
                           );

@@ -42,12 +42,11 @@ class PaymentsWidget extends StatelessWidget {
                     bloc: locator.get<ExportImportCubit>(),
                     builder: (ctx, state) {
                       return AppButton(
-                        isLoading: state == ExportImportState.loading,
                         label: AppStrings.import,
                         onTap: () {
                           ctx
                               .read<ExportImportCubit>()
-                              .importExcel<PaymentModel>();
+                              .importCSV<PaymentModel>();
                         },
                       );
                     },
@@ -61,19 +60,12 @@ class PaymentsWidget extends StatelessWidget {
                   child: BlocBuilder<ExportImportCubit, ExportImportState>(
                     builder: (ctx, state) {
                       return AppButton(
-                        isLoading: state == ExportImportState.loading,
                         label: AppStrings.export,
                         onTap: () {
                           if (_paymentsCubit.state is PaymentsSuccess) {
                             ctx
                                 .read<ExportImportCubit>()
-                                .exportExcel<PaymentModel>(
-                                  data:
-                                      (_paymentsCubit.state as PaymentsSuccess)
-                                          .payments,
-                                  sheetName: AppStrings.payments,
-                                  title: AppColumn.payments,
-                                );
+                                .exportCSV<PaymentModel>();
                           }
                         },
                       );

@@ -68,7 +68,7 @@ class _UserDetailedState extends State<_UserDetailed> {
 
   AddressModel? selectedAddress;
 
-  final showAddresIndexCubit = locator.get<IndexCubit>();
+  final showAddressIndexCubit = locator.get<IndexCubit>();
   @override
   void initState() {
     super.initState();
@@ -107,8 +107,8 @@ class _UserDetailedState extends State<_UserDetailed> {
             Row(
               children: [
                 AppSwitch(
-                  postiveLabel: AppStrings.verified,
-                  negativeaLabel: AppStrings.notVerified,
+                  positiveLabel: AppStrings.verified,
+                  negativeLabel: AppStrings.notVerified,
                   value: selectedVerified,
                   enableEdit: enableEdit,
                   onTap: (value) {
@@ -121,8 +121,8 @@ class _UserDetailedState extends State<_UserDetailed> {
                 ),
                 SizedBox(width: 16.w),
                 AppSwitch(
-                  postiveLabel: AppStrings.active,
-                  negativeaLabel: AppStrings.disabled,
+                  positiveLabel: AppStrings.active,
+                  negativeLabel: AppStrings.disabled,
                   value: selectedStatus,
                   enableEdit: enableEdit,
                   onTap: (value) {
@@ -150,7 +150,8 @@ class _UserDetailedState extends State<_UserDetailed> {
                   readOnly: !enableEdit,
                 ).gapBottom(8.w),
                 AppTextField(
-                  controller: _phoneNumberController..text = selectedPhoneNumber,
+                  controller: _phoneNumberController
+                    ..text = selectedPhoneNumber,
                   label: AppStrings.phoneNumber,
                   readOnly: !enableEdit,
                 ).gapBottom(8.w),
@@ -173,7 +174,7 @@ class _UserDetailedState extends State<_UserDetailed> {
                       children: [
                         if (selectedAddress != null)
                           BlocBuilder<IndexCubit, int>(
-                            bloc: showAddresIndexCubit,
+                            bloc: showAddressIndexCubit,
                             builder: (_, state) {
                               return AppDropDown<AddressModel>(
                                 value: selectedAddress!,
@@ -181,7 +182,7 @@ class _UserDetailedState extends State<_UserDetailed> {
                                 onChanged: (AddressModel? val) {
                                   if (val != null) {
                                     selectedAddress = val;
-                                    showAddresIndexCubit.onIndexChange(
+                                    showAddressIndexCubit.onIndexChange(
                                       user.address.indexOf(val),
                                     );
                                   }
@@ -200,7 +201,7 @@ class _UserDetailedState extends State<_UserDetailed> {
                   ],
                 ).gapBottom(16.h),
                 BlocBuilder<IndexCubit, int>(
-                  bloc: showAddresIndexCubit,
+                  bloc: showAddressIndexCubit,
                   builder: (_, state) {
                     return ShowAddress(
                       address: selectedAddress!,
@@ -215,14 +216,17 @@ class _UserDetailedState extends State<_UserDetailed> {
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            AppButton.negative(
+            AppButton.secondary(
+              label: AppStrings.cancel,
               onTap: () => Navigator.pop(context),
             ),
             if (widget.user == null || enableEdit)
-              AppButton.positive(
+              AppButton.primary(
+                label: AppStrings.save,
                 onTap: () {
                   user.userName = _userNameController.text.toString().trim();
-                  user.phoneNumber = _phoneNumberController.text.toString().trim();
+                  user.phoneNumber =
+                      _phoneNumberController.text.toString().trim();
                   user.email = _emailController.text.toString().trim();
                   user.active = selectedStatus;
                   user.verified = selectedVerified;

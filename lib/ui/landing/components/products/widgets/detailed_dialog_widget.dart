@@ -59,24 +59,29 @@ class DetailDialogWidget extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            AppButton.negative(onTap: () => Navigator.pop(context))
-                .gapRight(8.w),
-            AppButton.positive(onTap: () {
-              String price = _priceController.text.trim();
-              String dPrice = _dPriceController.text.trim();
-              String qty = _qtyController.text.trim();
-              if (price.isNotEmpty && dPrice.isNotEmpty && qty.isNotEmpty) {
-                Navigator.pop(
-                  context,
-                  ProductDetailsModel(
-                    price: double.parse(price),
-                    discountedPrice: double.parse(dPrice),
-                    qty: double.parse(qty),
-                    type: _selectedType,
-                  ),
-                );
-              }
-            }),
+            AppButton.secondary(
+              label: 'Cancel',
+              onTap: () => Navigator.pop(context),
+            ).gapRight(8.w),
+            AppButton.primary(
+              label: 'Save',
+              onTap: () {
+                String price = _priceController.text.trim();
+                String dPrice = _dPriceController.text.trim();
+                String qty = _qtyController.text.trim();
+                if (price.isNotEmpty && dPrice.isNotEmpty && qty.isNotEmpty) {
+                  Navigator.pop(
+                    context,
+                    ProductDetailsModel(
+                      price: double.parse(price),
+                      discountedPrice: double.parse(dPrice),
+                      qty: double.parse(qty),
+                      type: _selectedType,
+                    ),
+                  );
+                }
+              },
+            ),
           ],
         )
       ],

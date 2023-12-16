@@ -67,10 +67,11 @@ class _UserWidget extends StatelessWidget {
                         bloc: locator.get<ExportImportCubit>(),
                         builder: (ctx, state) {
                           return AppButton(
-                            isLoading: state == ExportImportState.loading,
                             label: AppStrings.import,
                             onTap: () {
-                              ctx.read<ExportImportCubit>().importExcel<UserModel>();
+                              ctx
+                                  .read<ExportImportCubit>()
+                                  .importCSV<UserModel>();
                             },
                           );
                         },
@@ -84,15 +85,12 @@ class _UserWidget extends StatelessWidget {
                       child: BlocBuilder<ExportImportCubit, ExportImportState>(
                         builder: (ctx, state) {
                           return AppButton(
-                            isLoading: state == ExportImportState.loading,
                             label: AppStrings.export,
                             onTap: () {
                               if (userCubit.state is UsersSuccess) {
-                                ctx.read<ExportImportCubit>().exportExcel<UserModel>(
-                                      data: (userCubit.state as UsersSuccess).users,
-                                      sheetName: AppStrings.users,
-                                      title: AppColumn.users,
-                                    );
+                                ctx
+                                    .read<ExportImportCubit>()
+                                    .exportCSV<UserModel>();
                               }
                             },
                           );
@@ -120,7 +118,9 @@ class _UserWidget extends StatelessWidget {
                     } else if (state is UsersSuccess) {
                       return AppDataTable(
                         headers: AppColumn.users,
-                        items: state.users.map((user) => userDataRow(context, user)).toList(),
+                        items: state.users
+                            .map((user) => userDataRow(context, user))
+                            .toList(),
                       );
                     }
                     return const SizedBox.shrink();
