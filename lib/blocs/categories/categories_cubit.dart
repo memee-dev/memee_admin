@@ -20,7 +20,6 @@ class CategoriesCubit extends Cubit<CategoriesState> {
   }
 
   Future<void> fetchCategories() async {
-
     emit(CategoriesLoading());
     try {
       final categoryDoc = await db.collection(collectionName).get();
@@ -143,6 +142,32 @@ class CategoriesCubit extends Cubit<CategoriesState> {
     return categories;
   }
 
+  Future<void> removeOldAndAddNewCategories(
+      List<CategoryModel> categories) async {
+    try {
+      this.categories = categories;
+      final batch = db.batch();
+      var collection = db.collection(collectionName);
+      var snapshots = await collection.get();
+      for (var doc in snapshots.docs) {
+        batch.delete(doc.reference);
+      }
+
+      for (var category in categories) {
+        final doc = db.collection(collectionName).doc(category.id);
+        batch.set(doc, category.toJson());
+      }
+
+      await batch.commit();
+    } catch (e) {
+      emit(CategoriesFailure(
+        e.toString(),
+        categories,
+      ));
+      console.e('Remove Old & Add new Categories', error: e);
+    }
+  }
+
   List<List<dynamic>> exportData() {
     List<List<dynamic>> csvData = [];
     csvData.add([
@@ -166,5 +191,24 @@ class CategoriesCubit extends Cubit<CategoriesState> {
       ]);
     }
     return csvData;
+  }
+
+  Future<void> importData(List<List> csvData) async {
+    List<CategoryModel> categories = [];
+
+    for (int i = 1; i < csvData.length; i++) {
+      List<dynamic> row = csvData[i];
+
+      categories.add(
+        CategoryModel(
+          id: row[0],
+          name: row[1].toString(),
+          active: bool.parse(row[2]),
+          image: row[3],
+        ),
+      );
+    }
+
+    await removeOldAndAddNewCategories(categories);
   }
 }

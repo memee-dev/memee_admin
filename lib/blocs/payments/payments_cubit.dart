@@ -12,9 +12,13 @@ part 'payments_state.dart';
 class PaymentsCubit extends Cubit<PaymentsState> {
   final FirebaseFirestore db;
   final collectionName = AppFireStoreCollection.payments;
+   List<PaymentModel> payments = [];
 
   PaymentsCubit(this.db) : super(PaymentsLoading());
-
+  void refresh() {
+    emit(PaymentsLoading());
+    emit(PaymentsSuccess(payments));
+  }
   Future<void> fetchPayments() async {
     List<PaymentModel> payments = [];
     emit(PaymentsLoading());

@@ -13,9 +13,13 @@ class AdminCubit extends Cubit<AdminsState> {
   final FirebaseFirestore db;
   final FirebaseAuth auth;
   final collectionName = AppFireStoreCollection.admins;
-
+  List<AdminModel> admins = [];
   AdminCubit(this.auth, this.db) : super(AdminsLoading());
 
+  void refresh() {
+    emit(AdminsLoading());
+    emit(AdminsSuccess(admins));
+  }
   Future<void> fetchAdmins() async {
     List<AdminModel> admins = [];
     emit(AdminsLoading());

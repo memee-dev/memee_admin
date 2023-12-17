@@ -343,4 +343,6 @@ class ProductsCubit extends Cubit<ProductsState> {
 
     await removeOldAndAddNewProducts(products);
   }
+
+
 }

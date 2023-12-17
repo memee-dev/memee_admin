@@ -7,8 +7,6 @@ import 'package:memee_admin/models/category_model.dart';
 import 'package:memee_admin/ui/__shared/dialog/confirmation_dialog.dart';
 import 'package:memee_admin/ui/__shared/dialog/detailed_dialog.dart';
 import 'package:memee_admin/ui/__shared/extensions/widget_extensions.dart';
-import 'package:memee_admin/ui/__shared/widgets/app_button.dart';
-import 'package:memee_admin/ui/__shared/widgets/app_textfield.dart';
 import 'package:memee_admin/ui/landing/components/categories/widgets/categories_detailed_widget.dart';
 
 import '../../../../blocs/categories/categories_cubit.dart';

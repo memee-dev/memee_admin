@@ -18,7 +18,10 @@ class OrdersCubit extends Cubit<OrdersState> {
   List<OrderModel> orders = [];
 
   OrdersCubit(this.db) : super(OrdersLoading());
-
+  void refresh() {
+    emit(OrdersLoading());
+    emit(OrdersSuccess(orders));
+  }
   Future<void> fetchOrders() async {
     emit(OrdersLoading());
     try {

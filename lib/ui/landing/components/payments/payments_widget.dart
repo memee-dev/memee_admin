@@ -1,17 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:memee_admin/blocs/export_import/export_import_cubit.dart';
 import 'package:memee_admin/core/shared/app_strings.dart';
 import 'package:memee_admin/models/payment_model.dart';
 import 'package:memee_admin/ui/__shared/extensions/widget_extensions.dart';
-import 'package:memee_admin/ui/__shared/widgets/app_button.dart';
-import 'package:memee_admin/ui/__shared/widgets/app_textfield.dart';
 import '../../../../blocs/payments/payments_cubit.dart';
 import '../../../../core/initializer/app_di_registration.dart';
 import '../../../../core/shared/app_column.dart';
 import '../../../__shared/widgets/data-table/app_data_table.dart';
 import '../../../__shared/widgets/empty_widget.dart';
+import '../../../__shared/widgets/search_export_import_widget.dart';
 import 'data-row/payments_data_row.dart';
 
 class PaymentsWidget extends StatelessWidget {
@@ -21,59 +19,20 @@ class PaymentsWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     final _searchController = TextEditingController();
     final _paymentsCubit = locator.get<PaymentsCubit>();
+     final _exportImport = locator.get<ExportImportCubit>();
 
     return Stack(children: [
       Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Row(
-            children: [
-              SizedBox(
-                width: MediaQuery.of(context).size.width / 4,
-                child: AppTextField(
-                  controller: _searchController,
-                  label: '${AppStrings.search} ${AppStrings.payments}',
-                ),
-              ).gapRight(24.w),
-              Flexible(
-                child: BlocProvider(
-                  create: (_) => locator.get<ExportImportCubit>(),
-                  child: BlocBuilder<ExportImportCubit, ExportImportState>(
-                    bloc: locator.get<ExportImportCubit>(),
-                    builder: (ctx, state) {
-                      return AppButton(
-                        label: AppStrings.import,
-                        onTap: () {
-                          ctx
-                              .read<ExportImportCubit>()
-                              .importCSV<PaymentModel>();
-                        },
-                      );
-                    },
-                  ),
-                ),
-              ),
-              SizedBox(width: 8.w),
-              Flexible(
-                child: BlocProvider(
-                  create: (_) => locator.get<ExportImportCubit>(),
-                  child: BlocBuilder<ExportImportCubit, ExportImportState>(
-                    builder: (ctx, state) {
-                      return AppButton(
-                        label: AppStrings.export,
-                        onTap: () {
-                          if (_paymentsCubit.state is PaymentsSuccess) {
-                            ctx
-                                .read<ExportImportCubit>()
-                                .exportCSV<PaymentModel>();
-                          }
-                        },
-                      );
-                    },
-                  ),
-                ),
-              ),
-            ],
+         SearchExportImportWidget(
+            searchController: _searchController,
+            searchLabel: '${AppStrings.search} ${AppStrings.payment}',
+            onExportPressed: () => _exportImport.exportCSV<PaymentModel>(),
+            onImportPressed: () async {
+              await _exportImport.importCSV<PaymentModel>();
+              _paymentsCubit.refresh();
+            },
           ),
           Expanded(
             child: SingleChildScrollView(

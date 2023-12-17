@@ -14,7 +14,7 @@ part 'dl_executive_state.dart';
 class DlExecutiveCubit extends Cubit<DlExecutivesState> {
   final FirebaseFirestore db;
   final FirebaseStorage storage;
-
+  List<DlExecutiveModel> dlExecutives = [];
   final collectionName = AppFireStoreCollection.dlExecutives;
 
   DlExecutiveCubit(
@@ -22,6 +22,10 @@ class DlExecutiveCubit extends Cubit<DlExecutivesState> {
     this.storage,
   ) : super(DlExecutivesLoading());
 
+  void refresh() {
+    emit(DlExecutivesLoading());
+    emit(DlExecutivesSuccess(dlExecutives));
+  }
   Future<void> fetchDlExecutives() async {
     List<DlExecutiveModel> dlExecutives = [];
     emit(DlExecutivesLoading());

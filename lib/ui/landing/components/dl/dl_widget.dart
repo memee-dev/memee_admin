@@ -14,6 +14,7 @@ import '../../../__shared/dialog/confirmation_dialog.dart';
 import '../../../__shared/dialog/detailed_dialog.dart';
 import '../../../__shared/widgets/data-table/app_data_table.dart';
 import '../../../__shared/widgets/empty_widget.dart';
+import '../../../__shared/widgets/search_export_import_widget.dart';
 import 'data-row/dl_executive_data_row.dart';
 import 'widgets/dl_detailed_widget.dart';
 
@@ -24,7 +25,7 @@ class DLExecutiveWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     final _searchController = TextEditingController();
     final _dlCubit = locator.get<DlExecutiveCubit>();
-
+   final _exportImport = locator.get<ExportImportCubit>();
     return Stack(
       children: [
         Positioned(
@@ -43,56 +44,15 @@ class DLExecutiveWidget extends StatelessWidget {
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Row(
-              children: [
-                SizedBox(
-                  width: MediaQuery.of(context).size.width / 4,
-                  child: AppTextField(
-                    controller: _searchController,
-                    label: '${AppStrings.search} ${AppStrings.users}',
-                  ),
-                ).gapRight(24.w),
-                Flexible(
-                  child: BlocProvider(
-                    create: (_) => locator.get<ExportImportCubit>(),
-                    child: BlocBuilder<ExportImportCubit, ExportImportState>(
-                      bloc: locator.get<ExportImportCubit>(),
-                      builder: (ctx, state) {
-                        return AppButton(
-                          label: AppStrings.import,
-                          onTap: () {
-                            ctx
-                                .read<ExportImportCubit>()
-                                .importCSV<DlExecutiveModel>();
-                          },
-                        );
-                      },
-                    ),
-                  ),
-                ),
-                SizedBox(width: 8.w),
-                Flexible(
-                  child: BlocProvider(
-                    create: (_) => locator.get<ExportImportCubit>(),
-                    child: BlocBuilder<ExportImportCubit, ExportImportState>(
-                      builder: (ctx, state) {
-                        return AppButton(
-                          label: AppStrings.export,
-                          onTap: () {
-                            if (_dlCubit.state is DlExecutivesSuccess) {
-                              ctx
-                                  .read<ExportImportCubit>()
-                                  .exportCSV<DlExecutiveModel>();
-                            }
-                          },
-                        );
-                      },
-                    ),
-                  ),
-                ),
-              ],
-            ),
-            Expanded(
+           SearchExportImportWidget(
+            searchController: _searchController,
+            searchLabel: '${AppStrings.search} ${AppStrings.dlExecutive}',
+            onExportPressed: () => _exportImport.exportCSV<DlExecutiveModel>(),
+            onImportPressed: () async {
+              await _exportImport.importCSV<DlExecutiveModel>();
+              _dlCubit.refresh();
+            },
+          ),  Expanded(
               child: SingleChildScrollView(
                 scrollDirection: Axis.horizontal,
                 child: BlocBuilder<DlExecutiveCubit, DlExecutivesState>(
