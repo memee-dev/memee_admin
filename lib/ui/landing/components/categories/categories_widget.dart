@@ -16,6 +16,7 @@ import '../../../../core/initializer/app_di_registration.dart';
 import '../../../../core/shared/app_column.dart';
 import '../../../__shared/widgets/data-table/app_data_table.dart';
 import '../../../__shared/widgets/empty_widget.dart';
+import '../../../__shared/widgets/search_export_import_widget.dart';
 import 'data-row/categories_data_row.dart';
 
 class CategoriesWidget extends StatelessWidget {
@@ -25,6 +26,7 @@ class CategoriesWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     final _searchController = TextEditingController();
     final _categoriesCubit = locator.get<CategoriesCubit>();
+    final _exportImport = locator.get<ExportImportCubit>();
 
     return Stack(children: [
       Positioned(
@@ -41,54 +43,14 @@ class CategoriesWidget extends StatelessWidget {
       Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Row(
-            children: [
-              SizedBox(
-                width: MediaQuery.of(context).size.width / 4,
-                child: AppTextField(
-                  controller: _searchController,
-                  label: '${AppStrings.search} ${AppStrings.categories}',
-                ),
-              ).gapRight(24.w),
-              Flexible(
-                child: BlocProvider(
-                  create: (_) => locator.get<ExportImportCubit>(),
-                  child: BlocBuilder<ExportImportCubit, ExportImportState>(
-                    bloc: locator.get<ExportImportCubit>(),
-                    builder: (ctx, state) {
-                      return AppButton(
-                        label: AppStrings.import,
-                        onTap: () {
-                          ctx
-                              .read<ExportImportCubit>()
-                              .importCSV<CategoryModel>();
-                        },
-                      );
-                    },
-                  ),
-                ),
-              ),
-              SizedBox(width: 8.w),
-              Flexible(
-                child: BlocProvider(
-                  create: (_) => locator.get<ExportImportCubit>(),
-                  child: BlocBuilder<ExportImportCubit, ExportImportState>(
-                    builder: (ctx, state) {
-                      return AppButton(
-                        label: AppStrings.export,
-                        onTap: () {
-                          if (_categoriesCubit.state is CategoriesSuccess) {
-                            ctx
-                                .read<ExportImportCubit>()
-                                .exportCSV<CategoryModel>();
-                          }
-                        },
-                      );
-                    },
-                  ),
-                ),
-              ),
-            ],
+          SearchExportImportWidget(
+            searchController: _searchController,
+            searchLabel: '${AppStrings.search} ${AppStrings.categories}',
+            onExportPressed: () => _exportImport.exportCSV<CategoryModel>(),
+            onImportPressed: () async {
+              await _exportImport.importCSV<CategoryModel>();
+              _categoriesCubit.refresh();
+            },
           ),
           Expanded(
             child: SingleChildScrollView(

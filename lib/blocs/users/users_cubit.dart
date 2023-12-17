@@ -12,7 +12,13 @@ class UserCubit extends Cubit<UsersState> {
 
   final collectionName = AppFireStoreCollection.users;
 
+  List<UserModel> users = [];
+
   UserCubit(this.db) : super(UsersLoading());
+  void refresh() {
+    emit(UsersLoading());
+    emit(UsersSuccess(users));
+  }
 
   Future<void> fetchUsers() async {
     List<UserModel> users = [];

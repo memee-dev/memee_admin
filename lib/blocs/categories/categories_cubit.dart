@@ -11,11 +11,16 @@ part 'categories_state.dart';
 class CategoriesCubit extends Cubit<CategoriesState> {
   final FirebaseFirestore db;
   final collectionName = AppFireStoreCollection.categories;
-
+  List<CategoryModel> categories = [];
   CategoriesCubit(this.db) : super(CategoriesLoading());
 
+  void refresh() {
+    emit(CategoriesLoading());
+    emit(CategoriesSuccess(categories));
+  }
+
   Future<void> fetchCategories() async {
-    List<CategoryModel> categories = [];
+
     emit(CategoriesLoading());
     try {
       final categoryDoc = await db.collection(collectionName).get();
@@ -136,5 +141,30 @@ class CategoriesCubit extends Cubit<CategoriesState> {
       categories.addAll((state as CategoriesFailure).categories);
     }
     return categories;
+  }
+
+  List<List<dynamic>> exportData() {
+    List<List<dynamic>> csvData = [];
+    csvData.add([
+      'ID',
+      'Category Name',
+      'Category Active',
+      'Category Image',
+    ]);
+
+    for (CategoryModel category in categories) {
+      String id = category.id;
+      String name = category.name;
+      bool active = category.active;
+      String image = category.image;
+
+      csvData.add([
+        id,
+        name,
+        active,
+        image,
+      ]);
+    }
+    return csvData;
   }
 }

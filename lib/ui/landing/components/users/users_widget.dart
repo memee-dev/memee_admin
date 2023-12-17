@@ -15,6 +15,7 @@ import '../../../../core/initializer/app_di_registration.dart';
 import '../../../../models/user_model.dart';
 import '../../../__shared/dialog/detailed_dialog.dart';
 import '../../../__shared/widgets/data-table/app_data_table.dart';
+import '../../../__shared/widgets/search_export_import_widget.dart';
 
 class UserWidget extends StatelessWidget {
   const UserWidget({super.key});
@@ -30,6 +31,8 @@ class UserWidget extends StatelessWidget {
 
 class _UserWidget extends StatelessWidget {
   final TextEditingController _searchController = TextEditingController();
+  final _exportImport = locator.get<ExportImportCubit>();
+  final _userCubit = locator.get<UserCubit>();
 
   @override
   Widget build(BuildContext context) {
@@ -49,57 +52,14 @@ class _UserWidget extends StatelessWidget {
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Row(
-                children: [
-                  SizedBox(
-                    width: MediaQuery.of(context).size.width / 4,
-                    child: AppTextField(
-                      controller: _searchController,
-                      label: '${AppStrings.search} ${AppStrings.users}',
-                    ),
-                  ).gapRight(24.w),
-                  Flexible(
-                    child: BlocProvider(
-                      create: (_) => locator.get<ExportImportCubit>(),
-                      child: BlocBuilder<ExportImportCubit, ExportImportState>(
-                        bloc: locator.get<ExportImportCubit>(),
-                        builder: (ctx, state) {
-                          return AppButton(
-                            label: AppStrings.import,
-                            onTap: () {
-                              ctx
-                                  .read<ExportImportCubit>()
-                                  .importCSV<UserModel>();
-                            },
-                          );
-                        },
-                      ),
-                    ),
-                  ),
-                  SizedBox(width: 8.w),
-                  Flexible(
-                    child: BlocProvider(
-                      create: (_) => locator.get<ExportImportCubit>(),
-                      child: BlocBuilder<ExportImportCubit, ExportImportState>(
-                        builder: (ctx, state) {
-                          return AppButton(
-                            label: AppStrings.export,
-                            onTap: () {
-                              if (userCubit.state is UsersSuccess) {
-                                ctx
-                                    .read<ExportImportCubit>()
-                                    .exportCSV<UserModel>();
-                              }
-                            },
-                          );
-                        },
-                      ),
-                    ),
-                  ),
-                ],
-              ),
+            SearchExportImportWidget(
+              searchController: _searchController,
+              searchLabel: '${AppStrings.search} ${AppStrings.user}',
+              onExportPressed: () => _exportImport.exportCSV<UserModel>(),
+              onImportPressed: () async {
+                await _exportImport.importCSV<UserModel>();
+                _userCubit.refresh();
+              },
             ),
             Expanded(
               child: SingleChildScrollView(

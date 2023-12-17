@@ -52,7 +52,7 @@ class AppButton extends StatelessWidget {
       bloc: refreshCubit,
       builder: (_, state) {
         return SizedBox(
-          width: width ?? 25.w,
+          width: width ?? 28.w,
           height: height ?? 40.h,
           child: ElevatedButton(
             onPressed: () async {

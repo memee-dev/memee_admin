@@ -10,6 +10,7 @@ import 'dart:typed_data';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:memee_admin/blocs/categories/categories_cubit.dart';
 import 'package:memee_admin/blocs/products/products_cubit.dart';
 import 'package:memee_admin/core/initializer/app_di_registration.dart';
 import 'package:memee_admin/core/shared/app_firestore.dart';
@@ -33,6 +34,7 @@ class ExportImportCubit extends Cubit<ExportImportState> {
       List<List<dynamic>>? items;
       if (T == CategoryModel) {
         fileName = AppFireStoreCollection.categories;
+         items = locator.get<CategoriesCubit>().exportData();
       } else if (T == ProductModel) {
         fileName = AppFireStoreCollection.products;
         items = locator.get<ProductsCubit>().exportData();
