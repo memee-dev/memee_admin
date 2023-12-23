@@ -1,8 +1,10 @@
+import 'package:flutter/material.dart';
 import 'package:logger/logger.dart';
 
 class _Log {
   final _logger = Logger();
 
+  void n(message) => debugPrint(message);
   void t(message) => _logger.t(message);
   void d(message) => _logger.d(message);
   void i(message) => _logger.i(message);

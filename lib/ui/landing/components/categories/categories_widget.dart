@@ -27,17 +27,6 @@ class CategoriesWidget extends StatelessWidget {
     final _exportImport = locator.get<ExportImportCubit>();
 
     return Stack(children: [
-      Positioned(
-        right: 16.w,
-        bottom: 48.h,
-        child: FloatingActionButton(
-          onPressed: () => showDetailedDialog(
-            context,
-            child: const CategoriesDetailedWidget(),
-          ),
-          child: const Icon(Icons.add),
-        ),
-      ),
       Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -51,60 +40,78 @@ class CategoriesWidget extends StatelessWidget {
             },
           ),
           Expanded(
-            child: SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              child: BlocBuilder<CategoriesCubit, CategoriesState>(
-                bloc: _categoriesCubit..fetchCategories(),
-                builder: (context, state) {
-                  if (state is CategoriesLoading) {
-                    return const Center(
-                      child: CircularProgressIndicator.adaptive(),
-                    );
-                  } else if (state is CategoriesResponseState) {
-                    if (state.categories.isEmpty) {
-                      return const EmptyWidget(
-                          label: '${AppStrings.no} ${AppStrings.categories}');
-                    }
-                    return AppDataTable(
-                      headers: AppColumn.categories,
-                      items: state.categories
-                          .map((category) => categoryDataRow(
-                                context,
-                                category: category,
-                                onSelectChanged: (selected) async {
-                                  final result = await showDetailedDialog(
-                                    context,
-                                    child: CategoriesDetailedWidget(
-                                        category: category),
-                                  );
-                                  if (result != null &&
-                                      result is CategoryModel) {
-                                    category = result;
-                                  }
-                                },
-                                onDelete: () {
-                                  showConfirmationDialog(
-                                    context,
-                                    onTap: (bool val) {
-                                      if (val) {
-                                        _categoriesCubit
-                                            .deleteCategory(category);
-                                      }
-                                      Navigator.of(context).pop();
-                                    },
-                                  );
-                                },
-                              ))
-                          .toList(),
-                    );
+            child: BlocBuilder<CategoriesCubit, CategoriesState>(
+              bloc: _categoriesCubit..fetchCategories(clear: true),
+              builder: (context, state) {
+                if (state is CategoriesLoading) {
+                  return const Center(
+                    child: CircularProgressIndicator.adaptive(),
+                  );
+                } else if (state is CategoriesResponseState) {
+                  if (state.categories.isEmpty) {
+                    return const EmptyWidget(
+                        label: '${AppStrings.no} ${AppStrings.categories}');
                   }
-                  return const SizedBox.shrink();
-                },
-              ),
+                  return Column(
+                    children: [
+                      AppPaginatedDataTable(
+                        totalCount: _categoriesCubit.categoriesCount,
+                        onPageChanged: (val) {
+                          if (val < _categoriesCubit.categoriesCount) {
+                            _categoriesCubit.fetchCategories();
+                          }
+                        },
+                        headers: AppColumn.categories,
+                        items: state.categories
+                            .map((category) => categoryDataRow(
+                                  context,
+                                  category: category,
+                                  onSelectChanged: (selected) async {
+                                    final result = await showDetailedDialog(
+                                      context,
+                                      child: CategoriesDetailedWidget(
+                                          category: category),
+                                    );
+                                    if (result != null &&
+                                        result is CategoryModel) {
+                                      category = result;
+                                    }
+                                  },
+                                  onDelete: () {
+                                    showConfirmationDialog(
+                                      context,
+                                      onTap: (bool val) {
+                                        if (val) {
+                                          _categoriesCubit
+                                              .deleteCategory(category);
+                                        }
+                                        Navigator.of(context).pop();
+                                      },
+                                    );
+                                  },
+                                ))
+                            .toList(),
+                      ),
+                    ],
+                  );
+                }
+                return const SizedBox.shrink();
+              },
             ),
           ),
         ],
       ).paddingS(),
+      Positioned(
+        right: 16.w,
+        bottom: 48.h,
+        child: FloatingActionButton(
+          onPressed: () => showDetailedDialog(
+            context,
+            child: const CategoriesDetailedWidget(),
+          ),
+          child: const Icon(Icons.add),
+        ),
+      ),
     ]);
   }
 }

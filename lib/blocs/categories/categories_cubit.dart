@@ -19,20 +19,48 @@ class CategoriesCubit extends Cubit<CategoriesState> {
     emit(CategoriesSuccess(categories));
   }
 
-  Future<void> fetchCategories() async {
-    emit(CategoriesLoading());
+  int categoriesCount = 0;
+  int pageSize = 10;
+  int pageNo = 1;
+  DocumentSnapshot? lastDocument;
+
+  Future<void> fetchCategories({bool clear = false}) async {
     try {
-      final categoryDoc = await db.collection(collectionName).get();
+      final countSnap = await db.collection(collectionName).count().get();
+      categoriesCount = countSnap.count;
 
-      final docs = categoryDoc.docs;
+      if (categoriesCount > categories.length) {
+        emit(CategoriesLoading());
+        QuerySnapshot<Map<String, dynamic>> categoryDocs;
+        if (clear) {
+          categories.clear();
+          categoryDocs = await db
+              .collection(collectionName)
+              .orderBy('name')
+              .limit(pageSize)
+              .get();
+        } else {
+          categoryDocs = await db
+              .collection(collectionName)
+              .orderBy('name')
+              .startAfterDocument(lastDocument!)
+              .limit(pageSize)
+              .get();
+        }
 
-      for (var doc in docs) {
-        final data = doc.data();
-        data['id'] = doc.id;
-        categories.add(CategoryModel.fromMap(data));
+        final docs = categoryDocs.docs;
+        lastDocument = docs.last;
+
+        List<CategoryModel> fetched10Categories = [];
+        for (var doc in docs) {
+          final data = doc.data();
+          data['id'] = doc.id;
+          fetched10Categories.add(CategoryModel.fromMap(data));
+        }
+
+        categories.addAll(fetched10Categories);
+        emit(CategoriesSuccess(fetched10Categories));
       }
-
-      emit(CategoriesSuccess(categories));
     } catch (e) {
       emit(CategoriesFailure(
         e.toString(),
