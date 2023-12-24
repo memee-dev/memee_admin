@@ -11,7 +11,7 @@ part 'categories_state.dart';
 class CategoriesCubit extends Cubit<CategoriesState> {
   final FirebaseFirestore db;
   final collectionName = AppFireStoreCollection.categories;
-  List<CategoryModel> categories = [];
+  Set<CategoryModel> categories = {};
   CategoriesCubit(this.db) : super(CategoriesLoading());
 
   void refresh() {
@@ -20,7 +20,7 @@ class CategoriesCubit extends Cubit<CategoriesState> {
   }
 
   int categoriesCount = 0;
-  int pageSize = 10;
+  int pageSize = 20;
   int pageNo = 1;
   DocumentSnapshot? lastDocument;
 
@@ -34,15 +34,11 @@ class CategoriesCubit extends Cubit<CategoriesState> {
         QuerySnapshot<Map<String, dynamic>> categoryDocs;
         if (clear) {
           categories.clear();
-          categoryDocs = await db
-              .collection(collectionName)
-              .orderBy('name')
-              .limit(pageSize)
-              .get();
+          categoryDocs =
+              await db.collection(collectionName).limit(pageSize).get();
         } else {
           categoryDocs = await db
               .collection(collectionName)
-              .orderBy('name')
               .startAfterDocument(lastDocument!)
               .limit(pageSize)
               .get();
@@ -51,7 +47,7 @@ class CategoriesCubit extends Cubit<CategoriesState> {
         final docs = categoryDocs.docs;
         lastDocument = docs.last;
 
-        List<CategoryModel> fetched10Categories = [];
+        Set<CategoryModel> fetched10Categories = {};
         for (var doc in docs) {
           final data = doc.data();
           data['id'] = doc.id;
@@ -75,7 +71,7 @@ class CategoriesCubit extends Cubit<CategoriesState> {
     String image,
     bool status,
   ) async {
-    List<CategoryModel> categories = getLocalCategories();
+    Set<CategoryModel> categories = getLocalCategories();
 
     try {
       int lastNumber = 1;
@@ -109,7 +105,7 @@ class CategoriesCubit extends Cubit<CategoriesState> {
     }
   }
 
-  Future<void> addCategories(List<CategoryModel> categories) async {
+  Future<void> addCategories(Set<CategoryModel> categories) async {
     emit(CategoriesLoading());
     try {
       final categoryCollection = db.collection(collectionName);
@@ -120,33 +116,32 @@ class CategoriesCubit extends Cubit<CategoriesState> {
     } catch (e) {
       emit(CategoriesFailure(
         e.toString(),
-        const [],
+        const {},
       ));
       console.e('ADD CATEGORIES', error: e);
     }
   }
 
   Future<void> updateCategory(CategoryModel category) async {
-    List<CategoryModel> categories = getLocalCategories();
+    Set<CategoryModel> categories = getLocalCategories();
     try {
       await db
           .collection(collectionName)
           .doc(category.id)
           .set(category.toJson());
-      int index = categories.indexWhere((element) => category.id == element.id);
-      categories[index] = category;
+      categories.add(category);
       emit(CategoriesSuccess(categories));
     } catch (e) {
       emit(CategoriesFailure(
         e.toString(),
-        const [],
+        const {},
       ));
       console.e('UPDATE CATEGORY', error: e);
     }
   }
 
   Future<void> deleteCategory(CategoryModel category) async {
-    List<CategoryModel> categories = getLocalCategories();
+    Set<CategoryModel> categories = getLocalCategories();
     try {
       categories.remove(category);
       await db.collection(collectionName).doc(category.id).delete();
@@ -160,8 +155,8 @@ class CategoriesCubit extends Cubit<CategoriesState> {
     }
   }
 
-  List<CategoryModel> getLocalCategories() {
-    List<CategoryModel> categories = [];
+  Set<CategoryModel> getLocalCategories() {
+    Set<CategoryModel> categories = {};
     if (state is CategoriesSuccess) {
       categories.addAll((state as CategoriesSuccess).categories);
     } else if (state is CategoriesFailure) {
@@ -171,15 +166,10 @@ class CategoriesCubit extends Cubit<CategoriesState> {
   }
 
   Future<void> removeOldAndAddNewCategories(
-      List<CategoryModel> categories) async {
+      Set<CategoryModel> categories) async {
     try {
-      this.categories = categories;
+      this.categories.addAll(categories);
       final batch = db.batch();
-      var collection = db.collection(collectionName);
-      var snapshots = await collection.get();
-      for (var doc in snapshots.docs) {
-        batch.delete(doc.reference);
-      }
 
       for (var category in categories) {
         final doc = db.collection(collectionName).doc(category.id);
@@ -222,7 +212,7 @@ class CategoriesCubit extends Cubit<CategoriesState> {
   }
 
   Future<void> importData(List<List> csvData) async {
-    List<CategoryModel> categories = [];
+    Set<CategoryModel> categories = {};
 
     for (int i = 1; i < csvData.length; i++) {
       List<dynamic> row = csvData[i];

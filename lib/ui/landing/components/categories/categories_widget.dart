@@ -52,47 +52,52 @@ class CategoriesWidget extends StatelessWidget {
                     return const EmptyWidget(
                         label: '${AppStrings.no} ${AppStrings.categories}');
                   }
-                  return Column(
-                    children: [
-                      AppPaginatedDataTable(
-                        totalCount: _categoriesCubit.categoriesCount,
-                        onPageChanged: (val) {
-                          if (val < _categoriesCubit.categoriesCount) {
-                            _categoriesCubit.fetchCategories();
-                          }
-                        },
-                        headers: AppColumn.categories,
-                        items: state.categories
-                            .map((category) => categoryDataRow(
-                                  context,
-                                  category: category,
-                                  onSelectChanged: (selected) async {
-                                    final result = await showDetailedDialog(
-                                      context,
-                                      child: CategoriesDetailedWidget(
-                                          category: category),
-                                    );
-                                    if (result != null &&
-                                        result is CategoryModel) {
-                                      category = result;
-                                    }
-                                  },
-                                  onDelete: () {
-                                    showConfirmationDialog(
-                                      context,
-                                      onTap: (bool val) {
-                                        if (val) {
-                                          _categoriesCubit
-                                              .deleteCategory(category);
-                                        }
-                                        Navigator.of(context).pop();
-                                      },
-                                    );
-                                  },
-                                ))
-                            .toList(),
-                      ),
-                    ],
+                  return NotificationListener(
+                    onNotification: (ScrollNotification scrollInfo) {
+                      if (scrollInfo.metrics.pixels ==
+                          scrollInfo.metrics.maxScrollExtent) {
+                        _categoriesCubit.fetchCategories();
+                      }
+                      return true;
+                    },
+                    child: ListView(
+                      shrinkWrap: true,
+                      children: [
+                        AppDataTable(
+                          headers: AppColumn.categories,
+                          items: _categoriesCubit.categories
+                              .map((category) => categoryDataRow(
+                                    context,
+                                    category: category,
+                                    onSelectChanged: (selected) async {
+                                      final result = await showDetailedDialog(
+                                        context,
+                                        child: CategoriesDetailedWidget(
+                                          category: category,
+                                        ),
+                                      );
+                                      if (result != null &&
+                                          result is CategoryModel) {
+                                        category = result;
+                                      }
+                                    },
+                                    onDelete: () {
+                                      showConfirmationDialog(
+                                        context,
+                                        onTap: (bool val) {
+                                          if (val) {
+                                            _categoriesCubit
+                                                .deleteCategory(category);
+                                          }
+                                          Navigator.of(context).pop();
+                                        },
+                                      );
+                                    },
+                                  ))
+                              .toList(),
+                        ),
+                      ],
+                    ),
                   );
                 }
                 return const SizedBox.shrink();

@@ -181,8 +181,6 @@ class DlExecutiveCubit extends Cubit<DlExecutivesState> {
     } else {
       uploadTask = ref.putFile(File(file.path), metadata);
     }
-
-    return Future.value(uploadTask);
   }
 
   List<DlExecutiveModel> getLocalDLExecutives() {

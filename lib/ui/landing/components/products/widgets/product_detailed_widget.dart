@@ -213,7 +213,7 @@ class ProductDetailedWidget extends StatelessWidget {
                                         builder: (_, index) {
                                           return AppDropDown<CategoryModel>(
                                             value: selectedCategory,
-                                            items: categories,
+                                            items: categories.toList(),
                                             onChanged: (CategoryModel? val) {
                                               if (docType != DocType.view &&
                                                   val != null) {

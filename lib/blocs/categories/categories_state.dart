@@ -3,7 +3,7 @@ part of 'categories_cubit.dart';
 abstract class CategoriesState extends Equatable {}
 
 abstract class CategoriesResponseState extends CategoriesState {
-  final List<CategoryModel> categories;
+  final Set<CategoryModel> categories;
 
   CategoriesResponseState(this.categories);
 }
@@ -14,7 +14,7 @@ class CategoriesLoading extends CategoriesState {
 }
 
 class CategoriesSuccess extends CategoriesResponseState {
-  CategoriesSuccess(List<CategoryModel> categories) : super(categories);
+  CategoriesSuccess(Set<CategoryModel> categories) : super(categories);
 
   @override
   List<Object?> get props => [categories];
@@ -22,7 +22,8 @@ class CategoriesSuccess extends CategoriesResponseState {
 
 class CategoriesFailure extends CategoriesResponseState {
   final String message;
-  CategoriesFailure(this.message, List<CategoryModel> categories) : super(categories);
+  CategoriesFailure(this.message, Set<CategoryModel> categories)
+      : super(categories);
 
   @override
   List<Object?> get props => [message];
