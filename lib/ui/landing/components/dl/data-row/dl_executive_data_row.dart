@@ -8,7 +8,6 @@ DataRow dlExecutiveDataRow(
   BuildContext context,
   {
   required DlExecutiveModel dlExecutive,
-  required Function() onDelete,
   required Function(bool?)? onSelectChanged,
 }
 ) {

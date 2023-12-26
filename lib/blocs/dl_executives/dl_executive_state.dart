@@ -12,6 +12,10 @@ class DlExecutivesLoading extends DlExecutivesState {
   @override
   List<Object?> get props => [];
 }
+class DlExecutivesEmpty extends DlExecutivesState {
+  @override
+  List<Object?> get props => [];
+}
 
 class DlExecutivesSuccess extends DlExecutivesResponseState {
   DlExecutivesSuccess(List<DlExecutiveModel> dlExecutives) : super(dlExecutives);

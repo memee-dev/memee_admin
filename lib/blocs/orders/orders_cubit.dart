@@ -17,25 +17,49 @@ class OrdersCubit extends Cubit<OrdersState> {
   final collectionName = AppFireStoreCollection.orders;
   List<OrderModel> orders = [];
 
-  OrdersCubit(this.db) : super(OrdersLoading());
+  OrdersCubit(this.db) : super(OrdersEmpty());
   void refresh() {
     emit(OrdersLoading());
     emit(OrdersSuccess(orders));
   }
-  Future<void> fetchOrders() async {
-    emit(OrdersLoading());
+   int ordersCount = 0;
+  int pageSize = 20;
+  int pageNo = 1;
+  DocumentSnapshot? lastDocument;
+
+  Future<void> fetchOrders({bool clear = false}) async {
     try {
-      final orderDoc = await db.collection(collectionName).get();
+      final countSnap = await db.collection(collectionName).count().get();
+      ordersCount = countSnap.count;
 
-      final docs = orderDoc.docs;
-      orders.clear();
-      for (var doc in docs) {
-        final data = doc.data();
-        data['id'] = doc.id;
-        orders.add(OrderModel.fromMap(data));
+      if (ordersCount > orders.length) {
+        emit(OrdersLoading());
+        QuerySnapshot<Map<String, dynamic>> orderDocs;
+        if (clear) {
+          orders.clear();
+          orderDocs =
+              await db.collection(collectionName).limit(pageSize).get();
+        } else {
+          orderDocs = await db
+              .collection(collectionName)
+              .startAfterDocument(lastDocument!)
+              .limit(pageSize)
+              .get();
+        }
+
+        final docs = orderDocs.docs;
+        lastDocument = docs.last;
+
+        List<OrderModel> fetched10Orders = [];
+        for (var doc in docs) {
+          final data = doc.data();
+          data['id'] = doc.id;
+          fetched10Orders.add(OrderModel.fromMap(data));
+        }
+
+        orders.addAll(fetched10Orders);
+        emit(OrdersSuccess(fetched10Orders));
       }
-
-      emit(OrdersSuccess(orders));
     } catch (e) {
       emit(OrdersFailure(
         e.toString(),
@@ -44,6 +68,29 @@ class OrdersCubit extends Cubit<OrdersState> {
       console.e('FETCH ORDERS', error: e);
     }
   }
+
+  // Future<void> fetchOrders1() async {
+  //   emit(OrdersLoading());
+  //   try {
+  //     final orderDoc = await db.collection(collectionName).get();
+
+  //     final docs = orderDoc.docs;
+  //     orders.clear();
+  //     for (var doc in docs) {
+  //       final data = doc.data();
+  //       data['id'] = doc.id;
+  //       orders.add(OrderModel.fromMap(data));
+  //     }
+
+  //     emit(OrdersSuccess(orders));
+  //   } catch (e) {
+  //     emit(OrdersFailure(
+  //       e.toString(),
+  //       orders,
+  //     ));
+  //     console.e('FETCH ORDERS', error: e);
+  //   }
+  // }
 
   Color getColorForOrderStatus(String? orderStatus) {
     switch (orderStatus?.toLowerCase()) {

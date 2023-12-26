@@ -14,35 +14,82 @@ class AdminCubit extends Cubit<AdminsState> {
   final FirebaseAuth auth;
   final collectionName = AppFireStoreCollection.admins;
   List<AdminModel> admins = [];
-  AdminCubit(this.auth, this.db) : super(AdminsLoading());
+  AdminCubit(this.auth, this.db) : super(AdminsEmpty());
 
   void refresh() {
     emit(AdminsLoading());
     emit(AdminsSuccess(admins));
   }
-  Future<void> fetchAdmins() async {
-    List<AdminModel> admins = [];
-    emit(AdminsLoading());
+
+  int adminsCount = 0;
+  int pageSize = 20;
+  int pageNo = 1;
+  DocumentSnapshot? lastDocument;
+
+  Future<void> fetchAdmins({bool clear = false}) async {
     try {
-      final adminDoc = await db.collection(collectionName).get();
+      final countSnap = await db.collection(collectionName).count().get();
+      adminsCount = countSnap.count;
 
-      final docs = adminDoc.docs;
+      if (adminsCount > admins.length) {
+        emit(AdminsLoading());
+        QuerySnapshot<Map<String, dynamic>> adminDocs;
+        if (clear) {
+          admins.clear();
+          adminDocs = await db.collection(collectionName).limit(pageSize).get();
+        } else {
+          adminDocs = await db
+              .collection(collectionName)
+              .startAfterDocument(lastDocument!)
+              .limit(pageSize)
+              .get();
+        }
 
-      for (var doc in docs) {
-        final data = doc.data();
-        data['id'] = doc.id;
-        admins.add(AdminModel.fromMap(data));
+        final docs = adminDocs.docs;
+        lastDocument = docs.last;
+
+        List<AdminModel> fetched10Admins = [];
+        for (var doc in docs) {
+          final data = doc.data();
+          data['id'] = doc.id;
+          fetched10Admins.add(AdminModel.fromMap(data));
+        }
+
+        admins.addAll(fetched10Admins);
+        emit(AdminsSuccess(fetched10Admins));
       }
-
-      emit(AdminsSuccess(admins));
     } catch (e) {
       emit(AdminsFailure(
         e.toString(),
         admins,
       ));
-      console.e('FETCH Admins', error: e);
+      console.e('FETCH ADMINS', error: e);
     }
   }
+
+  // Future<void> fetchAdmins() async {
+  //   List<AdminModel> admins = [];
+  //   emit(AdminsLoading());
+  //   try {
+  //     final adminDoc = await db.collection(collectionName).get();
+
+  //     final docs = adminDoc.docs;
+
+  //     for (var doc in docs) {
+  //       final data = doc.data();
+  //       data['id'] = doc.id;
+  //       admins.add(AdminModel.fromMap(data));
+  //     }
+
+  //     emit(AdminsSuccess(admins));
+  //   } catch (e) {
+  //     emit(AdminsFailure(
+  //       e.toString(),
+  //       admins,
+  //     ));
+  //     console.e('FETCH Admins', error: e);
+  //   }
+  // }
 
   Future<void> addAdmin({
     required String name,
@@ -50,8 +97,8 @@ class AdminCubit extends Cubit<AdminsState> {
     required int adminLevel,
     required bool status,
   }) async {
-    List<AdminModel> admins = getLocalAdmins();
     try {
+      emit(AdminsLoading());
       final adminCredential = await auth.createUserWithEmailAndPassword(
         email: email,
         password: '123456', //TODO: please genrate random password and sendEMail

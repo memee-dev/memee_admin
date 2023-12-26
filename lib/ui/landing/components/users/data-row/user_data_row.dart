@@ -8,9 +8,11 @@ import '../../../../../models/user_model.dart';
 import '../../../../__shared/dialog/detailed_dialog.dart';
 
 DataRow userDataRow(
-  BuildContext context,
-  UserModel user,
-) {
+  BuildContext context, {
+  required UserModel user,
+
+  required Function(bool?)? onSelectChanged,
+}) {
   return DataRow(
     cells: [
       DataCell(Text(user.id)),

@@ -12,6 +12,10 @@ class CategoriesLoading extends CategoriesState {
   @override
   List<Object?> get props => [];
 }
+class CategoriesEmpty extends CategoriesState {
+  @override
+  List<Object?> get props => [];
+}
 
 class CategoriesSuccess extends CategoriesResponseState {
   CategoriesSuccess(Set<CategoryModel> categories) : super(categories);

@@ -12,6 +12,10 @@ class UsersLoading extends UsersState {
   @override
   List<Object?> get props => [];
 }
+class UsersEmpty extends UsersState {
+  @override
+  List<Object?> get props => [];
+}
 
 class UsersSuccess extends UsersResponseState {
   UsersSuccess(List<UserModel> users) : super(users);

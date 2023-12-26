@@ -13,6 +13,11 @@ class ProductsLoading extends ProductsState {
   List<Object?> get props => [];
 }
 
+class ProductsEmpty extends ProductsState {
+  @override
+  List<Object?> get props => [];
+}
+
 class ProductsSuccess extends ProductsResponseState {
   ProductsSuccess(List<ProductModel> products) : super(products);
 

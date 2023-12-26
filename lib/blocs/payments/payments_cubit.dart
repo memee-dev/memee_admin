@@ -14,35 +14,84 @@ class PaymentsCubit extends Cubit<PaymentsState> {
   final collectionName = AppFireStoreCollection.payments;
    List<PaymentModel> payments = [];
 
-  PaymentsCubit(this.db) : super(PaymentsLoading());
+  PaymentsCubit(this.db) : super(PaymentsEmpty());
   void refresh() {
     emit(PaymentsLoading());
     emit(PaymentsSuccess(payments));
   }
-  Future<void> fetchPayments() async {
-    List<PaymentModel> payments = [];
-    emit(PaymentsLoading());
+   int paymentsCount = 0;
+  int pageSize = 20;
+  int pageNo = 1;
+  DocumentSnapshot? lastDocument;
+
+  Future<void> fetchPayments({bool clear = false}) async {
     try {
-      final paymentDoc = await db.collection(collectionName).get();
+      final countSnap = await db.collection(collectionName).count().get();
+      paymentsCount = countSnap.count;
 
-      final docs = paymentDoc.docs;
+      if (paymentsCount > payments.length) {
+        emit(PaymentsLoading());
+        QuerySnapshot<Map<String, dynamic>> paymentDocs;
+        if (clear) {
+          payments.clear();
+          paymentDocs =
+              await db.collection(collectionName).limit(pageSize).get();
+        } else {
+          paymentDocs = await db
+              .collection(collectionName)
+              .startAfterDocument(lastDocument!)
+              .limit(pageSize)
+              .get();
+        }
 
-      for (var doc in docs) {
-        final data = doc.data();
-        data['id'] = doc.id;
-        payments.add(PaymentModel.fromMap(data));
+        final docs = paymentDocs.docs;
+        lastDocument = docs.last;
+
+        List<PaymentModel> fetched10Payments =[];
+        for (var doc in docs) {
+          final data = doc.data();
+          data['id'] = doc.id;
+          fetched10Payments.add(PaymentModel.fromMap(data));
+        }
+
+        payments.addAll(fetched10Payments);
+        emit(PaymentsSuccess(fetched10Payments));
       }
-
-      emit(PaymentsSuccess(fakePayments));
     } catch (e) {
       emit(PaymentsFailure(
         e.toString(),
         payments,
       ));
-      console.e('FETCH PAYMENT', error: e);
+      console.e('FETCH payments', error: e);
     }
   }
-  Color getColorForPaymentStatus(String? paymentStatus) {
+
+  // Future<void> fetchPayments() async {
+  //   List<PaymentModel> payments = [];
+  //   emit(PaymentsLoading());
+  //   try {
+  //     final paymentDoc = await db.collection(collectionName).get();
+
+  //     final docs = paymentDoc.docs;
+
+  //     for (var doc in docs) {
+  //       final data = doc.data();
+  //       data['id'] = doc.id;
+  //       payments.add(PaymentModel.fromMap(data));
+  //     }
+
+  //     emit(PaymentsSuccess(fakePayments));
+  //   } catch (e) {
+  //     emit(PaymentsFailure(
+  //       e.toString(),
+  //       payments,
+  //     ));
+  //     console.e('FETCH PAYMENT', error: e);
+  //   }
+  // }
+
+
+   Color getColorForPaymentStatus(String? paymentStatus) {
     switch (paymentStatus?.toLowerCase()) {
       case 'success':
         return Colors.green;

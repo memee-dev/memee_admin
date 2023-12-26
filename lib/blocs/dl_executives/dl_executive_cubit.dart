@@ -20,33 +20,80 @@ class DlExecutiveCubit extends Cubit<DlExecutivesState> {
   DlExecutiveCubit(
     this.db,
     this.storage,
-  ) : super(DlExecutivesLoading());
+  ) : super(DlExecutivesEmpty());
 
   void refresh() {
     emit(DlExecutivesLoading());
     emit(DlExecutivesSuccess(dlExecutives));
   }
-  Future<void> fetchDlExecutives() async {
-    List<DlExecutiveModel> dlExecutives = [];
-    emit(DlExecutivesLoading());
-    try {
-      final dlExecutivesDoc = await db.collection(collectionName).get();
-      final docs = dlExecutivesDoc.docs;
+    int dlExecutivesCount = 0;
+  int pageSize = 20;
+  int pageNo = 1;
+  DocumentSnapshot? lastDocument;
 
-      for (var doc in docs) {
-        final data = doc.data();
-        data['id'] = doc.id;
-        dlExecutives.add(DlExecutiveModel.fromMap(data));
+  Future<void> fetchDlExecutives({bool clear = false}) async {
+    try {
+      final countSnap = await db.collection(collectionName).count().get();
+      dlExecutivesCount = countSnap.count;
+
+      if (dlExecutivesCount > dlExecutives.length) {
+        emit(DlExecutivesLoading());
+        QuerySnapshot<Map<String, dynamic>> dlExecutiveDocs;
+        if (clear) {
+          dlExecutives.clear();
+          dlExecutiveDocs =
+              await db.collection(collectionName).limit(pageSize).get();
+        } else {
+          dlExecutiveDocs = await db
+              .collection(collectionName)
+              .startAfterDocument(lastDocument!)
+              .limit(pageSize)
+              .get();
+        }
+
+        final docs = dlExecutiveDocs.docs;
+        lastDocument = docs.last;
+
+        List<DlExecutiveModel> fetched10DlExecutives = [];
+        for (var doc in docs) {
+          final data = doc.data();
+          data['id'] = doc.id;
+          fetched10DlExecutives.add(DlExecutiveModel.fromMap(data));
+        }
+
+        dlExecutives.addAll(fetched10DlExecutives);
+        emit(DlExecutivesSuccess(fetched10DlExecutives));
       }
-      emit(DlExecutivesSuccess(dlExecutives));
     } catch (e) {
       emit(DlExecutivesFailure(
         e.toString(),
         dlExecutives,
       ));
-      console.e('FETCH DlExecutives', error: e);
+      console.e('FETCH dlExecutives', error: e);
     }
   }
+
+  // Future<void> fetchDlExecutives() async {
+  //   List<DlExecutiveModel> dlExecutives = [];
+  //   emit(DlExecutivesLoading());
+  //   try {
+  //     final dlExecutivesDoc = await db.collection(collectionName).get();
+  //     final docs = dlExecutivesDoc.docs;
+
+  //     for (var doc in docs) {
+  //       final data = doc.data();
+  //       data['id'] = doc.id;
+  //       dlExecutives.add(DlExecutiveModel.fromMap(data));
+  //     }
+  //     emit(DlExecutivesSuccess(dlExecutives));
+  //   } catch (e) {
+  //     emit(DlExecutivesFailure(
+  //       e.toString(),
+  //       dlExecutives,
+  //     ));
+  //     console.e('FETCH DlExecutives', error: e);
+  //   }
+  // }
 
   Future<void> addDlExecutive({
     required String name,

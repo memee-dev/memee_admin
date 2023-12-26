@@ -12,7 +12,7 @@ class CategoriesCubit extends Cubit<CategoriesState> {
   final FirebaseFirestore db;
   final collectionName = AppFireStoreCollection.categories;
   Set<CategoryModel> categories = {};
-  CategoriesCubit(this.db) : super(CategoriesLoading());
+  CategoriesCubit(this.db) : super(CategoriesEmpty());
 
   void refresh() {
     emit(CategoriesLoading());
@@ -221,7 +221,7 @@ class CategoriesCubit extends Cubit<CategoriesState> {
         CategoryModel(
           id: row[0],
           name: row[1].toString(),
-          active: bool.parse(row[2]),
+          active: bool.parse(row[2].toLowerCase()),
           image: row[3],
         ),
       );

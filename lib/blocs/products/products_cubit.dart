@@ -20,31 +20,56 @@ class ProductsCubit extends Cubit<ProductsState> {
   final collectionName = AppFireStoreCollection.products;
 
   List<ProductModel> products = [];
-  ProductsCubit(this.db, this.storage) : super(ProductsLoading());
+  ProductsCubit(this.db, this.storage) : super(ProductsEmpty());
 
   void refresh() {
     emit(ProductsLoading());
     emit(ProductsSuccess(products));
   }
 
-  Future<void> fetchProducts() async {
-    emit(ProductsLoading());
+  int productsCount = 0;
+  int pageSize = 20;
+  int pageNo = 1;
+  DocumentSnapshot? lastDocument;
+  Future<void> fetchProducts({bool clear = false}) async {
     try {
-      final prodDoc = await db.collection(collectionName).get();
-      final docs = prodDoc.docs;
-      products.clear();
-      for (var doc in docs) {
-        final data = doc.data();
-        data['id'] = doc.id;
-        products.add(ProductModel.fromMap(data));
+      final countSnap = await db.collection(collectionName).count().get();
+      productsCount = countSnap.count;
+
+      if (productsCount > products.length) {
+        emit(ProductsLoading());
+        QuerySnapshot<Map<String, dynamic>> productDocs;
+        if (clear) {
+          products.clear();
+          productDocs =
+              await db.collection(collectionName).limit(pageSize).get();
+        } else {
+          productDocs = await db
+              .collection(collectionName)
+              .startAfterDocument(lastDocument!)
+              .limit(pageSize)
+              .get();
+        }
+
+        final docs = productDocs.docs;
+        lastDocument = docs.last;
+
+        List<ProductModel> fetched10Products = [];
+        for (var doc in docs) {
+          final data = doc.data();
+          data['id'] = doc.id;
+          fetched10Products.add(ProductModel.fromMap(data));
+        }
+
+        products.addAll(fetched10Products);
+        emit(ProductsSuccess(fetched10Products));
       }
-      emit(ProductsSuccess(products));
     } catch (e) {
       emit(ProductsFailure(
         e.toString(),
         products,
       ));
-      console.e('FETCH Products', error: e);
+      console.e('FETCH PRODUCTS', error: e);
     }
   }
 
@@ -327,14 +352,9 @@ class ProductsCubit extends Cubit<ProductsState> {
         ProductModel(
           id: row[0],
           name: row[1],
-          category: CategoryModel(
-            id: row[2],
-            name: row[3],
-            active: bool.parse(row[4]),
-            image: row[5],
-          ),
-          description: row[6],
-          active: bool.parse(row[7]),
+          category: row[2],
+          description: row[3],
+          active: bool.parse(row[4]),
           images: images,
           productDetails: details,
         ),
@@ -343,6 +363,4 @@ class ProductsCubit extends Cubit<ProductsState> {
 
     await removeOldAndAddNewProducts(products);
   }
-
-
 }

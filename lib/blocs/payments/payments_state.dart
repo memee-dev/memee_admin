@@ -12,6 +12,10 @@ class PaymentsLoading extends PaymentsState {
   @override
   List<Object?> get props => [];
 }
+class PaymentsEmpty extends PaymentsState {
+  @override
+  List<Object?> get props => [];
+}
 
 class PaymentsSuccess extends PaymentsResponseState {
   PaymentsSuccess(List<PaymentModel> payments) : super(payments);

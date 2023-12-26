@@ -19,13 +19,13 @@ class PaymentsWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     final _searchController = TextEditingController();
     final _paymentsCubit = locator.get<PaymentsCubit>();
-     final _exportImport = locator.get<ExportImportCubit>();
+    final _exportImport = locator.get<ExportImportCubit>();
 
     return Stack(children: [
       Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-         SearchExportImportWidget(
+          SearchExportImportWidget(
             searchController: _searchController,
             searchLabel: '${AppStrings.search} ${AppStrings.payment}',
             onExportPressed: () => _exportImport.exportCSV<PaymentModel>(),
@@ -35,33 +35,48 @@ class PaymentsWidget extends StatelessWidget {
             },
           ),
           Expanded(
-            child: SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              child: BlocBuilder<PaymentsCubit, PaymentsState>(
-                bloc: _paymentsCubit..fetchPayments(),
-                builder: (context, state) {
-                  if (state is PaymentsLoading) {
-                    return const Center(
-                      child: CircularProgressIndicator.adaptive(),
-                    );
-                  } else if (state is PaymentsResponseState) {
-                    if (state.payments.isEmpty) {
-                      return const EmptyWidget(
-                          label: '${AppStrings.no} ${AppStrings.payments}');
-                    }
-                    return AppDataTable(
-                      headers: AppColumn.payments,
-                      items: state.payments
-                          .map((payment) => paymentDataRow(
-                                context,
-                                payment: payment,
-                              ))
-                          .toList(),
-                    );
+            child: BlocBuilder<PaymentsCubit, PaymentsState>(
+              bloc: _paymentsCubit..fetchPayments(clear: true),
+              builder: (context, state) {
+                if (state is PaymentsEmpty) {
+                     return const EmptyWidget(
+                        label: '${AppStrings.no} ${AppStrings.payments}');
+                }
+                else if (state is PaymentsLoading) {
+                  return const Center(
+                    child: CircularProgressIndicator.adaptive(),
+                  );
+                } else if (state is PaymentsResponseState) {
+                  if (state.payments.isEmpty) {
+                    return const EmptyWidget(
+                        label: '${AppStrings.no} ${AppStrings.payments}');
                   }
-                  return const SizedBox.shrink();
-                },
-              ),
+                  return NotificationListener(
+                    onNotification: (ScrollNotification scrollInfo) {
+                      if (scrollInfo.metrics.pixels ==
+                          scrollInfo.metrics.maxScrollExtent) {
+                        _paymentsCubit.fetchPayments();
+                      }
+                      return true;
+                    },
+                    child: ListView(
+                      shrinkWrap: true,
+                      children: [
+                        AppDataTable(
+                          headers: AppColumn.payments,
+                          items: _paymentsCubit.payments
+                              .map((payment) => paymentDataRow(
+                                    context,
+                                    payment: payment,
+                                  ))
+                              .toList(),
+                        ),
+                      ],
+                    ),
+                  );
+                }
+                return const SizedBox.shrink();
+              },
             ),
           ),
         ],

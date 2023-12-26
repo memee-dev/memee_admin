@@ -43,7 +43,11 @@ class CategoriesWidget extends StatelessWidget {
             child: BlocBuilder<CategoriesCubit, CategoriesState>(
               bloc: _categoriesCubit..fetchCategories(clear: true),
               builder: (context, state) {
-                if (state is CategoriesLoading) {
+                 if (state is CategoriesEmpty) {
+                    return const EmptyWidget(
+                        label: '${AppStrings.no} ${AppStrings.categories}');
+                  }
+               else if (state is CategoriesLoading) {
                   return const Center(
                     child: CircularProgressIndicator.adaptive(),
                   );

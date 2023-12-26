@@ -12,6 +12,10 @@ class OrdersLoading extends OrdersState {
   @override
   List<Object?> get props => [];
 }
+class OrdersEmpty extends OrdersState {
+  @override
+  List<Object?> get props => [];
+}
 
 class OrdersSuccess extends OrdersResponseState {
   OrdersSuccess(List<OrderModel> orders) : super(orders);

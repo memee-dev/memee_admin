@@ -10,7 +10,6 @@ import '../../../../__shared/dialog/detailed_dialog.dart';
 DataRow dataRow(
   BuildContext context,{
   required AdminModel admin,
-  required Function() onDelete,
   required Function(bool?)? onSelectChanged,
 }
   

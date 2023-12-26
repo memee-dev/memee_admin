@@ -198,7 +198,7 @@ class ProductDetailedWidget extends StatelessWidget {
                             children: [
                               BlocBuilder<CategoriesCubit, CategoriesState>(
                                 bloc: locator.get<CategoriesCubit>()
-                                  ..fetchCategories(),
+                                  ..fetchCategories(clear: true),
                                 builder: (context, state) {
                                   if (state is CategoriesResponseState) {
                                     final refreshCubit =

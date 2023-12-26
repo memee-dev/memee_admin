@@ -12,6 +12,10 @@ class AdminsLoading extends AdminsState {
   @override
   List<Object?> get props => [];
 }
+class AdminsEmpty extends AdminsState {
+  @override
+  List<Object?> get props => [];
+}
 
 class AdminsSuccess extends AdminsResponseState {
   AdminsSuccess(List<AdminModel> admins) : super(admins);

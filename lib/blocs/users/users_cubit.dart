@@ -14,33 +14,79 @@ class UserCubit extends Cubit<UsersState> {
 
   List<UserModel> users = [];
 
-  UserCubit(this.db) : super(UsersLoading());
+  UserCubit(this.db) : super(UsersEmpty());
   void refresh() {
     emit(UsersLoading());
     emit(UsersSuccess(users));
   }
+  int usersCount = 0;
+  int pageSize = 20;
+  int pageNo = 1;
+  DocumentSnapshot? lastDocument;
 
-  Future<void> fetchUsers() async {
-    List<UserModel> users = [];
-    emit(UsersLoading());
+  Future<void> fetchUsers({bool clear = false}) async {
     try {
-      final usersDoc = await db.collection(collectionName).get();
-      final docs = usersDoc.docs;
+      final countSnap = await db.collection(collectionName).count().get();
+      usersCount = countSnap.count;
 
-      for (var doc in docs) {
-        final data = doc.data();
-        data['id'] = doc.id;
-        users.add(UserModel.fromMap(data));
+      if (usersCount > users.length) {
+        emit(UsersLoading());
+        QuerySnapshot<Map<String, dynamic>> userDocs;
+        if (clear) {
+          users.clear();
+          userDocs =
+              await db.collection(collectionName).limit(pageSize).get();
+        } else {
+          userDocs = await db
+              .collection(collectionName)
+              .startAfterDocument(lastDocument!)
+              .limit(pageSize)
+              .get();
+        }
+
+        final docs = userDocs.docs;
+        lastDocument = docs.last;
+
+        List<UserModel> fetched10Users = [];
+        for (var doc in docs) {
+          final data = doc.data();
+          data['id'] = doc.id;
+          fetched10Users.add(UserModel.fromMap(data));
+        }
+
+        users.addAll(fetched10Users);
+        emit(UsersSuccess(fetched10Users));
       }
-      emit(UsersSuccess(users));
     } catch (e) {
       emit(UsersFailure(
         e.toString(),
         users,
       ));
-      console.e('FETCH Users', error: e);
+      console.e('FETCH USERS', error: e);
     }
   }
+
+  // Future<void> fetchUsers() async {
+  //   List<UserModel> users = [];
+  //   emit(UsersLoading());
+  //   try {
+  //     final usersDoc = await db.collection(collectionName).get();
+  //     final docs = usersDoc.docs;
+
+  //     for (var doc in docs) {
+  //       final data = doc.data();
+  //       data['id'] = doc.id;
+  //       users.add(UserModel.fromMap(data));
+  //     }
+  //     emit(UsersSuccess(users));
+  //   } catch (e) {
+  //     emit(UsersFailure(
+  //       e.toString(),
+  //       users,
+  //     ));
+  //     console.e('FETCH Users', error: e);
+  //   }
+  // }
 
   Future<void> addUser(UserModel user) async {
     List<UserModel> users = getLocalUsers();
