@@ -36,6 +36,7 @@ class ProductDetailedWidget extends StatelessWidget {
     final _switchCubit = locator.get<RefreshCubit>();
     final _saveCubit = locator.get<RefreshCubit>();
     final _productDetailsRefreshCubit = locator.get<RefreshCubit>();
+    final refreshCubit = locator.get<RefreshCubit>();
 
     List<ProductDetailsModel> productDetails = [];
     late CategoryModel selectedCategory;
@@ -51,9 +52,17 @@ class ProductDetailedWidget extends StatelessWidget {
 
     DocType docType = getDocType<ProductModel>(product, false);
 
-    _resetForm() {
+    final categories = locator.get<CategoriesCubit>().categories;
+    if (categories.isNotEmpty) {
+      if (docType == DocType.add) {
+        selectedCategory = categories.first;
+      }
+    }
+
+    _resetForm() async {
       if (product != null) {
-        selectedCategory = product!.category;
+        selectedCategory =
+            locator.get<CategoriesCubit>().getCategoryById(product!.categoryId);
         selectedName = product!.name;
         selectedDescription = product!.description;
         selectedStatus = product!.active;
@@ -67,7 +76,7 @@ class ProductDetailedWidget extends StatelessWidget {
     return BlocBuilder<RefreshCubit, bool>(
         bloc: _refreshCubit,
         builder: (_, state) {
-          double hfWidth = 280.w;
+          double hfWidth = 300.w;
           return Row(
             mainAxisSize: MainAxisSize.min,
             children: [
@@ -196,37 +205,20 @@ class ProductDetailedWidget extends StatelessWidget {
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              BlocBuilder<CategoriesCubit, CategoriesState>(
-                                bloc: locator.get<CategoriesCubit>()
-                                  ..fetchCategories(clear: true),
-                                builder: (context, state) {
-                                  if (state is CategoriesResponseState) {
-                                    final refreshCubit =
-                                        locator.get<RefreshCubit>();
-                                    final categories = state.categories;
-                                    if (categories.isNotEmpty) {
-                                      if (docType == DocType.add) {
-                                        selectedCategory = categories.first;
+                              BlocBuilder<RefreshCubit, bool>(
+                                bloc: refreshCubit,
+                                builder: (_, index) {
+                                  return AppDropDown<CategoryModel>(
+                                    value: selectedCategory,
+                                    items: categories.toList(),
+                                    onChanged: (CategoryModel? val) {
+                                      if (docType != DocType.view &&
+                                          val != null) {
+                                        selectedCategory = val;
+                                        refreshCubit.change();
                                       }
-                                      return BlocBuilder<RefreshCubit, bool>(
-                                        bloc: refreshCubit,
-                                        builder: (_, index) {
-                                          return AppDropDown<CategoryModel>(
-                                            value: selectedCategory,
-                                            items: categories.toList(),
-                                            onChanged: (CategoryModel? val) {
-                                              if (docType != DocType.view &&
-                                                  val != null) {
-                                                selectedCategory = val;
-                                                refreshCubit.change();
-                                              }
-                                            },
-                                          );
-                                        },
-                                      );
-                                    }
-                                  }
-                                  return const SizedBox.shrink();
+                                    },
+                                  );
                                 },
                               ),
                               if (docType != DocType.view)
@@ -327,7 +319,7 @@ class ProductDetailedWidget extends StatelessWidget {
                                           ProductModel(
                                             id: product!.id,
                                             name: name,
-                                            category: selectedCategory,
+                                            categoryId: selectedCategory.id,
                                             description: description,
                                             active: selectedStatus,
                                             images: selectedImages,

@@ -229,4 +229,10 @@ class CategoriesCubit extends Cubit<CategoriesState> {
 
     await removeOldAndAddNewCategories(categories);
   }
+
+  CategoryModel getCategoryById(String id) {
+    return categories.firstWhere((element) {
+      return element.id == id;
+    });
+  }
 }

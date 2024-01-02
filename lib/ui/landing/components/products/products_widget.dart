@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:memee_admin/blocs/categories/categories_cubit.dart';
 import 'package:memee_admin/blocs/products/products_cubit.dart';
 import 'package:memee_admin/core/shared/app_strings.dart';
 import 'package:memee_admin/ui/__shared/extensions/widget_extensions.dart';
@@ -74,6 +75,16 @@ class ProductsWidget extends StatelessWidget {
                                       context,
                                       product: product,
                                       onSelectChanged: (selected) async {
+                                        final categoriesCubit =
+                                            locator.get<CategoriesCubit>();
+
+                                        if (categoriesCubit
+                                            .categories.isEmpty) {
+                                          await Future.delayed(
+                                            const Duration(seconds: 2),
+                                          );
+                                        }
+
                                         final result = await showDetailedDialog(
                                           context,
                                           child: ProductDetailedWidget(

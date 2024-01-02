@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:memee_admin/blocs/login/login_cubit.dart';
-import 'package:memee_admin/blocs/users/users_cubit.dart';
 import 'package:memee_admin/core/initializer/app_di_registration.dart';
 import 'package:memee_admin/ui/__shared/template/app_layout.dart';
 
@@ -14,7 +12,6 @@ class LandingPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    context.read<UserCubit>().fetchUsers();
     return AppLayout(
       webAppBar: AppBar(
         centerTitle: false,

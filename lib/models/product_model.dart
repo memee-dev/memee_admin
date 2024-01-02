@@ -1,9 +1,9 @@
-import 'package:memee_admin/models/category_model.dart';
+
 
 class ProductModel {
   final String id;
   final String name;
-  final CategoryModel category;
+  final String categoryId;
   final String description;
   bool active;
   final List<String> images;
@@ -12,7 +12,7 @@ class ProductModel {
   ProductModel({
     required this.id,
     required this.name,
-    required this.category,
+    required this.categoryId,
     required this.description,
     this.images = const [],
     required this.productDetails,
@@ -23,7 +23,7 @@ class ProductModel {
     return ProductModel(
       id: map['id'],
       name: map['name'],
-      category: CategoryModel.fromMap(map['category']),
+      categoryId: map['category'],
       description: map['description'],
       images: map['images'] != null
           ? List<String>.from(map['images'].map((x) => x))
@@ -37,7 +37,7 @@ class ProductModel {
   Map<String, dynamic> toJson() {
     final map = <String, dynamic>{};
     map['name'] = name;
-    map['category'] = category.toJson(addId: true);
+    map['category'] = categoryId;
     map['description'] = description;
     map['active'] = active;
     if (images.isNotEmpty) {
@@ -53,6 +53,7 @@ class ProductModel {
 
     return map;
   }
+
   @override
   String toString() => toJson().toString();
 }
@@ -104,10 +105,11 @@ class ProductDetailsModel {
   }
 
   @override
-  String toString({bool allowCurly=false}) {
-    String val = 'Price:$price, D-Price:$discountedPrice, qty:$qty, type:${type.name}';
-    if(allowCurly){
-      return '{$val}'; 
+  String toString({bool allowCurly = false}) {
+    String val =
+        'Price:$price, D-Price:$discountedPrice, qty:$qty, type:${type.name}';
+    if (allowCurly) {
+      return '{$val}';
     }
     return val;
   }

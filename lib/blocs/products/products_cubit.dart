@@ -106,7 +106,7 @@ class ProductsCubit extends Cubit<ProductsState> {
         e.toString(),
         products,
       ));
-      console.e('FETCH Products', error: e);
+      console.e('SEARCH Products', error: e);
     }
   }
 
@@ -147,7 +147,7 @@ class ProductsCubit extends Cubit<ProductsState> {
         final product = ProductModel(
           id: productId,
           name: name,
-          category: category,
+          categoryId: category.id,
           description: description,
           images: images,
           productDetails: productDetails,
@@ -284,9 +284,6 @@ class ProductsCubit extends Cubit<ProductsState> {
       'Product ID',
       'Product Name',
       'Category ID',
-      'Category Name',
-      'Category Active',
-      'Category Image',
       'Description',
       'Product Active',
       'Images',
@@ -296,10 +293,7 @@ class ProductsCubit extends Cubit<ProductsState> {
     for (ProductModel product in products) {
       String id = product.id;
       String name = product.name;
-      String categoryId = product.category.id;
-      String categoryName = product.category.name;
-      bool categoryActive = product.category.active;
-      String categoryImage = product.category.image;
+      String categoryId = product.categoryId;
       String description = product.description;
       bool productActive = product.active;
       List<String> images = product.images;
@@ -312,9 +306,6 @@ class ProductsCubit extends Cubit<ProductsState> {
         id,
         name,
         categoryId,
-        categoryName,
-        categoryActive,
-        categoryImage,
         description,
         productActive,
         images.join(', '),
@@ -331,19 +322,19 @@ class ProductsCubit extends Cubit<ProductsState> {
       List<dynamic> row = csvData[i];
 
       List<String> images =
-          (row[8].split(', ') as List<String>).map((var image) {
+          (row[5].split(', ') as List<String>).map((var image) {
         return image.trim().toString();
       }).toList();
 
       List<ProductDetailsModel> details =
-          (row[9].toString().split('}, ')).map((var d) {
+          (row[6].toString().split('},')).map((var d) {
         final val = d.replaceFirst('{', '').replaceFirst('}', '');
         final v = val.split(', ');
         final p = ProductDetailsModel(
           price: double.parse(v[0].split(':')[1]),
-          discountedPrice: double.parse(v[0].split(':')[1]),
+          discountedPrice: double.parse(v[1].split(':')[1]),
           qty: double.parse(v[2].split(':')[1]),
-          type: ProductDetailsModel.parseProductType(v[3].split(':')[1]),
+          type: ProductDetailsModel.parseProductType(v[3].split(':')[1].trim()),
         );
         return p;
       }).toList();
@@ -352,9 +343,9 @@ class ProductsCubit extends Cubit<ProductsState> {
         ProductModel(
           id: row[0],
           name: row[1],
-          category: row[2],
+          categoryId: row[2],
           description: row[3],
-          active: bool.parse(row[4]),
+          active: bool.parse(row[4].toLowerCase()),
           images: images,
           productDetails: details,
         ),

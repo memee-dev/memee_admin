@@ -41,7 +41,7 @@ class CategoriesWidget extends StatelessWidget {
           ),
           Expanded(
             child: BlocBuilder<CategoriesCubit, CategoriesState>(
-              bloc: _categoriesCubit..fetchCategories(clear: true),
+              bloc: _categoriesCubit,
               builder: (context, state) {
                  if (state is CategoriesEmpty) {
                     return const EmptyWidget(

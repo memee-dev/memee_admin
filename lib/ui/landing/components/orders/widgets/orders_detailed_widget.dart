@@ -97,68 +97,71 @@ class SecondColumn extends StatelessWidget {
         BlocBuilder<RefreshCubit, bool>(
           bloc: refreshCubit,
           builder: (context, state) {
-            return Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    SizedBox(
-                      width: 50.w,
-                      height: 100.h,
-                      child: Image.network(
-                        items[selectedIndex].image,
-                        scale: 1.3,
-                        fit: BoxFit.cover,
+            if (items.isNotEmpty) {
+              return Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      SizedBox(
+                        width: 50.w,
+                        height: 100.h,
+                        child: Image.network(
+                          items[selectedIndex].image,
+                          scale: 1.3,
+                          fit: BoxFit.cover,
+                        ),
                       ),
-                    ),
-                    SizedBox(height: 16.h),
-                    AppBox(
-                      padding: EdgeInsets.symmetric(
-                        vertical: 4.h,
-                        horizontal: 4.w,
+                      SizedBox(height: 16.h),
+                      AppBox(
+                        padding: EdgeInsets.symmetric(
+                          vertical: 4.h,
+                          horizontal: 4.w,
+                        ),
+                        text: '${AppStrings.product} ${AppStrings.id}',
+                        radius: 2.r,
+                        child: Text(
+                          items[selectedIndex].productId,
+                          style: Theme.of(context).textTheme.titleSmall,
+                        ),
                       ),
-                      text: '${AppStrings.product} ${AppStrings.id}',
-                      radius: 2.r,
-                      child: Text(
-                        items[selectedIndex].productId,
-                        style: Theme.of(context).textTheme.titleSmall,
+                      SizedBox(height: 4.h),
+                      AppBox(
+                        padding: EdgeInsets.symmetric(
+                          vertical: 4.h,
+                          horizontal: 4.w,
+                        ),
+                        text: '${AppStrings.product} ${AppStrings.name}',
+                        radius: 2.r,
+                        child: Text(
+                          items[selectedIndex].name,
+                          style: Theme.of(context).textTheme.titleSmall,
+                        ),
                       ),
-                    ),
-                    SizedBox(height: 4.h),
-                    AppBox(
-                      padding: EdgeInsets.symmetric(
-                        vertical: 4.h,
-                        horizontal: 4.w,
-                      ),
-                      text: '${AppStrings.product} ${AppStrings.name}',
-                      radius: 2.r,
-                      child: Text(
-                        items[selectedIndex].name,
-                        style: Theme.of(context).textTheme.titleSmall,
-                      ),
-                    ),
-                  ],
-                ),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: items[selectedIndex]
-                      .selectedItemDelails
-                      .map((selectedItem) {
-                    return BlocBuilder<RefreshCubit, bool>(
-                      bloc: refreshCubit,
-                      builder: (_, state) {
-                        return AppBox(
-                          child: Text(
-                              '${selectedItem.productDetails} * ${selectedItem.units}'),
-                        );
-                      },
-                    ).gapBottom(8.h);
-                  }).toList(),
-                ),
-              ],
-            );
+                    ],
+                  ),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: items[selectedIndex]
+                        .selectedItemDelails
+                        .map((selectedItem) {
+                      return BlocBuilder<RefreshCubit, bool>(
+                        bloc: refreshCubit,
+                        builder: (_, state) {
+                          return AppBox(
+                            child: Text(
+                                '${selectedItem.productDetails} * ${selectedItem.units}'),
+                          );
+                        },
+                      ).gapBottom(8.h);
+                    }).toList(),
+                  ),
+                ],
+              );
+            }
+            return const SizedBox.shrink();
           },
         )
       ],
